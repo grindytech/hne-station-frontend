@@ -37,7 +37,7 @@ interface SidebarContentProps {
   onClick: () => void;
 }
 
-const SidebarContent = ({ onClick }: SidebarContentProps) => {
+export const SidebarContent = ({ onClick }: SidebarContentProps) => {
   const { isConnected, account, reset } = useWallet();
   const toast = useCustomToast();
 

@@ -1,25 +1,20 @@
 import { Box, Button, CSSObject } from "@chakra-ui/react";
 
-const SwitchVersion: React.FC<{ isV2?: boolean }> = ({ isV2 = true }) => {
+const SwitchVersion: React.FC<{ isV2?: boolean; onClick: () => void }> = ({
+  isV2 = true,
+  onClick,
+}) => {
   return (
     <Box sx={{ borderRadius: "full", border: "1px", borderColor: "primary" }}>
       <Button
-        onClick={() => {
-          if (!isV2) {
-            window.open("/", "_self");
-          }
-        }}
+        onClick={!isV2 ? onClick : () => {}}
         size="sm"
         sx={isV2 ? { ...btnActive, ...btn } : { ...btnInActive, ...btn }}
       >
         V2
       </Button>
       <Button
-        onClick={() => {
-          if (isV2) {
-            window.open("/v1", "_self");
-          }
-        }}
+        onClick={isV2 ? onClick : () => {}}
         size="sm"
         sx={!isV2 ? { ...btnActive, ...btn } : { ...btnInActive, ...btn }}
       >

@@ -40,9 +40,9 @@ import ClaimableAmount, {
 } from "components/claimableAmount/ClaimableAmount";
 import { ErrorContract } from "types";
 import Countdown from "react-countdown";
-import SwitchVersion from "components/SwitchVersion";
+// import SwitchVersion from "components/SwitchVersion";
 
-const Claim: React.FC = () => {
+const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
   const { isConnected, account } = useWallet();
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -136,7 +136,7 @@ const Claim: React.FC = () => {
             <Text fontWeight="bold" fontSize="xl" color="primary">
               My HE Claiming
             </Text>
-            <SwitchVersion isV2={false} />
+            {React.cloneElement(switchVersion)}
           </Box>
           {account && (
             <Text fontSize="sm" color="gray.500">

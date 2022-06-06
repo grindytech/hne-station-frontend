@@ -7,6 +7,7 @@ import erc20 from "./ERC20.json";
 import claimPrivate from "./claimPrivate.json";
 import claimPrivateV2 from "./claimPrivateV2.json";
 import { TOKENS_INFO } from "constant";
+import stake from "./stake.json";
 
 export const web3 = new Web3(CONFIGS.PROVIDER);
 
@@ -38,4 +39,13 @@ export const safeAmount = ({ str, decimal = 18, significant = 6 }: SafeAmountPar
   if (str.length <= decimal - significant) return 0;
   const trimmedStr = str.slice(0, str.length - decimal + significant);
   return parseInt(trimmedStr) / 10 ** significant;
+};
+export const stakeContract = () => {
+  return new web3.eth.Contract(stake as AbiItem[], CONFIGS.HE_STAKE_CONTRACT);
+};
+
+export const getHEAccountBalance = async (token: string, account: string) => {
+  const { address, decimal } = TOKENS_INFO[token];
+  let balance = await erc20Contract(address).methods.balanceOf(account).call();
+  return safeAmount({ str: balance, decimal });
 };

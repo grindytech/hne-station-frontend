@@ -5,6 +5,7 @@ export interface Configs {
   HE_CLAIM_PRIVATE_CONTRACT: string;
   HE_CLAIM_PRIVATE_CONTRACT_V2: string;
   HE_CONTRACT: string;
+  HE_STAKE_CONTRACT: string;
   PROVIDER: string;
 }
 

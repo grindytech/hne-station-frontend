@@ -7,14 +7,15 @@ import { theme } from "theme";
 
 import Home from "./Home";
 import { QueryClient, QueryClientProvider } from "react-query";
+import SidebarWithHeader from "Home2";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      retry: false
-    }
-  }
+      retry: false,
+    },
+  },
 });
 
 export const App = () => (
@@ -25,15 +26,18 @@ export const App = () => (
           walletconnect: {
             rpc: {
               56: "https://bsc-dataseed.binance.org/",
-              97: "https://data-seed-prebsc-1-s1.binance.org:8545/"
-            }
-          }
+              97: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+            },
+          },
         }}
         autoConnect
       >
-        <BrowserRouter>
+        {/* <BrowserRouter>
           <Home />
-        </BrowserRouter>
+        </BrowserRouter> */}
+        <SidebarWithHeader >
+          <>hello</>
+        </SidebarWithHeader>
       </UseWalletProvider>
     </ChakraProvider>
   </QueryClientProvider>

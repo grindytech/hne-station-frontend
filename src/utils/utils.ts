@@ -83,3 +83,11 @@ export function cast(value: string | number, step: number, precision?: number): 
   const decimalPlaces = getDecimalPlaces(parsedValue, step);
   return toPrecision(parsedValue, precision ?? decimalPlaces);
 }
+
+export const covertToContractValue = ({ amount, decimal = 18 }: ContractValueParams) => {
+  const strVal = "" + amount;
+  const afterDot = strVal.indexOf(".") > -1 ? strVal.length - strVal.indexOf(".") - 1 : 0;
+  const toInteger = strVal.replace(".", "");
+  const returnVal = parseInt(toInteger) * 10 ** (decimal - afterDot);
+  return returnVal.toLocaleString("fullwide", { useGrouping: false });
+};
