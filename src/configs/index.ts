@@ -7,6 +7,7 @@ export interface Configs {
   HE_CONTRACT: string;
   HE_STAKE_CONTRACT: string;
   PROVIDER: string;
+  NETWORK: any;
 }
 
 const envConfigs =

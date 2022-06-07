@@ -68,7 +68,13 @@ const PendingWithdrawItem: React.FC<Props> = ({
             <TimeIcon /> {withdrawTimeString}
           </Text>
         ) : (
-          <Button size="sm" onClick={onClick} isLoading={isLoadingWithdraw}>
+          <Button
+            size="sm"
+            colorScheme="primary"
+            variant="ghost"
+            onClick={onClick}
+            isLoading={isLoadingWithdraw}
+          >
             Withdraw
           </Button>
         )}

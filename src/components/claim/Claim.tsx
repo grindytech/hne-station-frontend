@@ -133,7 +133,7 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
       <Card flex={{ lg: 1 }}>
         <VStack mb={4} alignItems="flex-start">
           <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-            <Text fontWeight="bold" fontSize="xl" color="primary">
+            <Text fontWeight="bold" fontSize="xl" color="primary.500">
               My HE Claiming
             </Text>
             {React.cloneElement(switchVersion)}
@@ -175,9 +175,7 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
           <HStack>
             <Button
               flex={1}
-              background="primary"
-              color="white"
-              _hover={{ background: "#BF8B02" }}
+              colorScheme="primary"
               onClick={() => {
                 window.open("https://stake.heroesempires.com/", "_blank");
               }}
@@ -186,9 +184,8 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
             </Button>
             <Button
               flex={1}
-              color="primary"
+              colorScheme="primary"
               variant="outline"
-              borderColor="primary"
               onClick={onClick}
               disabled={claimableAmount <= 0 || !!(startTime && now < startTime)}
               isLoading={isClaiming}

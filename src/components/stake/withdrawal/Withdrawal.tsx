@@ -43,7 +43,7 @@ const Withdrawal: React.FC<Props> = ({ isHideNumbers, onSuccess }) => {
   return pendingWithdraws && pendingClaims && isShow ? (
     <Card>
       <CardHeader mb={[3, 4]}>
-        <Text fontWeight="bold" fontSize="xl" color="gray.500">
+        <Text fontWeight="bold" fontSize="xl" color="primary.500">
           Withdrawal
         </Text>
       </CardHeader>

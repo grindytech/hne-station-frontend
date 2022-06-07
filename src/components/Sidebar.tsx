@@ -62,7 +62,7 @@ export const SidebarContent = ({ onClick }: SidebarContentProps) => {
               }}
             >
               <Text as="div">Your wallet:</Text>
-              <Tag size="sm" bg="teal.100">
+              <Tag size="sm" bg="primary.100">
                 {account}
               </Tag>
             </MenuItem>
@@ -91,7 +91,7 @@ export const SidebarContent = ({ onClick }: SidebarContentProps) => {
                 }}
               >
                 <Text as="div">Your wallet:</Text>
-                <Tag size="sm" bg="teal.100">
+                <Tag size="sm" bg="primary.100">
                   {shorten(account)}
                 </Tag>
               </Link>

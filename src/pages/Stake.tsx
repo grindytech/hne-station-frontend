@@ -6,7 +6,7 @@ import {
   Stack,
   Text,
   useBreakpointValue,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardHeader from "components/card/CardHeader";
@@ -62,17 +62,13 @@ const Home = () => {
     {}
   );
 
-  const estimatedRewards = ((dailyReward * 365) / (poolInfo?.balancePool || 1)) * 100;
-
-  useEffect(() => {
-    if (wallet.ethereum) {
-      web3.setProvider(wallet.ethereum);
-    }
-  }, [wallet.ethereum]);
+  const estimatedRewards = poolInfo
+    ? ((dailyReward * 365) / (poolInfo?.balancePool || 1)) * 100
+    : 0;
 
   return (
-    <Container maxW="container.lg" mb={3}>
-      <Heading as="h3" textAlign="center" mt={[5, 10]}>
+    <>
+      <Heading as="h3" mt={[5, 5]} color="primary.500">
         HE Staking Dashboard
       </Heading>
       {/* <Container maxW='container.xl'> */}
@@ -91,7 +87,7 @@ const Home = () => {
             />
             <Card>
               <CardHeader mb={[3, 4]}>
-                <Text fontWeight="bold" fontSize="xl" color="gray.500">
+                <Text fontWeight="bold" fontSize="xl" color="primary.500">
                   Estimated Rewards
                 </Text>
               </CardHeader>
@@ -99,10 +95,10 @@ const Home = () => {
                 <VStack flex={1} alignItems="flex-start">
                   <Skeleton isLoaded={!isLoadingDailyReward}>
                     <Text fontWeight="bold" fontSize="2xl">
-                      {formatNumber(estimatedRewards, 1)} %
+                      {estimatedRewards ? formatNumber(estimatedRewards, 1) : "--"} %
                     </Text>
                   </Skeleton>
-                  <Text fontWeight="bold" color="gray.500">
+                  <Text fontWeight="bold" color="primary.500">
                     APR
                   </Text>
                 </VStack>
@@ -114,7 +110,7 @@ const Home = () => {
         </Stack>
       </Stack>
       {/* </Container> */}
-    </Container>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import { Configs } from "configs";
+import Web3 from "web3";
 
 const configs: Configs = {
   HE_CLAIM_PRIVATE_CONTRACT: "0x0a1A377e61f69F84916e1Ff14a50Ce6C9168e4Db",
@@ -6,5 +7,16 @@ const configs: Configs = {
   PROVIDER: "https://data-seed-prebsc-1-s1.binance.org:8545/",
   HE_CLAIM_PRIVATE_CONTRACT_V2: "0x7AAc7730E4356caE396f3671E5E57F7Bb29a9d88",
   HE_STAKE_CONTRACT: "0x051f88F73A7ea43c410Ae56a83e518Ba3b04F8Bc",
+  NETWORK: {
+    chainId: Web3.utils.numberToHex(97),
+    rpcUrls: ["https://data-seed-prebsc-2-s1.binance.org:8545/"],
+    chainName: "BSC Test Net",
+    blockExplorerUrls: ["https://testnet.bscscan.com"],
+    nativeCurrency: {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+    },
+  },
 };
 export default configs;

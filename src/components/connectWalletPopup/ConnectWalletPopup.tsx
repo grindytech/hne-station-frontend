@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -8,7 +8,7 @@ import {
   ModalBody,
   Button,
   VStack,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useWallet } from "use-wallet";
 
@@ -22,8 +22,17 @@ interface Props {
 
 const ConnectWalletPopup: React.FC<Props> = ({ isOpen, onClose }) => {
   const wallet = useWallet();
-  const { isOpen: isOpenRequireWallet, onOpen: onOpenRequireWallet, onClose: onCloseRequireWallet } = useDisclosure();
-
+  const {
+    isOpen: isOpenRequireWallet,
+    onOpen: onOpenRequireWallet,
+    onClose: onCloseRequireWallet,
+  } = useDisclosure();
+  useEffect(() => {
+    if (wallet.error) {
+      onOpenRequireWallet();
+      onClose();
+    }
+  }, [onClose, onOpenRequireWallet, wallet.error]);
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
@@ -34,25 +43,19 @@ const ConnectWalletPopup: React.FC<Props> = ({ isOpen, onClose }) => {
           <ModalBody py="5">
             <VStack>
               <Button
-                colorScheme="teal"
-                onClick={async () => {
+                colorScheme="primary"
+                onClick={() => {
                   // @ts-ignore
-                  await wallet.connect();
-                  if (wallet.error) {
-                    onOpenRequireWallet();
-                    return;
-                  }
-                  onClose();
+                  wallet.connect().then(onClose);
                 }}
                 w="full"
               >
                 Metamask
               </Button>
               <Button
-                colorScheme="teal"
-                onClick={async () => {
-                  await wallet.connect("walletconnect");
-                  onClose();
+                colorScheme="primary"
+                onClick={() => {
+                  wallet.connect("walletconnect").then(onClose);
                 }}
                 w="full"
               >

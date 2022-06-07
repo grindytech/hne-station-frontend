@@ -35,8 +35,8 @@ const mdVariant: VariantConfig = {
 const PrivateClaim = () => {
   const [version, setVersion] = useState(2);
   return (
-    <Container maxW="container.xl" mb={3}>
-      <Heading as="h3" textAlign="center" mt={[5, 10]} color="primary">
+    <>
+      <Heading as="h3" mt={[5, 5]} color="primary.500">
         Strategic Partnerships
       </Heading>
       <Stack
@@ -49,12 +49,12 @@ const PrivateClaim = () => {
           <Card height="100%">
             <CardHeader mb={[3, 4]}>
               <HStack justifyContent="space-between" w="full">
-                <Text fontWeight="bold" fontSize="xl" color="primary">
+                <Text fontWeight="bold" fontSize="xl" color="primary.500">
                   Heroes & Empires’s Milestones:
                 </Text>
                 <IconButton
                   background="white"
-                  color="primary"
+                  color="primary.500"
                   aria-label="github link"
                   icon={
                     <Icon w={8} h={8}>
@@ -125,30 +125,34 @@ const PrivateClaim = () => {
           </Card>
           {/* <HEStats /> */}
         </Stack>
-        {version === 1 ? (
+        {version === 1 && (
           <Claim
             switchVersion={
               <SwitchVersion
                 onClick={() => {
+                  console.log("v1 clicked");
                   setVersion(2);
                 }}
+                isV2={false}
               />
             }
           />
-        ) : (
+        )}
+        {version === 2 && (
           <ClaimV2
             switchVersion={
               <SwitchVersion
                 onClick={() => {
+                  console.log("v2 clicked");
                   setVersion(1);
                 }}
-                isV2={version === 2}
+                isV2={true}
               />
             }
           />
         )}
       </Stack>
-    </Container>
+    </>
   );
 };
 

@@ -5,7 +5,7 @@ const SwitchVersion: React.FC<{ isV2?: boolean; onClick: () => void }> = ({
   onClick,
 }) => {
   return (
-    <Box sx={{ borderRadius: "full", border: "1px", borderColor: "primary" }}>
+    <Box sx={{ borderRadius: "full", border: "1px", borderColor: "primary.500" }}>
       <Button
         onClick={!isV2 ? onClick : () => {}}
         size="sm"
@@ -35,7 +35,7 @@ const btnInActive: CSSObject = {
 };
 const btnActive: CSSObject = {
   color: "white",
-  background: "primary",
+  background: "primary.500",
   transform: "scale(1.2)",
 };
 

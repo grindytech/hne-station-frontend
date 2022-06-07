@@ -87,7 +87,7 @@ const WithdrawPopup: React.FC<Props> = ({ isOpen, withdrawableAmount, onClose, o
           </FormControl>
         </ModalBody>
         <ModalFooter justifyContent="center">
-          <Button colorScheme="teal" onClick={onClick} isLoading={isLoading}>
+          <Button colorScheme="primary" onClick={onClick} isLoading={isLoading}>
             Submit Withdraw
           </Button>
         </ModalFooter>

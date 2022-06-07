@@ -19,8 +19,7 @@ const PoolInfo: React.FC<Props> = ({ isLoadingPoolBalance, poolBalance }) => {
 
   const { data: heInfo = {}, isLoading: isLoadingHEPrice } = useQuery(
     "getHEPrice",
-    async () =>
-      (await fetch(`${CONFIGS.DASHBOARD_API_URL}/api/v1/hePrice`)).json(),
+    async () => (await fetch(`${CONFIGS.DASHBOARD_API_URL}/api/v1/hePrice`)).json(),
     {
       onError: (error) => {
         toast.error("Cannot connect to server!");
@@ -31,7 +30,7 @@ const PoolInfo: React.FC<Props> = ({ isLoadingPoolBalance, poolBalance }) => {
   return (
     <Card>
       <CardHeader mb={[3, 4]}>
-        <Text fontWeight="bold" fontSize="xl" color="gray.500">
+        <Text fontWeight="bold" fontSize="xl" color="primary.500">
           Total Staked
         </Text>
       </CardHeader>
@@ -43,13 +42,14 @@ const PoolInfo: React.FC<Props> = ({ isLoadingPoolBalance, poolBalance }) => {
                 <HEIcon />
               </Icon>
               <Text fontWeight="bold" fontSize="2xl">
-                {formatNumber(poolBalance, 1)}
+                {poolBalance ? formatNumber(poolBalance, 1) : "--"}
               </Text>
             </HStack>
           </Skeleton>
           <Skeleton isLoaded={!isLoadingPoolBalance && !isLoadingHEPrice}>
             <Text color="gray.500" fontSize="sm">{`~$${formatNumber(
-              poolBalance * heInfo.price, 1
+              poolBalance * heInfo.price,
+              1
             )}`}</Text>
           </Skeleton>
         </VStack>

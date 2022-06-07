@@ -23,17 +23,20 @@ const HEStats: React.FC<Props> = ({ dailyReward }) => {
     {
       onError: (error) => {
         toast.error("Cannot connect to server!");
-      }
+      },
     }
   );
 
   const { data: heExternalStats, isLoading: isLoadingHEExternalStats } = useQuery(
     "getHEExternalStats",
-    async () => (await fetch("https://api.coingecko.com/api/v3/coins/heroes-empires?localization=false")).json(),
+    async () =>
+      (
+        await fetch("https://api.coingecko.com/api/v3/coins/heroes-empires?localization=false")
+      ).json(),
     {
       onError: (error) => {
         toast.error("Cannot connect to server!");
-      }
+      },
     }
   );
   const { circulating_supply } = heExternalStats?.market_data || {};
@@ -41,7 +44,7 @@ const HEStats: React.FC<Props> = ({ dailyReward }) => {
   return (
     <Card>
       <CardHeader mb={[3, 4]}>
-        <Text fontWeight="bold" fontSize="xl" color="gray.500">
+        <Text fontWeight="bold" fontSize="xl" color="primary.500">
           HE Stats
         </Text>
       </CardHeader>
@@ -65,7 +68,7 @@ const HEStats: React.FC<Props> = ({ dailyReward }) => {
               <HEIcon />
             </Icon>
             <Text fontWeight="bold" w="100%">
-              {dailyReward && formatNumber(dailyReward, 1)}
+              {dailyReward ? formatNumber(dailyReward, 1) : "--"}
             </Text>
           </HStack>
         </VStack>

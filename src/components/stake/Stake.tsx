@@ -108,7 +108,7 @@ const Stake: React.FC = () => {
         <Card flex={{ lg: 1 }}>
           <VStack mb={8} alignItems="flex-start">
             <HStack w="100%" justifyContent="space-between">
-              <Text fontWeight="bold" fontSize="xl" color="gray.500">
+              <Text fontWeight="bold" fontSize="xl" color="primary.500">
                 My HE Staking
               </Text>
               {isConnected() && (
@@ -201,7 +201,7 @@ const Stake: React.FC = () => {
           {isConnected() ? (
             <VStack alignItems="stretch">
               <Button
-                colorScheme="teal"
+                colorScheme="primary"
                 onClick={() => {
                   onOpenStake();
                   refetch();
@@ -210,6 +210,8 @@ const Stake: React.FC = () => {
                 Stake
               </Button>
               <Button
+                colorScheme="primary"
+                variant="ghost"
                 disabled={!userInfo?.stakeAmount}
                 onClick={() => {
                   onOpenWithdraw();
@@ -227,7 +229,7 @@ const Stake: React.FC = () => {
         {isConnected() && rewardAmount && (
           <Card>
             <CardHeader mb={[3, 4]}>
-              <Text fontWeight="bold" fontSize="xl" color="gray.500">
+              <Text fontWeight="bold" fontSize="xl" color="primary.500">
                 Rewards
               </Text>
             </CardHeader>
@@ -243,10 +245,10 @@ const Stake: React.FC = () => {
 
               {rewardAmount && (
                 <Stack direction="column">
-                  <Button size="sm" colorScheme="teal" onClick={onOpenRestake}>
+                  <Button size="sm" colorScheme="primary" onClick={onOpenRestake}>
                     Restake
                   </Button>
-                  <Button size="sm" onClick={onOpenClaim}>
+                  <Button size="sm" colorScheme="primary" variant="ghost" onClick={onOpenClaim}>
                     Submit Claim
                   </Button>
                 </Stack>

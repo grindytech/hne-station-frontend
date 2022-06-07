@@ -81,7 +81,7 @@ const StakeInputPopup: React.FC<Props> = ({ isOpen, onClose, onSuccess, stakeabl
           </FormControl>
         </ModalBody>
         <ModalFooter justifyContent="center">
-          <Button colorScheme="teal" onClick={onClick} isLoading={isLoading}>
+          <Button colorScheme="primary" onClick={onClick} isLoading={isLoading}>
             Stake
           </Button>
         </ModalFooter>

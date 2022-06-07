@@ -158,7 +158,7 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
       <Card flex={{ lg: 1 }}>
         <VStack mb={4} alignItems="flex-start">
           <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-            <Text fontWeight="bold" fontSize="xl" color="primary">
+            <Text fontWeight="bold" fontSize="xl" color="primary.500">
               My HE Claiming
             </Text>
             {React.cloneElement(switchVersion)}
@@ -198,57 +198,52 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
             claimableAmount={option === 1 ? claimableAmount : claimableAmount2}
           />
         </Stack>
-        <Stack mb={5} direction={["column", "row"]} flexWrap="wrap">
-          <VStack flex={1} alignItems="flex-start">
-            <Text fontWeight="semibold" color="gray.500" fontSize="sm">
-              Choose an option
-            </Text>
-            <RadioGroup
-              onChange={(val) => {
-                setOption(Number(val) as any);
-              }}
-              value={option}
-            >
-              <Stack spacing={5} direction="row">
-                <Radio size="md" colorScheme="gray" value={1}>
-                  Option 1
-                </Radio>
-                <Radio size="md" colorScheme="gray" value={2}>
-                  Option 2
-                </Radio>
-              </Stack>
-            </RadioGroup>
-          </VStack>
-        </Stack>
-        <Stack mb={5} direction={["column", "row"]} flexWrap="wrap">
-          <Stack spacing={5} direction="row">
-            <Text color="gray.500" as="i" fontSize="sm" fontWeight="semibold">
-              Option&nbsp;1:
-            </Text>
-            <Text color="gray.500" as="i" fontSize="sm">
-              Old vesting mechanism, 5% per month - receive every month. The requirement under SAFT
-              terms is that you support H&E promotion.
-            </Text>
+        {isConnected() && (
+          <Stack mb={5} direction={["column", "row"]} flexWrap="wrap">
+            <VStack flex={1} alignItems="flex-start">
+              <Text fontWeight="semibold" color="gray.500" fontSize="sm">
+                Choose an option
+              </Text>
+
+              <RadioGroup
+                onChange={(val) => {
+                  setOption(Number(val) as any);
+                }}
+                value={option}
+              >
+                <Stack spacing={5} direction="column">
+                  <Radio size="md" colorScheme="primary" value={1}>
+                    <Stack spacing={5} alignItems="center" direction="row">
+                      <Text color="gray.500" fontSize="sm" fontWeight="semibold">
+                        Option&nbsp;1:
+                      </Text>
+                      <Text color="gray.500" fontSize="sm">
+                        Old vesting mechanism, 5% per month - receive every month. The requirement
+                        under SAFT terms is that you support H&E promotion.
+                      </Text>
+                    </Stack>
+                  </Radio>
+                  <Radio size="md" colorScheme="primary" value={2}>
+                    <Stack spacing={5} alignItems="center" direction="row">
+                      <Text color="gray.500" fontSize="sm" fontWeight="semibold">
+                        Option&nbsp;2:
+                      </Text>
+                      <Text color="gray.500" fontSize="sm">
+                        New Vesting mechanism, pay all tokens at once, but you only get 50% of total
+                        tokens, and the remaining 50% of tokens are burned.
+                      </Text>
+                    </Stack>
+                  </Radio>
+                </Stack>
+              </RadioGroup>
+            </VStack>
           </Stack>
-        </Stack>
-        <Stack mb={5} direction={["column", "row"]} flexWrap="wrap">
-          <Stack spacing={5} direction="row">
-            <Text color="gray.500" as="i" fontSize="sm" fontWeight="semibold">
-              Option&nbsp;2:
-            </Text>
-            <Text color="gray.500" as="i" fontSize="sm">
-              New Vesting mechanism, pay all tokens at once, but you only get 50% of total tokens,
-              and the remaining 50% of tokens are burned.
-            </Text>
-          </Stack>
-        </Stack>
+        )}
         {isConnected() ? (
           <HStack>
             <Button
               flex={1}
-              background="primary"
-              color="white"
-              _hover={{ background: "#BF8B02" }}
+              colorScheme="primary"
               onClick={() => {
                 window.open("https://stake.heroesempires.com/", "_blank");
               }}
@@ -257,9 +252,8 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
             </Button>
             <Button
               flex={1}
-              color="primary"
+              colorScheme="primary"
               variant="outline"
-              borderColor="primary"
               onClick={onClick}
               disabled={
                 (claimableAmount <= 0 && option === 1) ||

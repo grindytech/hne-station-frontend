@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -9,22 +9,26 @@ import {
   Button,
   VStack,
   useDisclosure,
-  Icon
+  Icon,
 } from "@chakra-ui/react";
-import { useWallet } from "use-wallet";
+import { useWallet, ChainUnsupportedError } from "use-wallet";
 import RequireWalletPopup from "components/requireWalletPopup/RequireWalletPopup";
 
 import { ReactComponent as Metamask } from "assets/metamask.svg";
 import { ReactComponent as Walletconnect } from "assets/walletconnect.svg";
+import configs from "configs";
 
 const ConnectWalletButton: React.FC = () => {
   const wallet = useWallet();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isOpenRequireWallet, onOpen: onOpenRequireWallet, onClose: onCloseRequireWallet } = useDisclosure();
-
+  const {
+    isOpen: isOpenRequireWallet,
+    onOpen: onOpenRequireWallet,
+    onClose: onCloseRequireWallet,
+  } = useDisclosure();
   return (
     <>
-      <Button onClick={onOpen} color="primary" variant="outline" borderColor="primary">
+      <Button onClick={onOpen} colorScheme="primary" variant="outline">
         Connect to wallet
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
@@ -35,9 +39,8 @@ const ConnectWalletButton: React.FC = () => {
           <ModalBody py="5">
             <VStack>
               <Button
-                 color="primary"
-                 variant="outline"
-                 borderColor="primary"
+                colorScheme="primary"
+                variant="outline"
                 onClick={async () => {
                   // @ts-ignore
                   await wallet.connect();
@@ -57,9 +60,8 @@ const ConnectWalletButton: React.FC = () => {
                 Metamask
               </Button>
               <Button
-                 color="primary"
-                 variant="outline"
-                 borderColor="primary"
+                colorScheme="primary"
+                variant="outline"
                 onClick={async () => {
                   await wallet.connect("walletconnect");
                   onClose();

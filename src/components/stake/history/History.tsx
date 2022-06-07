@@ -21,19 +21,21 @@ interface Props {
 
 const History: React.FC<Props> = ({ isHideNumbers }) => {
   const { isConnected, account } = useWallet();
-  const {
-    data: pendingWithdraws,
-    isLoading,
-  } = useQuery(pendingWithdrawQueryKey, () => getUserPendingWithdraw(0, account || ""), {
-    enabled: isConnected()
-  });
+  const { data: pendingWithdraws, isLoading } = useQuery(
+    pendingWithdrawQueryKey,
+    () => getUserPendingWithdraw(0, account || ""),
+    {
+      enabled: isConnected(),
+    }
+  );
 
-  const {
-    data: pendingClaims,
-    isLoading: isLoadingClaims,
-  } = useQuery([pendingClaimQueryKey, account], () => getUserPendingClaim(0, account || ""), {
-    enabled: isConnected()
-  });
+  const { data: pendingClaims, isLoading: isLoadingClaims } = useQuery(
+    [pendingClaimQueryKey, account],
+    () => getUserPendingClaim(0, account || ""),
+    {
+      enabled: isConnected(),
+    }
+  );
 
   const historyWithdrawData = useMemo(
     () =>
@@ -52,7 +54,10 @@ const History: React.FC<Props> = ({ isHideNumbers }) => {
   );
 
   const historyData = useMemo(
-    () => [...historyWithdrawData, ...historyClaimData].sort((dataA, dataB) => dataA.blockTime - dataB.blockTime),
+    () =>
+      [...historyWithdrawData, ...historyClaimData].sort(
+        (dataA, dataB) => dataA.blockTime - dataB.blockTime
+      ),
     [historyClaimData, historyWithdrawData]
   );
 
@@ -63,13 +68,13 @@ const History: React.FC<Props> = ({ isHideNumbers }) => {
   return pendingWithdraws && pendingClaims && isShow ? (
     <Card>
       <CardHeader mb={[3, 4]}>
-        <Text fontWeight="bold" fontSize="xl" color="gray.500">
+        <Text fontWeight="bold" fontSize="xl" color="primary.500">
           Withdraw History
         </Text>
       </CardHeader>
       <VStack alignItems="stretch">
-        {historyData?.map(({ withdrawTime, amount, type }) => (
-          <HStack gap={1}>
+        {historyData?.map(({ withdrawTime, amount, type }, index) => (
+          <HStack key={index} gap={1}>
             <HStack flex={1}>
               <Icon w="1em" h="1em">
                 <HEIcon />
@@ -77,7 +82,7 @@ const History: React.FC<Props> = ({ isHideNumbers }) => {
               <Text fontWeight="bold">{isHideNumbers ? "**" : formatNumber(amount)}</Text>
             </HStack>
             <Box>
-              <Tag colorScheme="facebook" flex={1} borderRadius="full">
+              <Tag colorScheme="primary" flex={1} borderRadius="full">
                 {type === 0 ? "withdraw" : "claim"}
               </Tag>
             </Box>

@@ -96,7 +96,7 @@ const ClaimPopup: React.FC<Props> = ({ isOpen, claimableAmount, onClose, onSucce
           </FormControl>
         </ModalBody>
         <ModalFooter justifyContent="center">
-          <Button colorScheme="teal" onClick={onClick} isLoading={isLoading}>
+          <Button colorScheme="primary" onClick={onClick} isLoading={isLoading}>
             Submit Claim
           </Button>
         </ModalFooter>

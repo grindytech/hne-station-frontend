@@ -65,7 +65,13 @@ const PendingClaimItem: React.FC<Props> = ({
             <TimeIcon /> {claimTimeString}
           </Text>
         ) : (
-          <Button isLoading={isLoadingClaim} size="sm" onClick={onClick}>
+          <Button
+            colorScheme="primary"
+            variant="ghost"
+            isLoading={isLoadingClaim}
+            size="sm"
+            onClick={onClick}
+          >
             Claim reward
           </Button>
         )}
