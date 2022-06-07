@@ -26,6 +26,12 @@ const ConnectWalletButton: React.FC = () => {
     onOpen: onOpenRequireWallet,
     onClose: onCloseRequireWallet,
   } = useDisclosure();
+  useEffect(() => {
+    if (wallet.error) {
+      onOpenRequireWallet();
+      onClose();
+    }
+  }, [onClose, onOpenRequireWallet, wallet.error]);
   return (
     <>
       <Button onClick={onOpen} colorScheme="primary" variant="outline">
@@ -44,10 +50,6 @@ const ConnectWalletButton: React.FC = () => {
                 onClick={async () => {
                   // @ts-ignore
                   await wallet.connect();
-                  if (wallet.error) {
-                    onOpenRequireWallet();
-                    return;
-                  }
                   onClose();
                 }}
                 w="full"

@@ -9,7 +9,7 @@ import {
   ModalFooter,
   Button,
   Icon,
-  Text
+  Text,
 } from "@chakra-ui/react";
 
 import { ReactComponent as Metamask } from "assets/metamask.svg";
@@ -37,6 +37,9 @@ const RequireWalletPopup: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Metamask />
               </Icon>
             }
+            onClick={() => {
+              window.open("https://metamask.io/download/", "_blank");
+            }}
           >
             Get Metamask
           </Button>
