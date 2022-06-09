@@ -1,5 +1,4 @@
 import {
-  Container,
   Heading,
   HStack,
   Icon,
@@ -15,28 +14,14 @@ import Card from "components/card/Card";
 import CardHeader from "components/card/CardHeader";
 import Claim from "components/claim/Claim";
 import ClaimV2 from "components/claim/ClaimV2";
-import { SidebarVariant } from "components/Sidebar";
 import SwitchVersion from "components/SwitchVersion";
 import React, { useState } from "react";
 
-interface VariantConfig {
-  navigation: SidebarVariant;
-  navigationButton: boolean;
-}
-
-const smVariant: VariantConfig = {
-  navigation: "drawer",
-  navigationButton: true,
-};
-const mdVariant: VariantConfig = {
-  navigation: "sidebar",
-  navigationButton: false,
-};
 const PrivateClaim = () => {
   const [version, setVersion] = useState(2);
   return (
     <>
-      <Heading as="h3" mt={[5, 5]} color="primary.500">
+      <Heading as="h3" mt={[10, 5]} color="primary.500">
         Strategic Partnerships
       </Heading>
       <Stack

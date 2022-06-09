@@ -69,9 +69,8 @@ const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose }) => {
           <AlertDescription>
             Please connect to{" "}
             <Button variant="link" colorScheme="primary" onClick={changeNetwork}>
-              Binance Smart Chain
+              {configs.NETWORK.chainName}
             </Button>
-            .
           </AlertDescription>
         </Alert>
       )}
@@ -81,7 +80,7 @@ const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose }) => {
           <ModalHeader>Wrong network</ModalHeader>
           <ModalCloseButton />
           <ModalBody py="5">
-            <Text>Please switch to Binance Smart Chain</Text>
+            <Text>Please switch to {configs.NETWORK.chainName}</Text>
           </ModalBody>
           <ModalFooter justifyContent="center">
             <Button
@@ -89,7 +88,7 @@ const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose }) => {
               colorScheme="teal"
               leftIcon={<img width={32} height={32} src={BSC} alt="BSC logo" />}
             >
-              Binance Smart Chain
+              {configs.NETWORK.chainName}
             </Button>
           </ModalFooter>
         </ModalContent>

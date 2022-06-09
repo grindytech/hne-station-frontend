@@ -1,25 +1,17 @@
-import React, { useCallback, useEffect } from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  Button,
-  VStack,
-  useDisclosure,
-  Icon,
+  Button, ButtonProps, Icon, Modal, ModalBody, ModalCloseButton, ModalContent,
+  ModalHeader, ModalOverlay, useDisclosure, VStack
 } from "@chakra-ui/react";
-import { useWallet, ChainUnsupportedError } from "use-wallet";
-import RequireWalletPopup from "components/requireWalletPopup/RequireWalletPopup";
-
 import { ReactComponent as Metamask } from "assets/metamask.svg";
 import { ReactComponent as Walletconnect } from "assets/walletconnect.svg";
-import configs from "configs";
+import RequireWalletPopup from "components/requireWalletPopup/RequireWalletPopup";
+import React, { useEffect } from "react";
+import { useWallet } from "use-wallet";
 
-const ConnectWalletButton: React.FC = () => {
+
+const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
   const wallet = useWallet();
+  const { ...rest } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenRequireWallet,
@@ -34,7 +26,7 @@ const ConnectWalletButton: React.FC = () => {
   }, [onClose, onOpenRequireWallet, wallet.error]);
   return (
     <>
-      <Button onClick={onOpen} colorScheme="primary" variant="outline">
+      <Button onClick={onOpen} colorScheme="primary" variant="outline" {...rest}>
         Connect to wallet
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>

@@ -1,11 +1,6 @@
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Box,
   BoxProps,
-  Button,
   CloseButton,
   Container,
   Drawer,
@@ -25,11 +20,13 @@ import { SidebarContent as NavbarContent } from "components/Sidebar";
 import WrongNetworkPopup from "components/wrongNetwork/WrongNetworkPopup";
 import configs from "configs";
 import { web3 } from "contracts/contracts";
+import Airdrop from "pages/Airdrop";
 import PrivateClaim from "pages/PrivateClaim";
 import Stake from "pages/Stake";
+import SwapPage from "pages/SwapPage";
 import React, { ReactText, useCallback, useEffect, useState } from "react";
 import { IconType } from "react-icons";
-import { FiCompass, FiHome, FiMenu, FiTrendingUp } from "react-icons/fi";
+import { FiArrowDownCircle, FiCompass, FiGift, FiHome, FiMenu, FiTrendingUp } from "react-icons/fi";
 import { useWallet } from "use-wallet";
 import Web3 from "web3";
 interface LinkItemProps {
@@ -41,6 +38,8 @@ const LinkItems: Array<LinkItemProps> = [
   { key: "home", name: "Home", icon: FiHome },
   { key: "stake", name: "Stake", icon: FiTrendingUp },
   { key: "private-claim", name: "Strategic Partnerships", icon: FiCompass },
+  { key: "airdrop", name: "Airdrop", icon: FiGift },
+  { key: "swap", name: "Swap", icon: FiArrowDownCircle },
 ];
 
 export default function Station() {
@@ -102,7 +101,17 @@ export default function Station() {
       <Box ml={{ base: 0, md: 60 }} p="4">
         <Container maxW="container.xl" mb={3}>
           <WrongNetworkPopup isOpen={isOpenSwitchNetwork} onClose={onCloseSwitchNetwork} />
-          {tab === "stake" ? <Stake /> : tab === "private-claim" ? <PrivateClaim /> : <>home</>}
+          {tab === "stake" ? (
+            <Stake />
+          ) : tab === "private-claim" ? (
+            <PrivateClaim />
+          ) : tab === "airdrop" ? (
+            <Airdrop />
+          ) : tab === "swap" ? (
+            <SwapPage />
+          ) : (
+            <>home</>
+          )}
         </Container>
       </Box>
     </Box>

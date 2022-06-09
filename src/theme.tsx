@@ -38,7 +38,23 @@ const CardHeader: ComponentStyleConfig = {
     width: "100%",
   },
 };
-
+const Button: ComponentStyleConfig = {
+  baseStyle: {
+    borderRadius: 25,
+  },
+};
+const Input: ComponentStyleConfig = {
+  baseStyle: {
+    borderRadius: 25,
+  },
+};
+const ModalCloseButton: ComponentStyleConfig = {
+  defaultProps: {
+    _focus: {
+      border: "none",
+    },
+  },
+};
 export const theme = extendTheme({
   styles: {
     global: {
@@ -51,23 +67,25 @@ export const theme = extendTheme({
   },
   colors: {
     primary: {
-      "50": "#F8E4F6",
-      "100": "#F2CCF0",
-      "200": "#E29CE5",
-      "300": "#CB6CD8",
-      "400": "#AE3BCB",
-      "500": "#7E2A9F",
-      "600": "#602383",
-      "700": "#451B66",
-      "800": "#2D144A",
-      "900": "#190C2E",
+      "50": "#7EADF9",
+      "100": "#6BA1F9",
+      "200": "#4488F7",
+      "300": "#1C6FF5",
+      "400": "#0A5BDF",
+      "500": "#084BB8",
+      "600": "#063582",
+      "700": "#031F4C",
+      "800": "#010917",
+      "900": "#000000",
     },
   },
   components: {
     Card,
     CardBody,
     CardHeader,
-    
+    Button,
+    Input,
+    ModalCloseButton,
     Link: {
       variants: {
         "no-underline": {
@@ -83,6 +101,5 @@ export const theme = extendTheme({
         },
       },
     },
-    
   },
 });

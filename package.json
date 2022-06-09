@@ -34,6 +34,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "start:mainnet": "REACT_APP_ENV=mainnet react-scripts start",
     "build:mainnet": "REACT_APP_ENV=mainnet GENERATE_SOURCEMAP=false yarn build",
     "deploy:testnet": "REACT_APP_ENV=testnet yarn build && firebase use he-claim-private-testnet && firebase deploy",
     "deploy:mainnet-test": "yarn build:mainnet && firebase use he-claim-private-mainnet && firebase hosting:channel:deploy he-claim-private-mainnet",

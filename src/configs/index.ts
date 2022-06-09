@@ -6,6 +6,7 @@ export interface Configs {
   HE_CLAIM_PRIVATE_CONTRACT_V2: string;
   HE_CONTRACT: string;
   HE_STAKE_CONTRACT: string;
+  COMMUNITY_AIRDROP_CONTRACT: string;
   PROVIDER: string;
   NETWORK: any;
 }

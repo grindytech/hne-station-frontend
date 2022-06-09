@@ -8,8 +8,10 @@ import claimPrivate from "./claimPrivate.json";
 import claimPrivateV2 from "./claimPrivateV2.json";
 import { TOKENS_INFO } from "constant";
 import stake from "./stake.json";
+import communityAirdrop from "./communityAirdropAbi.json";
 
-export const web3 = new Web3(CONFIGS.PROVIDER);
+export const web3 = new Web3(new Web3.providers.HttpProvider(CONFIGS.PROVIDER));
+export const httpWeb3 = new Web3(new Web3.providers.HttpProvider(CONFIGS.PROVIDER));
 
 interface SafeAmountParams {
   str: string;
@@ -48,4 +50,8 @@ export const getHEAccountBalance = async (token: string, account: string) => {
   const { address, decimal } = TOKENS_INFO[token];
   let balance = await erc20Contract(address).methods.balanceOf(account).call();
   return safeAmount({ str: balance, decimal });
+};
+
+export const communityAirdropContract = () => {
+  return new web3.eth.Contract(communityAirdrop as AbiItem[], CONFIGS.COMMUNITY_AIRDROP_CONTRACT);
 };

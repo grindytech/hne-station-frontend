@@ -42,13 +42,7 @@ const Home = () => {
   const wallet = useWallet();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isHideNumbers, setIsHideNumbers] = useState(false);
-  const variants = useBreakpointValue({ base: smVariant, md: mdVariant });
 
-  const showNumbers = () => setIsHideNumbers(false);
-  const hideNumbers = () => setIsHideNumbers(true);
-
-  const openSidebar = () => setSidebarOpen(true);
-  const closeSidebar = () => setSidebarOpen(false);
 
   const { data: dailyReward = 0, isLoading: isLoadingDailyReward } = useQuery(
     ["getDailyReward", wallet.account],
@@ -68,10 +62,9 @@ const Home = () => {
 
   return (
     <>
-      <Heading as="h3" mt={[5, 5]} color="primary.500">
-        HE Staking Dashboard
+      <Heading as="h3" mt={[10, 5]} color="primary.500">
+        Staking Dashboard
       </Heading>
-      {/* <Container maxW='container.xl'> */}
       <Stack
         direction={["column", "column", "column", "row"]}
         spacing={["0.5rem", 5]}
@@ -109,7 +102,6 @@ const Home = () => {
           <History isHideNumbers={isHideNumbers} />
         </Stack>
       </Stack>
-      {/* </Container> */}
     </>
   );
 };

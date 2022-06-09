@@ -10,7 +10,7 @@ const configs: Configs = {
   NETWORK: {
     chainId: Web3.utils.numberToHex(56),
     rpcUrls: ["https://bsc-dataseed.binance.org"],
-    chainName: "BSC",
+    chainName: "Binance Smart Chain",
     blockExplorerUrls: ["https://bscscan.com"],
     nativeCurrency: {
       name: "BNB",
@@ -18,5 +18,6 @@ const configs: Configs = {
       decimals: 18,
     },
   },
+  COMMUNITY_AIRDROP_CONTRACT: "0x131c4EdF315225B1f8cEd4a0734Ccce338713763",
 };
 export default configs;

@@ -18,5 +18,6 @@ const configs: Configs = {
       decimals: 18,
     },
   },
+  COMMUNITY_AIRDROP_CONTRACT: "",
 };
 export default configs;
