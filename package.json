@@ -18,6 +18,7 @@
     "date-fns": "^2.27.0",
     "framer-motion": "^4.0.0",
     "lodash": "^4.17.21",
+    "numeral": "^2.0.6",
     "react": "^17.0.2",
     "react-countdown": "^2.3.2",
     "react-dom": "^17.0.2",
@@ -56,5 +57,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/numeral": "^2.0.2"
   }
 }

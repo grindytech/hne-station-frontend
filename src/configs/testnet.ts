@@ -19,5 +19,9 @@ const configs: Configs = {
     },
   },
   COMMUNITY_AIRDROP_CONTRACT: "",
+  BUSD_CONTRACT: "0x1DEC50e5531452B1168962f40EAd44Da45C380DC",
+  WBNB_CONTRACT: "",
+  FACTORY_V2_CONTRACT: "",
+  ROUTER_V2_CONTRACT: ""
 };
 export default configs;

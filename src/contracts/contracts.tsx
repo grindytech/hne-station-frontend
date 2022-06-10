@@ -6,9 +6,13 @@ import CONFIGS from "configs";
 import erc20 from "./ERC20.json";
 import claimPrivate from "./claimPrivate.json";
 import claimPrivateV2 from "./claimPrivateV2.json";
+import factoryV2 from "./factoryV2Abi.json";
+import routerV2 from "./routerV2Abi.json";
+import lpPool from "./lpPoolAbi.json";
 import { TOKENS_INFO } from "constant";
 import stake from "./stake.json";
 import communityAirdrop from "./communityAirdropAbi.json";
+import configs from "configs";
 
 export const web3 = new Web3(new Web3.providers.HttpProvider(CONFIGS.PROVIDER));
 export const httpWeb3 = new Web3(new Web3.providers.HttpProvider(CONFIGS.PROVIDER));
@@ -31,6 +35,15 @@ export const claimPrivateContractV2 = () => {
 export const erc20Contract = (address: string) => {
   return new web3.eth.Contract(erc20 as AbiItem[], address);
 };
+export const factoryV2Contract = () => {
+  return new web3.eth.Contract(factoryV2 as AbiItem[], configs.FACTORY_V2_CONTRACT);
+};
+export const routerV2Contract = () => {
+  return new web3.eth.Contract(routerV2 as AbiItem[], configs.ROUTER_V2_CONTRACT);
+};
+export const lpPoolContract = (address: string) => {
+  return new web3.eth.Contract(lpPool as AbiItem[], address);
+};
 export const safeAmount = ({ str, decimal = 18, significant = 6 }: SafeAmountParams) => {
   //* cut string to 6
   significant = significant || 6;
@@ -50,6 +63,15 @@ export const getHEAccountBalance = async (token: string, account: string) => {
   const { address, decimal } = TOKENS_INFO[token];
   let balance = await erc20Contract(address).methods.balanceOf(account).call();
   return safeAmount({ str: balance, decimal });
+};
+export const getErc20Balance = async (address: string, decimal: number, account: string) => {
+  let balance = await erc20Contract(address).methods.balanceOf(account).call();
+  return safeAmount({ str: balance, decimal });
+};
+
+export const getETHBalance = async (address: string) => {
+  const bnbBalance = await web3.eth.getBalance(address);
+  return safeAmount({ str: bnbBalance, decimal: 18 });
 };
 
 export const communityAirdropContract = () => {

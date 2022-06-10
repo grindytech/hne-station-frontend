@@ -13,23 +13,18 @@ import {
 import { ReactComponent as BNBCoin } from "assets/bnb_coin.svg";
 import { ReactComponent as BUSDCoin } from "assets/busd_coin.svg";
 import { ReactComponent as HECoin } from "assets/he_coin.svg";
-import { useState } from "react";
+import { TOKEN_INFO } from "contracts/swap";
 import { FiChevronDown } from "react-icons/fi";
 
-export enum TOKEN {
-  HE = "HE",
-  BUSD = "BUSD",
-  BNB = "BNB",
-}
 const listTokens = [
-  { token: TOKEN.HE, icon: <HECoin />, name: "Heroes & Empires" },
-  { token: TOKEN.BUSD, icon: <BUSDCoin />, name: "BUSD Token" },
-  { token: TOKEN.BNB, icon: <BNBCoin />, name: "BNB Token" },
+  { token: "HE", icon: <HECoin />, name: TOKEN_INFO["HE"].name },
+  { token: "BUSD", icon: <BUSDCoin />, name: TOKEN_INFO["BUSD"].name },
+  { token: "BNB", icon: <BNBCoin />, name: TOKEN_INFO["BNB"].name },
 ];
 
 type Props = {
-  token: TOKEN;
-  onChange: (token: TOKEN) => void;
+  token: string;
+  onChange: (token: string) => void;
 };
 
 export default function ChooseTokenButton({ token, onChange }: Props) {
@@ -40,9 +35,9 @@ export default function ChooseTokenButton({ token, onChange }: Props) {
           <MenuButton
             leftIcon={
               <Icon w={5} h={5}>
-                {token === TOKEN.HE && <HECoin />}
-                {token === TOKEN.BUSD && <BUSDCoin />}
-                {token === TOKEN.BNB && <BNBCoin />}
+                {token === "HE" && <HECoin />}
+                {token === "BUSD" && <BUSDCoin />}
+                {token === "BNB" && <BNBCoin />}
               </Icon>
             }
             rightIcon={<FiChevronDown color="gray" />}

@@ -1,3 +1,5 @@
+import numeral from "numeral";
+
 interface ContractValueParams {
   amount: number;
   decimal?: number;
@@ -25,7 +27,7 @@ const trauncateFractionAndFormat = (parts: Intl.NumberFormatPart[], digits: numb
 export const formatNumber = (num: number, digits?: number) => {
   const formatter = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 20
+    maximumFractionDigits: 20,
   });
   return trauncateFractionAndFormat(formatter.formatToParts(num), digits || 3);
 };
@@ -90,4 +92,11 @@ export const covertToContractValue = ({ amount, decimal = 18 }: ContractValuePar
   const toInteger = strVal.replace(".", "");
   const returnVal = parseInt(toInteger) * 10 ** (decimal - afterDot);
   return returnVal.toLocaleString("fullwide", { useGrouping: false });
+};
+
+export const numeralFormat = (price: number, decimal = 2) => {
+  const decimalAsString = Array(decimal).fill("0").join("");
+  const returnStr = numeral(price).format(`0,0.[${decimalAsString}]`);
+  if (returnStr === "NaN") return 0;
+  return returnStr;
 };

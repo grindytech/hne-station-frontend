@@ -9,6 +9,10 @@ export interface Configs {
   COMMUNITY_AIRDROP_CONTRACT: string;
   PROVIDER: string;
   NETWORK: any;
+  BUSD_CONTRACT: string;
+  WBNB_CONTRACT: string;
+  FACTORY_V2_CONTRACT: string;
+  ROUTER_V2_CONTRACT: string;
 }
 
 const envConfigs =
