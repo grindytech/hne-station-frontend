@@ -1,8 +1,8 @@
 import configs from "configs";
-import { BURN_ADDRESS } from "constant";
-import { convertToContractValue } from "utils/utils";
+import { BURN_ADDRESS, MAX_INT } from "constant";
+import { convertToContractValue, covertToContractValue } from "utils/utils";
 import Web3 from "web3";
-import { factoryV2Contract, getErc20Balance, routerV2Contract } from "./contracts";
+import { erc20Contract, factoryV2Contract, getErc20Balance, routerV2Contract } from "./contracts";
 
 type TokenInfo = {
   token: string;
@@ -101,6 +101,7 @@ export const getPairs = async (
   amount: number,
   bridgeToken = "BUSD"
 ): Promise<PairInfo[] | undefined> => {
+  debugger;
   let token1 = TOKEN_INFO[tk1];
   token1 = token1.isNative && token1.wrapper ? TOKEN_INFO[token1.wrapper] : token1;
   let token2 = TOKEN_INFO[tk2];
@@ -123,7 +124,7 @@ const toDecimals = (number: number, decimal = 18) => {
   return convertToContractValue({ amount: number, decimal });
 };
 
-export async function swap(
+export function swap(
   amountIn: number,
   minReceive: number,
   token1: string,
@@ -135,7 +136,7 @@ export async function swap(
 ) {
   if (token1 === "BNB") {
     const path = ["WBNB", ...route].map((token) => TOKEN_INFO[token].address);
-    return await routerV2Contract()
+    return routerV2Contract()
       .methods.swapExactETHForTokens(toDecimals(minReceive), path, to, Math.round(deadline / 1000))
       .send({
         from: from,
@@ -143,7 +144,7 @@ export async function swap(
       });
   } else if (token2 === "WBNB") {
     const path = [token1, ...route].map((token) => TOKEN_INFO[token].address);
-    return await routerV2Contract()
+    return routerV2Contract()
       .methods.swapExactTokensForETH(
         toDecimals(amountIn),
         toDecimals(minReceive),
@@ -156,7 +157,7 @@ export async function swap(
       });
   } else {
     const path = [token1, ...route].map((token) => TOKEN_INFO[token].address);
-    return await routerV2Contract()
+    return routerV2Contract()
       .methods.swapExactTokensForTokens(
         toDecimals(amountIn),
         toDecimals(minReceive),
@@ -168,4 +169,21 @@ export async function swap(
         from: from,
       });
   }
+}
+
+export async function erc20Approved(
+  amount: number,
+  token: string,
+  contract: string,
+  account: string
+) {
+  const erc20Address = TOKEN_INFO[token].address;
+  const approvePrice = covertToContractValue({ amount });
+  const allowance = await erc20Contract(erc20Address).methods.allowance(account, contract).call();
+  return allowance && Number(allowance) > Number(approvePrice);
+}
+
+export function erc20Approve(token: string, contract: string, account: string) {
+  const erc20Address = TOKEN_INFO[token].address;
+  return erc20Contract(erc20Address).methods.approve(contract, MAX_INT).send({ from: account });
 }

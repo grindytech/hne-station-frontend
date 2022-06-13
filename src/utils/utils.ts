@@ -100,3 +100,13 @@ export const numeralFormat = (price: number, decimal = 2) => {
   if (returnStr === "NaN") return 0;
   return returnStr;
 };
+
+export function numberOnly(key: string, amount: string) {
+  console.log(key);
+  return !(
+    key.match(/[\d.]/g) ||
+    (key === "." && amount.indexOf(".") >= 0) ||
+    key === "Delete" ||
+    key === "Backspace"
+  );
+}

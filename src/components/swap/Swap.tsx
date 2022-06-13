@@ -1,28 +1,21 @@
-import {
-  Button,
-  Heading,
-  HStack,
-  Icon,
-  Input,
-  Link,
-  Skeleton,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Button, Heading, HStack, Input, Link, Skeleton, Text, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import CardHeader from "components/card/CardHeader";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
+import configs from "configs";
 import { getErc20Balance, getETHBalance } from "contracts/contracts";
-import { getPairs, swap, TOKEN_INFO } from "contracts/swap";
+import { erc20Approve, erc20Approved, getPairs, swap, TOKEN_INFO } from "contracts/swap";
 import useCustomToast from "hooks/useCustomToast";
 import _ from "lodash";
 import { useCallback, useEffect, useState } from "react";
-import { FiArrowDownCircle, FiRefreshCw, FiSettings } from "react-icons/fi";
+import { FiArrowDownCircle, FiRefreshCw } from "react-icons/fi";
 import { useQuery } from "react-query";
 import { useWallet } from "use-wallet";
-import { numeralFormat } from "utils/utils";
+import { numberOnly, numeralFormat } from "utils/utils";
 import ChooseTokenButton from "./ChooseTokenButton";
+import SettingButton from "./SettingButton";
+import TxHistories, { Transaction } from "./TxHistories";
 
 export default function Swap() {
   const wallet = useWallet();
@@ -40,6 +33,10 @@ export default function Swap() {
   const [priceType, setPriceType] = useState(2);
   const [swapping, setSwapping] = useState(false);
   const toast = useCustomToast();
+  const [approving, setApproving] = useState(false);
+  const [deadlineTx, setDeadlineTx] = useState(20);
+  const [histories, setHistories] = useState<Transaction[]>([]);
+  const [refreshApprove, setRefreshApprove] = useState(0);
 
   function token1Onchange(newToken: string) {
     const newToken1 = newToken;
@@ -57,15 +54,7 @@ export default function Swap() {
     const amount = Number(amount1);
     amount1OnChange(amount - amount * fee, newToken1, newToken2);
   }
-  function numberOnly(key: string, amount: string) {
-    console.log(key);
-    return !(
-      key.match(/[\d.]/g) ||
-      (key === "." && amount.indexOf(".") >= 0) ||
-      key === "Delete" ||
-      key === "Backspace"
-    );
-  }
+
   async function getBalance(token: string, account: string) {
     let balance = 0;
     if (token === "BNB") {
@@ -89,10 +78,18 @@ export default function Swap() {
     () => getBalance(token2, String(wallet.account)),
     { enabled: !!wallet.account }
   );
+  const { data: approved, isFetching: approvedFetching } = useQuery(
+    ["approved", token1, wallet.account, refreshApprove],
+    () =>
+      token1 !== "BNB"
+        ? erc20Approved(Number(amount1), token1, configs.ROUTER_V2_CONTRACT, String(wallet.account))
+        : true,
+    { enabled: !!wallet.account }
+  );
 
-  async function amount1OnChange(amount: number, token1: string, token2: string) {
+  async function amount1OnChange(amount: number, token1: string, token2: string, loading = true) {
     try {
-      setLoading(true);
+      setLoading(loading);
       const pairInfo = await getPairs(token1, token2, amount ? amount : 1);
       if (pairInfo && pairInfo?.length > 0) {
         let price1 = 1;
@@ -122,9 +119,9 @@ export default function Swap() {
     }, 300),
     []
   );
-  async function amount2OnChange(amount: number, token1: string, token2: string) {
+  async function amount2OnChange(amount: number, token1: string, token2: string, loading = true) {
     try {
-      setLoading(true);
+      setLoading(loading);
       const pairInfo = await getPairs(token2, token1, amount ? amount : 1);
       if (pairInfo && pairInfo?.length > 0) {
         let price2 = 1;
@@ -151,31 +148,86 @@ export default function Swap() {
     }, 300),
     []
   );
-  const getMinimumReceive = useCallback(
-    () => Number(amount1) * price1 - (Number(amount1) * price1 * slippage) / 100,
-    [amount1, price1, slippage]
-  );
-  const swapOnclick = async () => {
-    try {
-      if (!wallet.account) return;
-      setSwapping(true);
-      const deadline = Date.now() + 20 * 60 * 1e3;
-      await swap(
-        Number(amount1),
-        getMinimumReceive(),
-        token1,
-        token2,
-        route,
-        wallet.account,
-        wallet.account,
-        deadline
-      );
-    } catch (error) {
-      console.error(error);
-      toast.error("Transaction fail!");
-    } finally {
-      setSwapping(false);
-    }
+  const getMinimumReceive = useCallback(() => {
+    const amount = Number(amount1) * price1;
+    return amount - amount * fee - (amount * slippage) / 100;
+  }, [amount1, fee, price1, slippage]);
+  const swapOnclick = () => {
+    const h: Transaction = {
+      amount: Number(amount1),
+      status: "pending",
+      token1: token1,
+      token2: token2,
+      txHash: "",
+      type: "swap",
+    };
+    setHistories([...histories, h]);
+    if (!wallet.account) return;
+    setSwapping(true);
+    const deadline = Date.now() + deadlineTx * 60 * 1e3;
+    swap(
+      Number(amount1),
+      getMinimumReceive(),
+      token1,
+      token2,
+      route,
+      wallet.account,
+      wallet.account,
+      deadline
+    )
+      .on("transactionHash", (hash: string) => {
+        h.txHash = hash;
+      })
+      .on("confirmation", (confNumber: number, receipt: string) => {
+        h.status = "success";
+        toast.success("Transaction success!");
+        amount1OnChange(0, token1, token2);
+      })
+      .on("error", (error: any) => {
+        if (error.code === 4001) {
+          h.status = "rejected";
+          toast.error("Transaction rejected!");
+        } else {
+          h.status = "fail";
+          toast.error("Transaction fail!");
+        }
+      })
+      .finally(() => {
+        setSwapping(false);
+      });
+  };
+  const onApprove = async () => {
+    const h: Transaction = {
+      amount: Number(amount1),
+      status: "pending",
+      token1: token1,
+      token2: token2,
+      txHash: "",
+      type: "approve",
+    };
+    setHistories([...histories, h]);
+    setApproving(true);
+    erc20Approve(token1, configs.ROUTER_V2_CONTRACT, String(wallet.account))
+      .on("transactionHash", (hash: string) => {
+        h.txHash = hash;
+      })
+      .on("confirmation", (confNumber: number, receipt: string) => {
+        h.status = "success";
+        toast.success("Transaction success!");
+        setRefreshApprove(Date.now());
+      })
+      .on("error", (error: any) => {
+        if (error.code === 4001) {
+          h.status = "rejected";
+          toast.error("Transaction rejected!");
+        } else {
+          h.status = "fail";
+          toast.error("Transaction fail!");
+        }
+      })
+      .finally(() => {
+        setApproving(false);
+      });
   };
   useEffect(() => {
     amount1OnChange(0, token1, token2);
@@ -183,10 +235,26 @@ export default function Swap() {
   return (
     <VStack spacing={5}>
       <Card flex={{ lg: 1 }} maxW={400}>
-        <CardHeader>
-          <Heading size="md" textAlign="center" width="full" mb={[10, 5]} color="primary.500">
-            Swap token
-          </Heading>
+        <CardHeader mb={[10, 5]}>
+          <HStack padding={2} w="full" justifyContent="space-between">
+            <Heading size="md" textAlign="left" width="full" color="primary.500">
+              Swap token
+            </Heading>
+            <HStack w="full" justifyContent="end">
+              <TxHistories
+                onClear={() => {
+                  setHistories([]);
+                }}
+                histories={histories}
+              />
+              <SettingButton
+                onChange={({ deadline, slippage }) => {
+                  setSlippage(slippage);
+                  setDeadlineTx(deadline);
+                }}
+              />
+            </HStack>
+          </HStack>
         </CardHeader>
         <CardBody>
           <VStack spacing={5}>
@@ -358,9 +426,6 @@ export default function Swap() {
                   <Text color="gray" fontSize="sm">
                     {slippage}%
                   </Text>
-                  <Button onClick={() => {}} variant="link" _focus={{ border: "none" }} size="sm">
-                    <FiSettings />
-                  </Button>
                 </HStack>
               </HStack>
             </VStack>
@@ -374,12 +439,23 @@ export default function Swap() {
                   <Button disabled colorScheme="primary" width="full">
                     Insufficient {token1} balance
                   </Button>
+                ) : !approved || approvedFetching ? (
+                  <Button
+                    onClick={onApprove}
+                    colorScheme="primary"
+                    width="full"
+                    isLoading={approving}
+                    disabled={approving || approvedFetching}
+                  >
+                    Approve {token1} token
+                  </Button>
                 ) : (
                   <Button
                     isLoading={swapping}
                     onClick={swapOnclick}
                     colorScheme="primary"
                     width="full"
+                    disabled={loading || swapping}
                   >
                     Swap
                   </Button>
@@ -416,7 +492,7 @@ export default function Swap() {
                   fontSize="sm"
                 >
                   <Skeleton isLoaded={!loading}>
-                    {amount1 ? numeralFormat(priceImpact, 2) : 0}%
+                    {amount1 ? (priceImpact >= 0.01 ? numeralFormat(priceImpact, 2) : "<0.01") : 0}%
                   </Skeleton>
                 </Text>
               </HStack>
