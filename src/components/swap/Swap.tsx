@@ -9,7 +9,7 @@ import { erc20Approve, erc20Approved, getPairs, swap, TOKEN_INFO } from "contrac
 import useCustomToast from "hooks/useCustomToast";
 import _ from "lodash";
 import { useCallback, useEffect, useState } from "react";
-import { FiArrowDownCircle, FiRefreshCw } from "react-icons/fi";
+import { FiArrowDownCircle, FiRefreshCw, FiRotateCw } from "react-icons/fi";
 import { useQuery } from "react-query";
 import { useWallet } from "use-wallet";
 import { numberOnly, numeralFormat } from "utils/utils";
@@ -232,6 +232,19 @@ export default function Swap() {
   useEffect(() => {
     amount1OnChange(0, token1, token2);
   }, []);
+  async function refresh() {
+    const amount = Number(amount1);
+    await amount1OnChange(amount - amount * fee, token1, token2);
+  }
+  useEffect(() => {
+    const autoRefresh = setInterval(() => {
+      const amount = Number(amount1);
+      amount1OnChange(amount - amount * fee, token1, token2, false);
+    }, 5000);
+    return () => {
+      clearInterval(autoRefresh);
+    };
+  }, [amount1, fee, token1, token2]);
   return (
     <VStack spacing={5}>
       <Card flex={{ lg: 1 }} maxW={400}>
@@ -247,6 +260,15 @@ export default function Swap() {
                 }}
                 histories={histories}
               />
+              <Link
+                onClick={refresh}
+                variant="link"
+                _focus={{ border: "none" }}
+                color="gray.500"
+                as={Link}
+              >
+                <FiRotateCw />
+              </Link>
               <SettingButton
                 onChange={({ deadline, slippage }) => {
                   setSlippage(slippage);
@@ -304,8 +326,9 @@ export default function Swap() {
                     {balance1 !== undefined && (
                       <Link
                         onClick={() => {
+                          const balance = balance1 - balance1 * fee;
                           setAmount1(String(balance1));
-                          amount1OnChange(balance1, token1, token2);
+                          amount1OnChange(balance, token1, token2);
                         }}
                         _hover={{ textDecoration: "none" }}
                         variant="unstyled"
@@ -372,8 +395,9 @@ export default function Swap() {
                     {balance2 !== undefined && (
                       <Link
                         onClick={() => {
+                          const balance = balance2 - balance2 * fee;
                           setAmount2(String(balance2));
-                          amount2OnChange(balance2, token1, token2);
+                          amount2OnChange(balance, token1, token2);
                         }}
                         _hover={{ textDecoration: "none" }}
                         variant="unstyled"

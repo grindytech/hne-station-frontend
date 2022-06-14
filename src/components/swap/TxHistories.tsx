@@ -60,8 +60,8 @@ export default function TxHistories({
                   </Button>
                 </HStack>
                 <VStack w="full" padding={5}>
-                  {histories.reverse().map((h) => (
-                    <HStack key={h.txHash} w="full" justifyContent="space-between">
+                  {[...histories].reverse().map((h, i) => (
+                    <HStack key={h.txHash ?? i} w="full" justifyContent="space-between">
                       <Link
                         target={h.txHash ? "_blank" : ""}
                         href={
