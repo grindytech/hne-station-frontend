@@ -234,7 +234,7 @@ export default function Swap() {
   }, []);
   async function refresh() {
     const amount = Number(amount1);
-    await amount1OnChange(amount - amount * fee, token1, token2);
+    amount1ChangeHandle(amount, token1, token2);
   }
   useEffect(() => {
     const autoRefresh = setInterval(() => {
@@ -326,9 +326,8 @@ export default function Swap() {
                     {balance1 !== undefined && (
                       <Link
                         onClick={() => {
-                          const balance = balance1 - balance1 * fee;
                           setAmount1(String(balance1));
-                          amount1OnChange(balance, token1, token2);
+                          amount1ChangeHandle(balance1, token1, token2);
                         }}
                         _hover={{ textDecoration: "none" }}
                         variant="unstyled"
@@ -395,9 +394,8 @@ export default function Swap() {
                     {balance2 !== undefined && (
                       <Link
                         onClick={() => {
-                          const balance = balance2 - balance2 * fee;
                           setAmount2(String(balance2));
-                          amount2OnChange(balance, token1, token2);
+                          amount2ChangeHandle(balance2, token1, token2);
                         }}
                         _hover={{ textDecoration: "none" }}
                         variant="unstyled"
@@ -536,9 +534,9 @@ export default function Swap() {
                     Route
                   </Text>
                   <Text color="gray" fontSize="sm">
-                    <Skeleton
-                      isLoaded={!loading}
-                    >{`${token1} > ${route[0]} > ${route[1]}`}</Skeleton>
+                    <Skeleton isLoaded={!loading}>{`${token1} > ${route[0]} > ${
+                      route[1] === "WBNB" ? "BNB" : route[1]
+                    }`}</Skeleton>
                   </Text>
                 </HStack>
               )}

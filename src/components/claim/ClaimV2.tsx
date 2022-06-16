@@ -77,7 +77,7 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     data: userInfo,
     isLoading: isLoadingUserInfo,
     refetch: refetchUserInfo,
-  } = useQuery(["getUserTotalAmount", account], () => getUserTotalAmount(account || ""), {
+  } = useQuery(["getUserTotalAmount2", account], () => getUserTotalAmount(account || ""), {
     enabled: isConnected(),
   });
 
@@ -86,7 +86,7 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     isLoading: isLoadingUserWithdrawnAmount,
     refetch: refetchUserWithdrawnAmount,
   } = useQuery(
-    ["getUserTotalWithdrawnAmount", account],
+    ["getUserTotalWithdrawnAmount2", account],
     () => getUserWithdrawnAmount(account || ""),
     {
       enabled: isConnected(),
@@ -127,7 +127,7 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
   });
   const { mutate: mutateOption2, isLoading: isOption2Claiming } = useMutation(claimOption2, {
     onSuccess: () => {
-      toast.success(`Claim ${formatNumber(claimableAmount)} HE successfully!`);
+      toast.success(`Claim ${formatNumber(claimableAmount2)} HE successfully!`);
       onSuccess();
     },
     onError: (error: ErrorContract) => {
@@ -195,7 +195,9 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
           </VStack>
           <ClaimableAmount
             isLoading={isLoadingClaimableAmount || isLoadingClaimableAmount2}
-            claimableAmount={option === 1 ? claimableAmount : claimableAmount2}
+            claimableAmount={
+              option === 1 ? claimableAmount : claimableAmount > 0 ? claimableAmount2 : 0
+            }
           />
         </Stack>
         {isConnected() && (
@@ -256,9 +258,9 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
               variant="outline"
               onClick={onClick}
               disabled={
-                (claimableAmount <= 0 && option === 1) ||
-                (claimableAmount2 <= 0 && option === 2) ||
-                !!(startTime && now < startTime)
+                // (claimableAmount <= 0 && option === 1) ||
+                // (claimableAmount2 <= 0 && option === 2) ||
+                claimableAmount <= 0 || !!(startTime && now < startTime)
               }
               isLoading={isClaiming || isOption2Claiming}
             >

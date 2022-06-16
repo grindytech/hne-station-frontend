@@ -21,6 +21,7 @@ import WrongNetworkPopup from "components/wrongNetwork/WrongNetworkPopup";
 import configs from "configs";
 import { web3 } from "contracts/contracts";
 import Airdrop from "pages/Airdrop";
+import HomePage from "pages/Home";
 import PrivateClaim from "pages/PrivateClaim";
 import Stake from "pages/Stake";
 import SwapPage from "pages/SwapPage";
@@ -99,7 +100,7 @@ export default function Station() {
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
-        <Container maxW="container.xl" mb={3}>
+        <Container maxW="container.lg" mb={3}>
           <WrongNetworkPopup isOpen={isOpenSwitchNetwork} onClose={onCloseSwitchNetwork} />
           {tab === "stake" ? (
             <Stake />
@@ -110,7 +111,7 @@ export default function Station() {
           ) : tab === "swap" ? (
             <SwapPage />
           ) : (
-            <>home</>
+            <HomePage />
           )}
         </Container>
       </Box>
