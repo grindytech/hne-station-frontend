@@ -12,6 +12,8 @@ import lpPool from "./lpPoolAbi.json";
 import { TOKENS_INFO } from "constant";
 import stake from "./stake.json";
 import communityAirdrop from "./communityAirdropAbi.json";
+import governance from "./governance.json";
+
 import configs from "configs";
 
 export const web3 = new Web3(new Web3.providers.HttpProvider(CONFIGS.PROVIDER));
@@ -76,4 +78,8 @@ export const getETHBalance = async (address: string) => {
 
 export const communityAirdropContract = () => {
   return new web3.eth.Contract(communityAirdrop as AbiItem[], CONFIGS.COMMUNITY_AIRDROP_CONTRACT);
+};
+
+export const governanceContract = () => {
+  return new web3.eth.Contract(governance as AbiItem[], CONFIGS.GOVERNANCE_CONTRACT);
 };

@@ -13,6 +13,8 @@ export interface Configs {
   WBNB_CONTRACT: string;
   FACTORY_V2_CONTRACT: string;
   ROUTER_V2_CONTRACT: string;
+  GOVERNANCE_CONTRACT: string;
+  API_URI: string;
 }
 
 const envConfigs =

@@ -87,6 +87,7 @@ export function cast(value: string | number, step: number, precision?: number): 
 }
 
 export const covertToContractValue = ({ amount, decimal = 18 }: ContractValueParams) => {
+  debugger;
   const strVal = "" + amount;
   const afterDot = strVal.indexOf(".") > -1 ? strVal.length - strVal.indexOf(".") - 1 : 0;
   const toInteger = strVal.replace(".", "");

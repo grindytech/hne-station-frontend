@@ -21,6 +21,7 @@ import WrongNetworkPopup from "components/wrongNetwork/WrongNetworkPopup";
 import configs from "configs";
 import { web3 } from "contracts/contracts";
 import Airdrop from "pages/Airdrop";
+import GovernancePage from "pages/Governance";
 import HomePage from "pages/Home";
 import PrivateClaim from "pages/PrivateClaim";
 import Stake from "pages/Stake";
@@ -28,6 +29,7 @@ import SwapPage from "pages/SwapPage";
 import React, { ReactText, useCallback, useEffect, useState } from "react";
 import { IconType } from "react-icons";
 import { FiArrowDownCircle, FiCompass, FiGift, FiHome, FiMenu, FiTrendingUp } from "react-icons/fi";
+import { RiGovernmentLine } from "react-icons/ri";
 import { useWallet } from "use-wallet";
 import Web3 from "web3";
 interface LinkItemProps {
@@ -38,6 +40,7 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   { key: "home", name: "Home", icon: FiHome },
   { key: "stake", name: "Stake", icon: FiTrendingUp },
+  { key: "governance", name: "Governance", icon: RiGovernmentLine },
   { key: "private-claim", name: "Strategic Partnerships", icon: FiCompass },
   { key: "airdrop", name: "Airdrop", icon: FiGift },
   { key: "swap", name: "Swap", icon: FiArrowDownCircle },
@@ -110,6 +113,8 @@ export default function Station() {
             <Airdrop />
           ) : tab === "swap" ? (
             <SwapPage />
+          ) : tab === "governance" ? (
+            <GovernancePage />
           ) : (
             <HomePage />
           )}
