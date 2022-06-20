@@ -90,7 +90,12 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "string", "name": "proposalID", "type": "string" }
+      { "indexed": false, "internalType": "string", "name": "proposalID", "type": "string" },
+      { "indexed": false, "internalType": "address", "name": "proposer", "type": "address" },
+      { "indexed": false, "internalType": "string", "name": "title", "type": "string" },
+      { "indexed": false, "internalType": "string", "name": "description", "type": "string" },
+      { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "blockTime", "type": "uint256" }
     ],
     "name": "newProposal",
     "type": "event"
@@ -356,7 +361,7 @@
     "inputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "name": "proposal",
     "outputs": [
-      { "internalType": "address", "name": "owner", "type": "address" },
+      { "internalType": "address", "name": "proposer", "type": "address" },
       { "internalType": "string", "name": "title", "type": "string" },
       { "internalType": "string", "name": "description", "type": "string" },
       { "internalType": "uint256", "name": "initial", "type": "uint256" },

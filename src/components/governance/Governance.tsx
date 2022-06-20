@@ -2,6 +2,7 @@ import { Button, ButtonGroup, Tab, TabList, TabPanel, TabPanels, Tabs } from "@c
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { ProposalStatus } from "services/types/ProposalStatus";
 import { Proposals } from "./Proposals";
 import { SystemInfo } from "./SystemInfo";
@@ -19,6 +20,9 @@ export default function Governance() {
               }}
               variant={status === ProposalStatus.Voting ? "outline" : "ghost"}
               colorScheme="primary"
+              to="#voting"
+              id="voting"
+              as={Link}
             >
               Voting
             </Button>
@@ -28,6 +32,9 @@ export default function Governance() {
               }}
               variant={status === ProposalStatus.Deposit ? "outline" : "ghost"}
               colorScheme="primary"
+              to="#deposit"
+              id="deposit"
+              as={Link}
             >
               Deposit
             </Button>
@@ -37,6 +44,9 @@ export default function Governance() {
               }}
               variant={status === ProposalStatus.Passed ? "outline" : "ghost"}
               colorScheme="primary"
+              to="#passed"
+              id="passed"
+              as={Link}
             >
               Passed
             </Button>
@@ -46,6 +56,9 @@ export default function Governance() {
               }}
               variant={status === ProposalStatus.Failed ? "outline" : "ghost"}
               colorScheme="primary"
+              to="#rejected"
+              id="rejected"
+              as={Link}
             >
               Rejected
             </Button>

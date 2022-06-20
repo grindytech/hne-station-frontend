@@ -23,7 +23,7 @@ const configs: Configs = {
   WBNB_CONTRACT: "",
   FACTORY_V2_CONTRACT: "",
   ROUTER_V2_CONTRACT: "",
-  GOVERNANCE_CONTRACT: "0x92792e7d310e9c3EED578fE1335116dCfeC21fcc",
+  GOVERNANCE_CONTRACT: "0x4af07235A2166311D297dE2267f2D2C938328fD2",
   API_URI: "https://mpapi-testnet.heroesempires.com/station/",
 };
 export default configs;

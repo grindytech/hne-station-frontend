@@ -6,7 +6,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";
 import { theme } from "theme";
 import { UseWalletProvider } from "use-wallet";
-import Home from "./Station";
+import Station from "./Home";
+import Home from "./Home";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,7 +39,7 @@ export const App = () => (
           autoConnect
         >
           <BrowserRouter>
-            <Home />
+            <Station />
           </BrowserRouter>
         </UseWalletProvider>
       </ErrorBoundary>
