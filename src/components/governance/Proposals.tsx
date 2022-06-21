@@ -1,23 +1,23 @@
-import { Box, HStack, Stack, Text, VStack } from "@chakra-ui/react";
+import { Box, HStack, Stack, Text, Tooltip, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import CardHeader from "components/card/CardHeader";
 import Paginator from "components/paging/Paginator";
 import EmptyState from "components/state/EmptyState";
 import Loading from "components/state/Loading";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { governanceService } from "services/governance";
 import { Pagination } from "services/types/Pagination";
 import { Proposal } from "services/types/Proposal";
 import { ProposalStatus } from "services/types/ProposalStatus";
-import { SystemInfo } from "./SystemInfo";
+import { formatDate } from "utils/utils";
 
 function ProposalItem({ proposal }: { proposal: Proposal }) {
   return (
     <Link to={`/proposal/${proposal.proposalID}`}>
-      <Card width="full" borderWidth={1} _hover={{ borderColor: "primary.300", cursor: "pointer" }}>
+      <Card width="full" h="full" borderWidth={1} _hover={{ borderColor: "primary.300", cursor: "pointer" }}>
         <CardHeader>
           <HStack mb={2} justifyContent="space-between" w="full">
             <Text fontSize="sm" color="primary.500" colorScheme="primary">
@@ -33,9 +33,11 @@ function ProposalItem({ proposal }: { proposal: Proposal }) {
             <Text fontSize="lg" color="primary.600">
               {proposal.title}
             </Text>
-            <Text fontSize="sm" color="primary.500" colorScheme="primary">
-              {formatDistanceToNow(new Date(proposal.createdAt), { addSuffix: true })}
-            </Text>
+            <Tooltip label={formatDate(new Date(proposal.createdAt))}>
+              <Text fontSize="sm" color="primary.500" colorScheme="primary">
+                {formatDistanceToNow(new Date(proposal.createdAt), { addSuffix: true })}
+              </Text>
+            </Tooltip>
           </VStack>
         </CardBody>
       </Card>

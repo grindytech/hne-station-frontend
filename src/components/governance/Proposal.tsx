@@ -1,14 +1,17 @@
-import { Box, Heading, HStack, Stack, Text, VStack } from "@chakra-ui/react";
+import { Box, Heading, HStack, Stack, Text, Tooltip, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import Loading from "components/state/Loading";
-import { formatDistanceToNow } from "date-fns";
+import { getProposal } from "contracts/governance";
+import { format, formatDistanceToNow } from "date-fns";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import { governanceService } from "services/governance";
 import { ProposalStatus } from "services/types/ProposalStatus";
+import { formatDate } from "utils/utils";
+import { ConfigVoteInfo } from "./ConfigVoteInfo";
 import Deposit from "./Deposit";
 import Depositors from "./Depositors";
+import { Vote } from "./Votes";
 
 export default function ProposalDetail() {
   const { proposalId } = useParams();
@@ -16,10 +19,11 @@ export default function ProposalDetail() {
   const { data: proposal, isRefetching: proposalRefetching } = useQuery(
     ["getProposal", proposalId],
     async () => {
-      const proposals = await governanceService.getProposals({ proposalId: proposalId });
-      if (proposals && proposals?.items.length > 0) {
-        return proposals.items[0];
-      }
+      // const proposals = await governanceService.getProposals({ proposalId: proposalId });
+      // if (proposals && proposals?.items.length > 0) {
+      //   return proposals.items[0];
+      // }
+      return await getProposal(String(proposalId));
     },
     { enabled: !!proposalId }
   );
@@ -39,7 +43,7 @@ export default function ProposalDetail() {
                 <VStack spacing={3} w="full" align="start">
                   <HStack justifyContent="space-between" w="full">
                     <Text fontSize="sm" color="primary.500" colorScheme="primary">
-                      {proposal?.proposalID}
+                      {proposalId}
                     </Text>
                     <Text fontSize="sm" fontWeight="semibold" color="primary.300">
                       {proposal?.status && ProposalStatus[proposal?.status]}
@@ -49,12 +53,14 @@ export default function ProposalDetail() {
                     <Text fontSize="lg" color="primary.600">
                       {proposal?.title}
                     </Text>
-                    <Text fontSize="sm" color="primary.500" colorScheme="primary">
-                      {proposal?.createdAt &&
-                        formatDistanceToNow(new Date(proposal?.createdAt), {
-                          addSuffix: true,
-                        })}
-                    </Text>
+                    <Tooltip label={formatDate(Number(proposal?.blockTime) * 1e3)}>
+                      <Text fontSize="sm" color="primary.500" colorScheme="primary">
+                        {proposal?.blockTime &&
+                          formatDistanceToNow(new Date(proposal.blockTime * 1e3), {
+                            addSuffix: true,
+                          })}
+                      </Text>
+                    </Tooltip>
                   </VStack>
                   <Text fontSize="md" color="primary.500">
                     {proposal?.description}
@@ -62,21 +68,28 @@ export default function ProposalDetail() {
                 </VStack>
               </CardBody>
             </Card>
-            {Number(proposal?.status) === Number(ProposalStatus.Deposit) && (
+            {Number(proposal?.status) === Number(ProposalStatus.Deposit) ||
+            Number(proposal?.status) === Number(ProposalStatus.Pending) ? (
               <Stack direction={{ md: "row", sm: "column" }} spacing={5} w="full">
                 <Box minW={300}>
                   <Deposit
                     loading={proposalRefetching}
-                    endDeposit={new Date(proposal?.endDeposit ?? 0)}
-                    deposited={Number(proposal?.deposit)}
+                    endDeposit={
+                      proposal?.endDeposit && Number(proposal?.endDeposit) > 0
+                        ? new Date(proposal?.endDeposit)
+                        : undefined
+                    }
+                    deposited={Number(proposal?.deposit) / 1e18}
                   />
                 </Box>
                 <Box w="full" h="full">
-                  <Depositors proposalId={proposal?.proposalID} />
+                  <Depositors proposalId={proposalId} />
                 </Box>
               </Stack>
+            ) : (
+              <VStack w="full">{proposal && <Vote proposal={proposal} />}</VStack>
             )}
-            {Number(proposal?.status) !== Number(ProposalStatus.Deposit) && <>x</>}
+            <ConfigVoteInfo />
           </VStack>
         )}
       </Stack>

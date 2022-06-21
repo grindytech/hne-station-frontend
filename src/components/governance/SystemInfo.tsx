@@ -1,10 +1,10 @@
-import { HStack, Skeleton, Text, VStack } from "@chakra-ui/react";
+import { HStack, Skeleton, Text, Tooltip, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import { durationDeposit, durationVote, minDeposit } from "contracts/governance";
-import { formatDistance } from "date-fns";
+import { format, formatDistance } from "date-fns";
 import { useQuery } from "react-query";
-import { formatNumber } from "utils/utils";
+import { formatDate, formatNumber } from "utils/utils";
 
 export function SystemInfo() {
   const { data: minimumDeposit, isFetching: minDepositFetching } = useQuery(

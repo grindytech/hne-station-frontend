@@ -1,5 +1,5 @@
 export enum ProposalStatus {
-  Init = 1,
+  Pending = 1,
   RejectedByAdmin = 2,
   Deposit = 3,
   Rejected = 4,

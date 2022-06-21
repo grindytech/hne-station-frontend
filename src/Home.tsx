@@ -16,6 +16,7 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
+import NewProposal from "components/governance/NewProposal";
 import Proposal from "components/governance/Proposal";
 import { SidebarContent as NavbarContent } from "components/Sidebar";
 import WrongNetworkPopup from "components/wrongNetwork/WrongNetworkPopup";
@@ -101,6 +102,7 @@ export default function Station() {
             <Route path="/swap" element={<SwapPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/governance" element={<GovernancePage />} />
+            <Route path="/proposal/new" element={<NewProposal />} />
             <Route path="/proposal/:proposalId" element={<Proposal />} />
           </Routes>
         </Container>

@@ -1,19 +1,19 @@
+import { Box, HStack, Icon, Tag, Text, Tooltip, VStack } from "@chakra-ui/react";
 import React, { useMemo } from "react";
-import { Box, HStack, Icon, Tag, Text, VStack } from "@chakra-ui/react";
 
+import { ReactComponent as HEIcon } from "assets/he_coin.svg";
 import Card from "components/card/Card";
 import CardHeader from "components/card/CardHeader";
-import { useQuery } from "react-query";
-import { getUserPendingClaim, getUserPendingWithdraw } from "contracts/stake";
-import { useWallet } from "use-wallet";
 import {
   pendingClaimQueryKey,
   pendingWithdrawQueryKey,
 } from "components/stake/withdrawal/Withdrawal";
-import { isEmpty } from "lodash";
-import { ReactComponent as HEIcon } from "assets/he_coin.svg";
-import { formatNumber } from "utils/utils";
+import { getUserPendingClaim, getUserPendingWithdraw } from "contracts/stake";
 import { formatDistanceToNow } from "date-fns/esm";
+import { isEmpty } from "lodash";
+import { useQuery } from "react-query";
+import { useWallet } from "use-wallet";
+import { formatDate, formatNumber } from "utils/utils";
 
 interface Props {
   isHideNumbers: boolean;
@@ -86,9 +86,11 @@ const History: React.FC<Props> = ({ isHideNumbers }) => {
                 {type === 0 ? "withdraw" : "claim"}
               </Tag>
             </Box>
-            <Text flex={1} fontSize="sm" color="gray.500" textAlign="right">
-              {formatDistanceToNow(withdrawTime, { addSuffix: true })}
-            </Text>
+            <Tooltip label={formatDate(withdrawTime)}>
+              <Text flex={1} fontSize="sm" color="gray.500" textAlign="right">
+                {formatDistanceToNow(withdrawTime, { addSuffix: true })}
+              </Text>
+            </Tooltip>
           </HStack>
         ))}
       </VStack>

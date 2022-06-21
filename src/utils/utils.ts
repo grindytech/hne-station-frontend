@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import numeral from "numeral";
 
 interface ContractValueParams {
@@ -110,4 +111,38 @@ export function numberOnly(key: string, amount: string) {
     key === "Delete" ||
     key === "Backspace"
   );
+}
+
+var htmlEntities: any = {
+  nbsp: " ",
+  cent: "¢",
+  pound: "£",
+  yen: "¥",
+  euro: "€",
+  copy: "©",
+  reg: "®",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  amp: "&",
+  apos: "'",
+};
+
+export function unescapeHTML(str: string) {
+  return str.replace(/\\&([^;]+);/g, function (entity, entityCode) {
+    var match;
+    if (entityCode in htmlEntities) {
+      return htmlEntities[entityCode];
+    } else if ((match = entityCode.match(/^#x([\da-fA-F]+)$/))) {
+      return String.fromCharCode(parseInt(match[1], 16));
+    } else if ((match = entityCode.match(/^#(\d+)$/))) {
+      return String.fromCharCode(~~match[1]);
+    } else {
+      return entity;
+    }
+  });
+}
+
+export function formatDate(date?: number | Date) {
+  return date ? format(date, "MM/dd/yyyy, HH:mm:ss") : "";
 }

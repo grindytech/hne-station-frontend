@@ -6,7 +6,7 @@ const configs: Configs = {
   HE_CONTRACT: "0xf4a904478dB17d9145877bCF95F47C92FeC5eA8d",
   PROVIDER: "https://data-seed-prebsc-1-s1.binance.org:8545/",
   HE_CLAIM_PRIVATE_CONTRACT_V2: "0xAc0e209b0Fb0A1b73b7358E04C18ba3D86ec8b40",
-  HE_STAKE_CONTRACT: "0x051f88F73A7ea43c410Ae56a83e518Ba3b04F8Bc",
+  HE_STAKE_CONTRACT: "0x33707798e5118EED72766afE566423BCBeaf937b",
   NETWORK: {
     chainId: Web3.utils.numberToHex(97),
     rpcUrls: ["https://data-seed-prebsc-2-s1.binance.org:8545/"],
@@ -23,7 +23,7 @@ const configs: Configs = {
   WBNB_CONTRACT: "",
   FACTORY_V2_CONTRACT: "",
   ROUTER_V2_CONTRACT: "",
-  GOVERNANCE_CONTRACT: "0x4af07235A2166311D297dE2267f2D2C938328fD2",
+  GOVERNANCE_CONTRACT: "0x757ef180DF1fE2d33919C74CA2Ef22c8dda917CA",
   API_URI: "https://mpapi-testnet.heroesempires.com/station/",
 };
 export default configs;

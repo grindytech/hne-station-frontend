@@ -11,7 +11,7 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "string", "name": "proposalID", "type": "string" },
+      { "indexed": false, "internalType": "uint256", "name": "proposalID", "type": "uint256" },
       { "indexed": false, "internalType": "uint256", "name": "status", "type": "uint256" }
     ],
     "name": "ActiveProposal",
@@ -40,7 +40,7 @@
     "anonymous": false,
     "inputs": [
       { "indexed": false, "internalType": "address", "name": "owner", "type": "address" },
-      { "indexed": false, "internalType": "string", "name": "proposalID", "type": "string" },
+      { "indexed": false, "internalType": "uint256", "name": "proposalID", "type": "uint256" },
       { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" },
       { "indexed": false, "internalType": "uint256", "name": "blockTime", "type": "uint256" }
     ],
@@ -90,7 +90,7 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "string", "name": "proposalID", "type": "string" },
+      { "indexed": false, "internalType": "uint256", "name": "proposalID", "type": "uint256" },
       { "indexed": false, "internalType": "address", "name": "proposer", "type": "address" },
       { "indexed": false, "internalType": "string", "name": "title", "type": "string" },
       { "indexed": false, "internalType": "string", "name": "description", "type": "string" },
@@ -143,7 +143,7 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "string", "name": "proposalID", "type": "string" },
+      { "indexed": false, "internalType": "uint256", "name": "proposalID", "type": "uint256" },
       { "indexed": false, "internalType": "address", "name": "owner", "type": "address" },
       { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" },
       { "indexed": false, "internalType": "uint256", "name": "status", "type": "uint256" },
@@ -155,7 +155,7 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "string", "name": "proposalID", "type": "string" },
+      { "indexed": false, "internalType": "uint256", "name": "proposalID", "type": "uint256" },
       { "indexed": false, "internalType": "address", "name": "owner", "type": "address" },
       { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" },
       { "indexed": false, "internalType": "uint256", "name": "blockTime", "type": "uint256" }
@@ -165,7 +165,7 @@
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "_proposalID", "type": "string" },
+      { "internalType": "uint256", "name": "_proposalID", "type": "uint256" },
       { "internalType": "uint256", "name": "_status", "type": "uint256" }
     ],
     "name": "activeDeposit",
@@ -189,7 +189,6 @@
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "_proposalID", "type": "string" },
       { "internalType": "string", "name": "_title", "type": "string" },
       { "internalType": "string", "name": "_description", "type": "string" }
     ],
@@ -200,7 +199,7 @@
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "_proposalID", "type": "string" },
+      { "internalType": "uint256", "name": "_proposalID", "type": "uint256" },
       { "internalType": "uint256", "name": "_amount", "type": "uint256" }
     ],
     "name": "deposit",
@@ -214,7 +213,7 @@
       { "internalType": "uint256", "name": "", "type": "uint256" }
     ],
     "name": "depositByAddress",
-    "outputs": [{ "internalType": "string", "name": "proposalID", "type": "string" }],
+    "outputs": [{ "internalType": "uint256", "name": "proposalID", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -289,7 +288,7 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "string", "name": "_proposalID", "type": "string" }],
+    "inputs": [{ "internalType": "uint256", "name": "_proposalID", "type": "uint256" }],
     "name": "executeProposal",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "nonpayable",
@@ -312,7 +311,7 @@
   {
     "inputs": [
       { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "string", "name": "", "type": "string" }
+      { "internalType": "uint256", "name": "", "type": "uint256" }
     ],
     "name": "mapDeposits",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
@@ -322,7 +321,7 @@
   {
     "inputs": [
       { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "string", "name": "", "type": "string" }
+      { "internalType": "uint256", "name": "", "type": "uint256" }
     ],
     "name": "mapVotes",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
@@ -358,30 +357,23 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "proposal",
     "outputs": [
       { "internalType": "address", "name": "proposer", "type": "address" },
       { "internalType": "string", "name": "title", "type": "string" },
       { "internalType": "string", "name": "description", "type": "string" },
-      { "internalType": "uint256", "name": "initial", "type": "uint256" },
       { "internalType": "uint256", "name": "deposit", "type": "uint256" },
       { "internalType": "uint256", "name": "status", "type": "uint256" },
       { "internalType": "uint256", "name": "votesPassed", "type": "uint256" },
       { "internalType": "uint256", "name": "votesFail", "type": "uint256" },
       { "internalType": "uint256", "name": "votesVeto", "type": "uint256" },
+      { "internalType": "uint256", "name": "totalStake", "type": "uint256" },
       { "internalType": "uint256", "name": "start", "type": "uint256" },
       { "internalType": "uint256", "name": "endDeposit", "type": "uint256" },
       { "internalType": "uint256", "name": "endVote", "type": "uint256" },
       { "internalType": "uint256", "name": "blockTime", "type": "uint256" }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "name": "proposalid",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -409,7 +401,7 @@
   {
     "inputs": [
       { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "string", "name": "", "type": "string" },
+      { "internalType": "uint256", "name": "", "type": "uint256" },
       { "internalType": "uint256", "name": "", "type": "uint256" }
     ],
     "name": "statusVotes",
@@ -447,7 +439,7 @@
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "_proposalID", "type": "string" },
+      { "internalType": "uint256", "name": "_proposalID", "type": "uint256" },
       { "internalType": "uint256", "name": "_amount", "type": "uint256" },
       { "internalType": "uint256", "name": "_vote", "type": "uint256" }
     ],
@@ -462,14 +454,14 @@
       { "internalType": "uint256", "name": "", "type": "uint256" }
     ],
     "name": "voteByAddress",
-    "outputs": [{ "internalType": "string", "name": "proposalID", "type": "string" }],
+    "outputs": [{ "internalType": "uint256", "name": "proposalID", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "string", "name": "", "type": "string" }
+      { "internalType": "uint256", "name": "", "type": "uint256" }
     ],
     "name": "withdrawID",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
@@ -477,7 +469,7 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "string", "name": "_proposalID", "type": "string" }],
+    "inputs": [{ "internalType": "uint256", "name": "_proposalID", "type": "uint256" }],
     "name": "withdrawal",
     "outputs": [],
     "stateMutability": "nonpayable",

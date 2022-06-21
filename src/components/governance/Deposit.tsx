@@ -4,15 +4,16 @@ import {
   HStack,
   Skeleton,
   Text,
+  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import CardHeader from "components/card/CardHeader";
 import { minDeposit } from "contracts/governance";
-import { formatDistance } from "date-fns";
+import { format, formatDistance } from "date-fns";
 import { useQuery } from "react-query";
-import { numeralFormat } from "utils/utils";
+import { formatDate, numeralFormat } from "utils/utils";
 
 export default function Deposit({
   deposited,
@@ -20,7 +21,7 @@ export default function Deposit({
   loading,
 }: {
   deposited: number;
-  endDeposit: Date;
+  endDeposit?: Date;
   loading: boolean;
 }) {
   const { data: minimumDeposit, isFetching: minDepositFetching } = useQuery(
@@ -37,7 +38,7 @@ export default function Deposit({
         </Text>
       </CardHeader>
       <CardBody>
-        <VStack w='full' alignItems="center">
+        <VStack w="full" alignItems="center">
           <Skeleton isLoaded={!minDepositFetching}>
             <CircularProgress
               size="40"
@@ -65,9 +66,13 @@ export default function Deposit({
                 Deposit end time
               </Text>
               <Skeleton isLoaded={!loading}>
-                <Text fontSize="xs" color="primary.500">
-                  {formatDistance(Date.now(), endDeposit, { includeSeconds: false })}
-                </Text>
+                <Tooltip label={formatDate(endDeposit)}>
+                  <Text fontSize="xs" color="primary.500">
+                    {endDeposit
+                      ? formatDistance(Date.now(), endDeposit, { includeSeconds: false })
+                      : "--"}
+                  </Text>
+                </Tooltip>
               </Skeleton>
             </VStack>
           </HStack>
