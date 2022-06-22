@@ -25,5 +25,6 @@ const configs: Configs = {
   ROUTER_V2_CONTRACT: "0x10ED43C718714eb63d5aA57B78B54704E256024E",
   GOVERNANCE_CONTRACT: "",
   API_URI: "",
+  BSC_SCAN: "https://bscscan.com",
 };
 export default configs;

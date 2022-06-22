@@ -62,13 +62,13 @@ export function Vote({ proposal }: Props) {
                 padding={[2, 5]}
                 borderRadius="15"
                 border="1px"
-                borderColor="primary.500"
+                borderColor="blue.500"
               >
                 <Text fontSize="sm" fontWeight="semibold" color="primary.500">
                   Yes
                 </Text>
                 <Text fontSize="md" color="primary.400">
-                  {(proposal.votesPassed / 1e18 / (totalVotes() || 1)) * 100}%
+                  {numeralFormat((proposal.votesPassed / 1e18 / (totalVotes() || 1)) * 100)}%
                 </Text>
                 <Text fontSize="sm" color="primary.500">
                   {numeralFormat(proposal.votesPassed / 1e18)}
@@ -85,7 +85,7 @@ export function Vote({ proposal }: Props) {
                   No
                 </Text>
                 <Text fontSize="md" color="primary.400">
-                  {(proposal.votesFail / 1e18 / (totalVotes() || 1)) * 100}%
+                  {numeralFormat((proposal.votesFail / 1e18 / (totalVotes() || 1)) * 100)}%
                 </Text>
                 <Text fontSize="sm" color="primary.500">
                   {numeralFormat(proposal.votesFail / 1e18)}
@@ -102,7 +102,7 @@ export function Vote({ proposal }: Props) {
                   No with veto
                 </Text>
                 <Text fontSize="md" color="primary.400">
-                  {(proposal.votesVeto / 1e18 / (totalVotes() || 1)) * 100}%
+                  {numeralFormat((proposal.votesVeto / 1e18 / (totalVotes() || 1)) * 100)}%
                 </Text>
                 <Text fontSize="sm" color="primary.500">
                   {numeralFormat(proposal.votesVeto / 1e18)}
@@ -113,13 +113,19 @@ export function Vote({ proposal }: Props) {
           <VStack w="full">
             <MultiProgress mt={10} bgColor="gray.100" h="10px" w="full">
               <ProgressBar
-                color="primary.400"
-                value={(proposal.votesPassed / totalVotes()) * 100}
+                color="blue.400"
+                value={(proposal.votesPassed / 1e18 / totalVotes()) * 100}
               />
-              <ProgressBar color="red.400" value={(proposal.votesFail / totalVotes()) * 100} />
-              <ProgressBar color="orange.400" value={(proposal.votesVeto / totalVotes()) * 100} />
+              <ProgressBar
+                color="red.400"
+                value={(proposal.votesFail / 1e18 / totalVotes()) * 100}
+              />
+              <ProgressBar
+                color="orange.400"
+                value={(proposal.votesVeto / 1e18 / totalVotes()) * 100}
+              />
               <ProgressLabel
-                color="primary.400"
+                color="blue.500"
                 label="Pass threshold"
                 left={thresholdPassed / 10}
               />
@@ -134,7 +140,7 @@ export function Vote({ proposal }: Props) {
                 {numeralFormat(totalVotes())}/{numeralFormat(Number(totalStake))}
               </Text>
             </HStack>
-            {Number(proposal?.endVote) && (
+            {/* {Number(proposal?.endVote) && (
               <HStack w="full">
                 <Tooltip label={formatDate(Number(proposal.endVote) * 1000)}>
                   <Text fontSize="sm" color="primary.500">
@@ -146,7 +152,7 @@ export function Vote({ proposal }: Props) {
                   </Text>
                 </Tooltip>
               </HStack>
-            )}
+            )} */}
           </VStack>
         </VStack>
       </CardBody>

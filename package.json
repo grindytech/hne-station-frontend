@@ -17,6 +17,8 @@
     "@types/react-dom": "^16.9.0",
     "date-fns": "^2.27.0",
     "framer-motion": "^4.0.0",
+    "linkify-string": "^3.0.4",
+    "linkifyjs": "^3.0.5",
     "lodash": "^4.17.21",
     "numeral": "^2.0.6",
     "react": "^17.0.2",
@@ -27,7 +29,6 @@
     "react-query": "^3.39.1",
     "react-router-dom": "^6.1.1",
     "react-scripts": "4.0.3",
-    "shortid": "^2.2.16",
     "typescript": "^4.3.5",
     "use-wallet": "^0.13.4",
     "web-vitals": "^0.2.2",
@@ -60,7 +61,6 @@
     ]
   },
   "devDependencies": {
-    "@types/numeral": "^2.0.2",
-    "@types/shortid": "^0.0.29"
+    "@types/numeral": "^2.0.2"
   }
 }

@@ -1,4 +1,5 @@
 import { ProposalStatus } from "services/types/ProposalStatus";
+import { VoteType } from "services/types/VoteType";
 import { governanceContract } from "./contracts";
 
 export type ProposalOnchain = {
@@ -57,4 +58,21 @@ export async function createProposal(title: string, description: string, account
 
 export async function getProposal(proposalId: string): Promise<ProposalOnchain> {
   return await governanceContract().methods.proposal(proposalId).call();
+}
+
+export async function depositProposal(proposalId: string, amount: string, account: string) {
+  await governanceContract().methods.deposit(proposalId, amount).send({ from: account });
+}
+
+export async function getVoted(proposalId: string, account: string): Promise<ProposalOnchain> {
+  const voted = await governanceContract().methods.mapVotes(account, proposalId).call();
+  return voted;
+}
+
+export async function vote(proposalId: string, amount: string, vote: VoteType, account: string) {
+  await governanceContract().methods.vote(proposalId, amount, vote).send({ from: account });
+}
+
+export async function activeDeposit(proposalId: string, status: ProposalStatus, account: string) {
+  await governanceContract().methods.activeDeposit(proposalId, status).send({ from: account });
 }

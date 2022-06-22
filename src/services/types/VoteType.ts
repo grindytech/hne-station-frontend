@@ -1,5 +1,5 @@
 export enum VoteType {
-  Pass = 1,
-  Fail = 2,
-  Veto = 3,
+  Pass = 6,
+  Fail = 7,
+  Veto = 8,
 }

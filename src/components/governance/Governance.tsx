@@ -1,23 +1,41 @@
-import { Button, ButtonGroup, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Button, ButtonGroup, Icon } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { isAdmin } from "contracts/governance";
+import { useIsAdmin } from "hooks/useIsAdmin";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { ProposalStatus } from "services/types/ProposalStatus";
+import { useWallet } from "use-wallet";
 import { Proposals } from "./Proposals";
 import { SystemInfo } from "./SystemInfo";
+import { GrUserAdmin} from 'react-icons/gr'
 
 export default function Governance() {
   const [status, setStatus] = useState(ProposalStatus.Voting);
+  const { hash } = useLocation();
+  const { account, isConnected } = useWallet();
+  const { admin, adminLoading } = useIsAdmin({ enabled: isConnected(), key: String(account) });
+  useEffect(() => {
+    const section = String(hash).substring(1);
+    if (section === "deposit") {
+      setStatus(ProposalStatus.Deposit);
+    } else if (section === "passed") {
+      setStatus(ProposalStatus.Passed);
+    } else if (section === "rejected") {
+      setStatus(ProposalStatus.Failed);
+    } else if (section === "pending") {
+      setStatus(ProposalStatus.Pending);
+    } else {
+      setStatus(ProposalStatus.Voting);
+    }
+  }, [hash]);
   return (
     <>
       <Card>
         <CardBody>
           <ButtonGroup gap="4">
             <Button
-              onClick={() => {
-                setStatus(ProposalStatus.Voting);
-              }}
               variant={status === ProposalStatus.Voting ? "outline" : "ghost"}
               colorScheme="primary"
               to="#voting"
@@ -27,9 +45,6 @@ export default function Governance() {
               Voting
             </Button>
             <Button
-              onClick={() => {
-                setStatus(ProposalStatus.Deposit);
-              }}
               variant={status === ProposalStatus.Deposit ? "outline" : "ghost"}
               colorScheme="primary"
               to="#deposit"
@@ -39,9 +54,6 @@ export default function Governance() {
               Deposit
             </Button>
             <Button
-              onClick={() => {
-                setStatus(ProposalStatus.Passed);
-              }}
               variant={status === ProposalStatus.Passed ? "outline" : "ghost"}
               colorScheme="primary"
               to="#passed"
@@ -51,9 +63,6 @@ export default function Governance() {
               Passed
             </Button>
             <Button
-              onClick={() => {
-                setStatus(ProposalStatus.Failed);
-              }}
               variant={status === ProposalStatus.Failed ? "outline" : "ghost"}
               colorScheme="primary"
               to="#rejected"
@@ -62,10 +71,22 @@ export default function Governance() {
             >
               Rejected
             </Button>
+            {admin && !adminLoading && (
+              <Button
+                leftIcon={<Icon as={GrUserAdmin} />}
+                variant={status === ProposalStatus.Pending ? "outline" : "ghost"}
+                colorScheme="primary"
+                to="#pending"
+                id="pending"
+                as={Link}
+              >
+                Pending
+              </Button>
+            )}
           </ButtonGroup>
         </CardBody>
       </Card>
-      <Proposals status={status} />
+      <Proposals key={`proposals-${status}`} status={status} />
       <SystemInfo />
     </>
   );

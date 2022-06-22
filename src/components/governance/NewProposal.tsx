@@ -76,7 +76,7 @@ export default function NewProposal() {
   const createProposalHandle = async () => {
     try {
       setLoading(true);
-       await createProposal(String(title), String(description), String(account));
+      await createProposal(String(title), String(description), String(account));
       toast.success(`Proposal created successfully`);
     } catch (error) {
       console.error(error);
@@ -99,7 +99,7 @@ export default function NewProposal() {
       setApproving(true);
       await erc20Approve("HE", configs.GOVERNANCE_CONTRACT, String(account));
       await refetchApproved();
-      toast.success("Transaction successfully");
+      toast.success("Approve successfully");
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");
@@ -136,7 +136,7 @@ export default function NewProposal() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 color="primary.500"
-                maxLength={200}
+                maxLength={150}
                 id="title"
                 type="text"
               />
@@ -151,7 +151,7 @@ export default function NewProposal() {
                 onChange={(e) => setDescription(e.target.value)}
                 h="xs"
                 color="primary.500"
-                maxLength={1000}
+                maxLength={500}
                 id="description"
               />
               <FormErrorMessage>{descriptionError}</FormErrorMessage>

@@ -53,7 +53,9 @@ export function SystemInfo() {
             <Text fontSize="sm" color="primary.500">
               <Skeleton isLoaded={!durationVoteFetching}>
                 {votePeriod &&
-                  formatDistance(0, Number(votePeriod) * 1000, { includeSeconds: false })}
+                  formatDistance(0, Number(votePeriod) * 1000, {
+                    includeSeconds: false,
+                  })}
               </Skeleton>
             </Text>
           </VStack>

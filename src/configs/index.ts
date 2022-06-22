@@ -1,5 +1,5 @@
-import TestnetConfigs from "./testnet";
 import MainnetConfigs from "./mainnet";
+import TestnetConfigs from "./testnet";
 
 export interface Configs {
   HE_CLAIM_PRIVATE_CONTRACT: string;
@@ -15,6 +15,7 @@ export interface Configs {
   ROUTER_V2_CONTRACT: string;
   GOVERNANCE_CONTRACT: string;
   API_URI: string;
+  BSC_SCAN: string;
 }
 
 const envConfigs =

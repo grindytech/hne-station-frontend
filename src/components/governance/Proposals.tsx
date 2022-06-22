@@ -14,10 +14,15 @@ import { Proposal } from "services/types/Proposal";
 import { ProposalStatus } from "services/types/ProposalStatus";
 import { formatDate } from "utils/utils";
 
-function ProposalItem({ proposal }: { proposal: Proposal }) {
+export function ProposalItem({ proposal }: { proposal: Proposal }) {
   return (
     <Link to={`/proposal/${proposal.proposalID}`}>
-      <Card width="full" h="full" borderWidth={1} _hover={{ borderColor: "primary.300", cursor: "pointer" }}>
+      <Card
+        width="full"
+        h="full"
+        borderWidth={1}
+        _hover={{ borderColor: "primary.300", cursor: "pointer" }}
+      >
         <CardHeader>
           <HStack mb={2} justifyContent="space-between" w="full">
             <Text fontSize="sm" color="primary.500" colorScheme="primary">
@@ -35,7 +40,7 @@ function ProposalItem({ proposal }: { proposal: Proposal }) {
             </Text>
             <Tooltip label={formatDate(new Date(proposal.createdAt))}>
               <Text fontSize="sm" color="primary.500" colorScheme="primary">
-                {formatDistanceToNow(new Date(proposal.createdAt), { addSuffix: true })}
+                Submitted {formatDistanceToNow(new Date(proposal.createdAt), { addSuffix: true })}
               </Text>
             </Tooltip>
           </VStack>
@@ -58,7 +63,6 @@ export function Proposals({ status }: { status: ProposalStatus }) {
             ? [ProposalStatus.Failed, ProposalStatus.Rejected, ProposalStatus.Veto]
             : [status],
         page,
-        orderBy: "createdAt",
         desc: "desc",
       });
       setData(data);
@@ -87,7 +91,11 @@ export function Proposals({ status }: { status: ProposalStatus }) {
                 ? "deposit"
                 : status === ProposalStatus.Passed
                 ? "passed"
-                : "rejected"
+                : status === ProposalStatus.Failed
+                ? "rejected"
+                : status === ProposalStatus.Pending
+                ? "pending"
+                : ""
             } period`}
           />
         </Card>

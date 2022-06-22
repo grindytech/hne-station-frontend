@@ -2,7 +2,7 @@ import { BaseQueryParams } from "./BaseQueyParams";
 import { VoteType } from "./VoteType";
 
 export interface GetVotes extends BaseQueryParams {
-  userAddress: string;
+  userAddress?: string;
   proposalId: string;
-  type: VoteType;
+  type?: VoteType;
 }

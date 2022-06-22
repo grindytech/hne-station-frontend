@@ -11,15 +11,16 @@ export default function Paginator({
   totalPage: number;
   onChange: (page: number) => void;
 }) {
-  const [inputPage, setInputPage] = useState(page);
+  const [inputPage, setInputPage] = useState<string>(String(page));
   return totalPage > 1 ? (
     <HStack>
       <Button
-        disabled={inputPage <= totalPage}
+        disabled={page <= 1}
         onClick={() => {
-          if (inputPage > 1) {
-            const newPage = inputPage - 1;
-            setInputPage(newPage);
+          const iPage = Number(inputPage);
+          if (iPage > 1) {
+            const newPage = iPage - 1;
+            setInputPage(String(newPage));
             onChange(newPage);
           }
         }}
@@ -35,29 +36,32 @@ export default function Paginator({
         width={"14"}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            onChange(inputPage);
+            const p = Number(inputPage);
+            if (!isNaN(p) && p >= 0 && p <= totalPage) {
+              onChange(p);
+            }
           }
         }}
-        value={inputPage}
+        placeholder={String(inputPage)}
         onChange={(e) => {
-          const p = Number(e.target.value);
-          if (!isNaN(p) && p > 0 && p <= totalPage) {
-            setInputPage(p);
-          }
+          setInputPage(e.target.value);
         }}
       ></Input>
       <Text size="sm">of {totalPage}</Text>
       <Button
         onClick={() => {
-          if (inputPage < totalPage) {
-            const newPage = inputPage + 1;
-            setInputPage(newPage);
-            onChange(newPage);
+          if (page < totalPage) {
+            const iPage = Number(inputPage);
+            if (iPage < totalPage) {
+              const newPage = iPage + 1;
+              setInputPage(String(newPage));
+              onChange(newPage);
+            }
           }
         }}
         size="sm"
         colorScheme="primary"
-        disabled={inputPage >= totalPage}
+        disabled={page >= totalPage}
       >
         <Icon as={FiChevronRight}></Icon>
       </Button>

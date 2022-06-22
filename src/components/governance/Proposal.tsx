@@ -1,22 +1,30 @@
-import { Box, Heading, HStack, Stack, Text, Tooltip, VStack } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, Stack, Text, Tooltip, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import Loading from "components/state/Loading";
 import { getProposal } from "contracts/governance";
-import { format, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ProposalStatus } from "services/types/ProposalStatus";
 import { formatDate } from "utils/utils";
 import { ConfigVoteInfo } from "./ConfigVoteInfo";
 import Deposit from "./Deposit";
 import Depositors from "./Depositors";
+import { Voters } from "./Voters";
 import { Vote } from "./Votes";
+import linkifyStr from "linkify-string";
+import { useIsAdmin } from "hooks/useIsAdmin";
+import { useWallet } from "use-wallet";
+import AdminAction from "./admin/AdminAction";
 
 export default function ProposalDetail() {
   const { proposalId } = useParams();
 
-  const { data: proposal, isRefetching: proposalRefetching } = useQuery(
+  const { account, isConnected } = useWallet();
+  const { admin, adminLoading } = useIsAdmin({ enabled: isConnected(), key: String(account) });
+
+  const { data: proposal, isFetching: proposalRefetching } = useQuery(
     ["getProposal", proposalId],
     async () => {
       // const proposals = await governanceService.getProposals({ proposalId: proposalId });
@@ -27,12 +35,31 @@ export default function ProposalDetail() {
     },
     { enabled: !!proposalId }
   );
-
   return (
     <>
-      <Heading as="h3" mt={[10, 5]} color="primary.500">
-        Proposal details
-      </Heading>
+      <HStack mt={[10, 5]} justifyContent="space-between" w="full">
+        <Heading as="h3" color="primary.500">
+          Proposal details
+        </Heading>
+        {Number(proposal?.status) === Number(ProposalStatus.Deposit) && (
+          <Button to={`/proposal/${proposalId}/deposit`} as={Link} colorScheme="primary">
+            Deposit
+          </Button>
+        )}
+        {Number(proposal?.status) === Number(ProposalStatus.Voting) && (
+          <Button to={`/proposal/${proposalId}/vote`} as={Link} colorScheme="primary">
+            Vote
+          </Button>
+        )}
+        {Number(proposal?.status) === Number(ProposalStatus.Pending) && admin && (
+          <AdminAction
+            onSuccess={() => {
+              window.location.reload();
+            }}
+            proposalId={String(proposalId)}
+          />
+        )}
+      </HStack>
       <Stack spacing={[10, 5]} w="100%" mt={[10, 5]}>
         {proposalRefetching ? (
           <Loading />
@@ -53,18 +80,25 @@ export default function ProposalDetail() {
                     <Text fontSize="lg" color="primary.600">
                       {proposal?.title}
                     </Text>
-                    <Tooltip label={formatDate(Number(proposal?.blockTime) * 1e3)}>
-                      <Text fontSize="sm" color="primary.500" colorScheme="primary">
-                        {proposal?.blockTime &&
-                          formatDistanceToNow(new Date(proposal.blockTime * 1e3), {
-                            addSuffix: true,
-                          })}
-                      </Text>
-                    </Tooltip>
+                    {Number(proposal?.blockTime) && (
+                      <Tooltip label={formatDate(Number(proposal?.blockTime) * 1e3)}>
+                        <Text fontSize="sm" color="primary.500" colorScheme="primary">
+                          Submitted{" "}
+                          {proposal?.blockTime &&
+                            formatDistanceToNow(new Date(proposal.blockTime * 1e3), {
+                              addSuffix: true,
+                            })}
+                        </Text>
+                      </Tooltip>
+                    )}
                   </VStack>
-                  <Text fontSize="md" color="primary.500">
-                    {proposal?.description}
-                  </Text>
+                  {proposal?.description && (
+                    <Box
+                      dangerouslySetInnerHTML={{ __html: linkifyStr(proposal?.description) }}
+                      fontSize="md"
+                      color="primary.500"
+                    ></Box>
+                  )}
                 </VStack>
               </CardBody>
             </Card>
@@ -75,19 +109,20 @@ export default function ProposalDetail() {
                   <Deposit
                     loading={proposalRefetching}
                     endDeposit={
-                      proposal?.endDeposit && Number(proposal?.endDeposit) > 0
-                        ? new Date(proposal?.endDeposit)
+                      Number(proposal?.endDeposit) && Number(proposal?.endDeposit) > 0
+                        ? new Date(Number(proposal?.endDeposit ?? 0) * 1e3)
                         : undefined
                     }
                     deposited={Number(proposal?.deposit) / 1e18}
                   />
                 </Box>
-                <Box w="full" h="full">
-                  <Depositors proposalId={proposalId} />
-                </Box>
+                <Depositors proposalId={proposalId} />
               </Stack>
             ) : (
-              <VStack w="full">{proposal && <Vote proposal={proposal} />}</VStack>
+              <VStack spacing={[10, 5]} w="full">
+                {proposal && <Vote proposal={proposal} />}
+                <Voters proposalId={String(proposalId)} />
+              </VStack>
             )}
             <ConfigVoteInfo />
           </VStack>

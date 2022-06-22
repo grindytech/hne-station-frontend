@@ -42,11 +42,11 @@ export default function Deposit({
           <Skeleton isLoaded={!minDepositFetching}>
             <CircularProgress
               size="40"
-              value={deposited / Number(minimumDeposit)}
+              value={(deposited / Number(minimumDeposit)) * 100}
               color={"green.400"}
             >
               <CircularProgressLabel color="primary.500" fontWeight="bold" fontSize="2xl">
-                {deposited / Number(minimumDeposit)}%
+                {numeralFormat((deposited / Number(minimumDeposit)) * 100)}%
               </CircularProgressLabel>
             </CircularProgress>
           </Skeleton>
@@ -69,7 +69,10 @@ export default function Deposit({
                 <Tooltip label={formatDate(endDeposit)}>
                   <Text fontSize="xs" color="primary.500">
                     {endDeposit
-                      ? formatDistance(Date.now(), endDeposit, { includeSeconds: false })
+                      ? formatDistance(endDeposit, Date.now(), {
+                          includeSeconds: false,
+                          addSuffix: true,
+                        })
                       : "--"}
                   </Text>
                 </Tooltip>

@@ -63,6 +63,9 @@ export const theme = extendTheme({
         minHeight: "100vh",
         // background: "#F1F1F1",
       },
+      a: {
+        color: "#4488F7",
+      },
     },
   },
   colors: {
