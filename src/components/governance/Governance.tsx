@@ -26,6 +26,8 @@ export default function Governance() {
       setStatus(ProposalStatus.Failed);
     } else if (section === "pending") {
       setStatus(ProposalStatus.Pending);
+    } else if (section === "admin-rejected") {
+      setStatus(ProposalStatus.RejectedByAdmin);
     } else {
       setStatus(ProposalStatus.Voting);
     }
@@ -72,16 +74,28 @@ export default function Governance() {
               Rejected
             </Button>
             {admin && !adminLoading && (
-              <Button
-                leftIcon={<Icon as={GrUserAdmin} />}
-                variant={status === ProposalStatus.Pending ? "outline" : "ghost"}
-                colorScheme="primary"
-                to="#pending"
-                id="pending"
-                as={Link}
-              >
-                Pending
-              </Button>
+              <>
+                <Button
+                  leftIcon={<Icon as={GrUserAdmin} />}
+                  variant={status === ProposalStatus.Pending ? "outline" : "ghost"}
+                  colorScheme="primary"
+                  to="#pending"
+                  id="pending"
+                  as={Link}
+                >
+                  Pending
+                </Button>
+                <Button
+                  leftIcon={<Icon as={GrUserAdmin} />}
+                  variant={status === ProposalStatus.RejectedByAdmin ? "outline" : "ghost"}
+                  colorScheme="primary"
+                  to="#admin-rejected"
+                  id="admin-rejected"
+                  as={Link}
+                >
+                  Admin rejected
+                </Button>
+              </>
             )}
           </ButtonGroup>
         </CardBody>

@@ -5,7 +5,7 @@ import CardHeader from "components/card/CardHeader";
 import Paginator from "components/paging/Paginator";
 import EmptyState from "components/state/EmptyState";
 import Loading from "components/state/Loading";
-import { format, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { governanceService } from "services/governance";
@@ -63,6 +63,7 @@ export function Proposals({ status }: { status: ProposalStatus }) {
             ? [ProposalStatus.Failed, ProposalStatus.Rejected, ProposalStatus.Veto]
             : [status],
         page,
+        orderBy:'createdAt',
         desc: "desc",
       });
       setData(data);
