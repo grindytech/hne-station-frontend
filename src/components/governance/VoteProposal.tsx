@@ -37,7 +37,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
   const [loading, setLoading] = useState<boolean>(false);
   const toast = useCustomToast();
   const [now, setNow] = useState(Date.now());
-  const [voteType, setVoteType] = useState<VoteType>(VoteType.Pass);
+  const [voteType, setVoteType] = useState<VoteType>();
 
   const {
     data: userStakeInfo,
@@ -54,12 +54,16 @@ function VoteForm({ proposalId }: { proposalId: string }) {
     { enabled: !!proposalId }
   );
 
-  const { data: availableVotingPower, isFetching: avlPowerFetching } = useQuery(
+  const {
+    data: availableVotingPower,
+    refetch: avlPowerRefetch,
+    isFetching: avlPowerFetching,
+  } = useQuery(
     ["availableVotingPower", proposalId, account],
     async () => {
       const voted = await getVoted(proposalId, String(account));
       const power = Number(userStakeInfo?.stakeAmount) - Number(voted) / 1e18;
-      return power > 0 ? power : 0;
+      return power > 0 ? parseInt(String(power)) : 0;
     },
     {
       enabled: !!userStakeInfo,
@@ -70,6 +74,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
     setAmount(availableVotingPower ? String(Number(availableVotingPower)) : undefined);
   }, [avlPowerFetching]);
   const voteProposalHandle = async () => {
+    if (!voteType) return;
     try {
       setLoading(true);
       await vote(
@@ -79,6 +84,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
         String(account)
       );
       toast.success("Transaction successfully");
+      avlPowerRefetch();
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");
@@ -101,10 +107,10 @@ function VoteForm({ proposalId }: { proposalId: string }) {
     return msg;
   });
 
-  const { data: voteTypeInvalid } = useQuery(["VoteForm-voteTypeInvalid", amount], () => {
+  const { data: voteTypeInvalid } = useQuery(["VoteForm-voteTypeInvalid", voteType], () => {
     let msg = "";
     if (!voteType) {
-      msg = "Vote option is required";
+      msg = "Choose a vote option";
     }
     return msg;
   });
@@ -218,13 +224,13 @@ function VoteForm({ proposalId }: { proposalId: string }) {
               }
               colorScheme="primary"
             >
-              Vote
+              {voteTypeInvalid ? voteTypeInvalid : "Vote"}
             </Button>
           )}
           {Number(proposal?.endDeposit) && (
             <Tooltip label={formatDate(Number(proposal?.endDeposit) * 1e3)}>
               <Text w="full" fontSize="sm" color="primary.500">
-                ended{" "}
+                Ended{" "}
                 {formatDistance(Number(proposal?.endVote) * 1e3, now, {
                   includeSeconds: false,
                   addSuffix: true,

@@ -1,7 +1,8 @@
 import { BaseDocumentDto } from "./BaseDocument";
+import { Proposal } from "./Proposal";
 import { VoteType } from "./VoteType";
 
-export interface Vote  extends BaseDocumentDto {
+export interface Vote extends BaseDocumentDto {
   proposalID: string;
 
   userAddress: string;
@@ -13,4 +14,6 @@ export interface Vote  extends BaseDocumentDto {
   block: number;
 
   type: VoteType;
+
+  proposal?: Proposal;
 }

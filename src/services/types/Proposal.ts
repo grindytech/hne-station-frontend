@@ -34,4 +34,7 @@ export interface Proposal extends BaseDocumentDto {
   block: number;
 
   txHash: string;
+
+  amount?: number;
+  userAddress?: string;
 }

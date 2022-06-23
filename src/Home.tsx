@@ -14,7 +14,7 @@ import {
   Menu,
   Text,
   useColorModeValue,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
 import { DepositProposal } from "components/governance/DepositProposal";
 import NewProposal from "components/governance/NewProposal";
@@ -30,9 +30,11 @@ import HomePage from "pages/Home";
 import PrivateClaim from "pages/PrivateClaim";
 import Stake from "pages/Stake";
 import SwapPage from "pages/SwapPage";
-import React, { ReactText, useCallback, useEffect, useState } from "react";
+import UserHistories from "pages/UserHistories";
+import { ReactText, useCallback, useEffect } from "react";
 import { IconType } from "react-icons";
-import { FiArrowDownCircle, FiCompass, FiGift, FiHome, FiMenu, FiTrendingUp } from "react-icons/fi";
+import { AiOutlineHistory, AiOutlineSwap } from "react-icons/ai";
+import { FiCompass, FiGift, FiHome, FiMenu, FiTrendingUp } from "react-icons/fi";
 import { RiGovernmentLine } from "react-icons/ri";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { useWallet } from "use-wallet";
@@ -46,9 +48,10 @@ const LinkItems: Array<LinkItemProps> = [
   { key: "/", name: "Home", icon: FiHome },
   { key: "/stake", name: "Stake", icon: FiTrendingUp },
   { key: "/governance", name: "Governance", icon: RiGovernmentLine },
+  { key: "/histories", name: "Histories", icon: AiOutlineHistory },
   { key: "/private-claim", name: "Strategic Partnerships", icon: FiCompass },
   { key: "/airdrop", name: "Airdrop", icon: FiGift },
-  { key: "/swap", name: "Swap", icon: FiArrowDownCircle },
+  { key: "/swap", name: "Swap", icon: AiOutlineSwap },
 ];
 
 export default function Station() {
@@ -104,6 +107,7 @@ export default function Station() {
             <Route path="/swap" element={<SwapPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/governance" element={<GovernancePage />} />
+            <Route path="/histories" element={<UserHistories />} />
             <Route path="/proposal/new" element={<NewProposal />} />
             <Route path="/proposal/:proposalId" element={<Proposal />} />
             <Route path="/proposal/:proposalId/deposit" element={<DepositProposal />} />
@@ -146,6 +150,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           key={link.key}
           icon={link.icon}
           isActive={location.pathname === link.key}
+          fontSize="md"
         >
           {link.name}
         </NavItem>
@@ -184,17 +189,19 @@ const NavItem = ({ to, icon, children, isActive = false, ...rest }: NavItemProps
           __css={isActive ? { fontWeight: "bold" } : {}}
           {...rest}
         >
-          {icon && (
-            <Icon
-              mr="4"
-              fontSize="16"
-              _groupHover={{
-                color: "white",
-              }}
-              as={icon}
-            />
-          )}
-          {children}
+          <HStack spacing={0}>
+            {icon && (
+              <Icon
+                mr="4"
+                fontSize="16"
+                _groupHover={{
+                  color: "white",
+                }}
+                as={icon}
+              />
+            )}
+            <Text>{children}</Text>
+          </HStack>
         </Flex>
       </ChakraLink>
     </Link>

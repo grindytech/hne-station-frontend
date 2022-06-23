@@ -4,6 +4,7 @@ import {
   Link,
   Stack,
   Table,
+  TableContainer,
   Tbody,
   Td,
   Text,
@@ -62,30 +63,33 @@ export default function Depositors({ proposalId }: { proposalId?: string }) {
           ) : (
             <VStack w="full">
               <VStack w="full">
-                <Table variant="simple">
-                  <Thead>
-                    <Tr>
-                      <Th color="primary.500">Depositor</Th>
-                      <Th color="primary.500">Amount</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody color="primary.400" fontSize="sm">
-                    {data?.items.map((item) => (
+                <TableContainer w="full">
+                  <Table variant="simple">
+                    <Thead>
                       <Tr>
-                        <Td>
-                          <Link
-                            target="_blank"
-                            href={`${configs.BSC_SCAN}/address/${item.userAddress}`}
-                          >
-                            {shorten(item.userAddress)}
-                            <Icon as={FiArrowUpRight} />
-                          </Link>
-                        </Td>
-                        <Td>{numeralFormat(item.amount)} HE</Td>
+                        <Th color="primary.500">Depositor</Th>
+                        <Th color="primary.500">Amount</Th>
                       </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
+                    </Thead>
+                    <Tbody color="primary.400" fontSize="sm">
+                      {data?.items.map((item) => (
+                        <Tr>
+                          <Td>
+                            <Link
+                              target="_blank"
+                              href={`${configs.BSC_SCAN}/address/${item.userAddress}`}
+                            >
+                              {shorten(item.userAddress)}
+                              <Icon as={FiArrowUpRight} />
+                            </Link>
+                          </Td>
+                          <Td>{numeralFormat(item.amount)} HE</Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+
                 <HStack pt={2} pr={2} w="full" justifyContent="flex-end">
                   <Paginator
                     onChange={(p) => setPage(p)}

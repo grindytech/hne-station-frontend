@@ -76,3 +76,11 @@ export async function vote(proposalId: string, amount: string, vote: VoteType, a
 export async function activeDeposit(proposalId: string, status: ProposalStatus, account: string) {
   await governanceContract().methods.activeDeposit(proposalId, status).send({ from: account });
 }
+export async function hasWithdrawn(proposalId: string, account: string): Promise<Boolean> {
+  const hasWithdrawn = await governanceContract().methods.withdrawId(account, proposalId).call();
+  return hasWithdrawn;
+}
+
+export async function withdrawal(proposalId: string, account: string) {
+  await governanceContract().methods.withdrawal(proposalId).send({ from: account });
+}

@@ -140,11 +140,11 @@ export function Vote({ proposal }: Props) {
                 {numeralFormat(totalVotes())}/{numeralFormat(Number(totalStake))}
               </Text>
             </HStack>
-            {/* {Number(proposal?.endVote) && (
+            {Number(proposal?.endVote) && (
               <HStack w="full">
                 <Tooltip label={formatDate(Number(proposal.endVote) * 1000)}>
                   <Text fontSize="sm" color="primary.500">
-                    ended{" "}
+                    Ended{" "}
                     {formatDistanceToNow(proposal.endVote * 1e3, {
                       includeSeconds: false,
                       addSuffix: true,
@@ -152,7 +152,7 @@ export function Vote({ proposal }: Props) {
                   </Text>
                 </Tooltip>
               </HStack>
-            )} */}
+            )}
           </VStack>
         </VStack>
       </CardBody>

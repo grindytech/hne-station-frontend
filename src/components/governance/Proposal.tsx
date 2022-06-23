@@ -17,6 +17,7 @@ import linkifyStr from "linkify-string";
 import { useIsAdmin } from "hooks/useIsAdmin";
 import { useWallet } from "use-wallet";
 import AdminAction from "./admin/AdminAction";
+import EmptyState from "components/state/EmptyState";
 
 export default function ProposalDetail() {
   const { proposalId } = useParams();
@@ -63,6 +64,13 @@ export default function ProposalDetail() {
       <Stack spacing={[10, 5]} w="100%" mt={[10, 5]}>
         {proposalRefetching ? (
           <Loading />
+        ) : (Number(proposal?.status) === Number(ProposalStatus.Pending) ||
+            Number(proposal?.status) === Number(ProposalStatus.RejectedByAdmin)) &&
+          proposal?.proposer !== account &&
+          !admin ? (
+          <Card>
+            <EmptyState msg="Item not found" />
+          </Card>
         ) : (
           <VStack w="full" spacing={5}>
             <Card width="full" borderWidth={1}>

@@ -4,6 +4,7 @@ import {
   Icon,
   Link,
   Table,
+  TableContainer,
   Tbody,
   Td,
   Text,
@@ -19,6 +20,7 @@ import Paginator from "components/paging/Paginator";
 import EmptyState from "components/state/EmptyState";
 import Loading from "components/state/Loading";
 import configs from "configs";
+import { getProposal, ProposalOnchain } from "contracts/governance";
 import { useCallback, useEffect, useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import { useQuery } from "react-query";
@@ -33,6 +35,21 @@ export function Voters({ proposalId }: { proposalId: string }) {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Pagination<Vote>>();
   const [loading, setLoading] = useState(false);
+
+  const { data: proposal } = useQuery(
+    ["getProposal1", proposalId],
+    async () => {
+      return await getProposal(String(proposalId));
+    },
+    { enabled: !!proposalId }
+  );
+  const totalVotes = useCallback(
+    () =>
+      Number(proposal?.votesFail) / 1e18 +
+      Number(proposal?.votesPassed) / 1e18 +
+      Number(proposal?.votesVeto) / 1e18,
+    [proposal]
+  );
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -65,16 +82,16 @@ export function Voters({ proposalId }: { proposalId: string }) {
       enabled: !!proposalId,
     }
   );
-    const { data: countVeto } = useQuery(
-      ["countVeto", proposalId],
-      async () => {
-        const d = await governanceService.getVoters({ proposalId, type: VoteType.Veto, size: 0 });
-        return d.total;
-      },
-      {
-        enabled: !!proposalId,
-      }
-    );
+  const { data: countVeto } = useQuery(
+    ["countVeto", proposalId],
+    async () => {
+      const d = await governanceService.getVoters({ proposalId, type: VoteType.Veto, size: 0 });
+      return d.total;
+    },
+    {
+      enabled: !!proposalId,
+    }
+  );
 
   useEffect(() => {
     fetchData();
@@ -129,30 +146,33 @@ export function Voters({ proposalId }: { proposalId: string }) {
             <EmptyState msg="There are no voters" />
           ) : (
             <VStack w="full">
-              <Table variant="simple">
-                <Thead>
-                  <Tr>
-                    <Th color="primary.500">Voter</Th>
-                    <Th color="primary.500">Voting power</Th>
-                  </Tr>
-                </Thead>
-                <Tbody color="primary.400" fontSize="sm">
-                  {data?.items.map((item) => (
+              <TableContainer w="full">
+                <Table variant="simple">
+                  <Thead>
                     <Tr>
-                      <Td>
-                        <Link
-                          target="_blank"
-                          href={`${configs.BSC_SCAN}/address/${item.userAddress}`}
-                        >
-                          {shorten(item.userAddress)}
-                          <Icon as={FiArrowUpRight} />
-                        </Link>
-                      </Td>
-                      <Td>{numeralFormat(item.amount)}</Td>
+                      <Th color="primary.500">Voter</Th>
+                      <Th color="primary.500">Voting power</Th>
                     </Tr>
-                  ))}
-                </Tbody>
-              </Table>
+                  </Thead>
+                  <Tbody color="primary.400" fontSize="sm">
+                    {data?.items.map((item) => (
+                      <Tr>
+                        <Td>
+                          <Link
+                            target="_blank"
+                            href={`${configs.BSC_SCAN}/address/${item.userAddress}`}
+                          >
+                            {shorten(item.userAddress)}
+                            <Icon as={FiArrowUpRight} />
+                          </Link>
+                        </Td>
+                        <Td>{numeralFormat((item.amount / totalVotes()) * 100)}%</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+
               <HStack pt={2} pr={2} w="full" justifyContent="flex-end">
                 <Paginator
                   onChange={(p) => setPage(p)}

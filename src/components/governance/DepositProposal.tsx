@@ -12,10 +12,12 @@ import {
   Input,
   InputGroup,
   InputRightAddon,
+  Skeleton,
   Stack,
   Text,
   Tooltip,
   VStack,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
@@ -33,7 +35,7 @@ import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import { ProposalStatus } from "services/types/ProposalStatus";
 import { useWallet } from "use-wallet";
-import { convertToContractValue, formatDate } from "utils/utils";
+import { convertToContractValue, formatDate, numeralFormat } from "utils/utils";
 
 function DepositForm({ proposalId }: { proposalId: string }) {
   const { account, isConnected } = useWallet();
@@ -43,9 +45,12 @@ function DepositForm({ proposalId }: { proposalId: string }) {
   const toast = useCustomToast();
   const [now, setNow] = useState(Date.now());
 
-  const { data: heBalance = 0 } = useQuery(
+  const { data: heBalance = 0, isRefetching: heBalanceFetching } = useQuery(
     ["getHEAccountBalance", account],
-    () => getHEAccountBalance("HE", account || ""),
+    async () => {
+      const balance = await getHEAccountBalance("HE", account || "");
+      return parseInt(String(balance ?? 0));
+    },
     {
       enabled: isConnected(),
     }
@@ -69,8 +74,8 @@ function DepositForm({ proposalId }: { proposalId: string }) {
     isFetching: approvedFetching,
     refetch: refetchApproved,
   } = useQuery(
-    ["approved", account, amount],
-    () => erc20Approved(Number(amount ?? 0), "HE", configs.GOVERNANCE_CONTRACT, String(account)),
+    ["approved", account],
+    () => erc20Approved(1e9, "HE", configs.GOVERNANCE_CONTRACT, String(account)),
     { enabled: !!account }
   );
   const approve = async () => {
@@ -170,6 +175,23 @@ function DepositForm({ proposalId }: { proposalId: string }) {
             </InputGroup>
             <FormErrorMessage>{amountInvalid}</FormErrorMessage>
           </FormControl>
+          <HStack w="full" justifyContent="space-between">
+            <FormLabel margin={0} color="primary.500">
+              Balance
+            </FormLabel>
+            <Skeleton isLoaded={!heBalanceFetching}>
+              <ChakraLink
+                onClick={() => {
+                  setAmount(String(heBalance));
+                }}
+                _hover={{ textDecoration: "none" }}
+                color="primary.500"
+                fontSize="sm"
+              >
+                {numeralFormat(Number(heBalance))} HE
+              </ChakraLink>
+            </Skeleton>
+          </HStack>
 
           {!isConnected() ? (
             <ConnectWalletButton w="full" />
@@ -193,13 +215,13 @@ function DepositForm({ proposalId }: { proposalId: string }) {
               disabled={approving || approvedFetching}
               colorScheme="primary"
             >
-              {"Approve"}
+              Approve
             </Button>
           )}
           {Number(proposal?.endDeposit) && (
             <Tooltip label={formatDate(Number(proposal?.endDeposit) * 1e3)}>
               <Text w="full" fontSize="sm" color="primary.500">
-                ended{" "}
+                Ended{" "}
                 {formatDistance(Number(proposal?.endDeposit) * 1e3, now, {
                   includeSeconds: false,
                   addSuffix: true,

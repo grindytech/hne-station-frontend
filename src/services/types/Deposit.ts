@@ -1,4 +1,5 @@
 import { BaseDocumentDto } from "./BaseDocument";
+import { Proposal } from "./Proposal";
 
 export interface Deposit extends BaseDocumentDto {
   proposalID: string;
@@ -10,4 +11,6 @@ export interface Deposit extends BaseDocumentDto {
   txHash: string;
 
   block: number;
+
+  proposal?: Proposal;
 }
