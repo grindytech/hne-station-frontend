@@ -44,6 +44,7 @@ import ClaimableAmount, {
 } from "components/claimableAmount/ClaimableAmount";
 import { ErrorContract } from "types";
 import Countdown from "react-countdown";
+import { Link } from "react-router-dom";
 
 const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
   const { isConnected, account } = useWallet();
@@ -243,13 +244,7 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
         )}
         {isConnected() ? (
           <HStack>
-            <Button
-              flex={1}
-              colorScheme="primary"
-              onClick={() => {
-                window.open("https://stake.heroesempires.com/", "_blank");
-              }}
-            >
+            <Button as={Link} flex={1} colorScheme="primary" to="/stake">
               Join Stake
             </Button>
             <Button

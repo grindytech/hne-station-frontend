@@ -33,7 +33,7 @@ import { ProposalStatus } from "services/types/ProposalStatus";
 import { Vote } from "services/types/Vote";
 import { VoteType } from "services/types/VoteType";
 import { useWallet } from "use-wallet";
-import { formatDate, numeralFormat, shorten } from "utils/utils";
+import { colorsUtil, formatDate, numeralFormat, shorten } from "utils/utils";
 
 function HistoryRow({ item, type }: { item: Deposit | Vote; type: "vote" | "deposit" }) {
   return (
@@ -53,18 +53,15 @@ function HistoryRow({ item, type }: { item: Deposit | Vote; type: "vote" | "depo
       <Td>{numeralFormat(Number(item.amount))}</Td>
       {type === "vote" && (
         <Td color="primary.500">
-          <Badge
-            borderRadius={25}
-            colorScheme={
-              (item as Vote).type === VoteType.Pass
-                ? "green"
-                : (item as Vote).type === VoteType.Fail
-                ? "red"
-                : "orange"
-            }
-          >
-            {ProposalStatus[(item as Vote).type]}
-          </Badge>
+          <Text color={colorsUtil.PROPOSAL_STATUS_COLORS[(item as Vote).type]}>
+            {String((item as Vote).type) === String(ProposalStatus.Passed)
+              ? "Yes"
+              : String((item as Vote).type) === String(ProposalStatus.Failed)
+              ? "No"
+              : String((item as Vote).type) === String(ProposalStatus.Veto)
+              ? "No with veto"
+              : ""}
+          </Text>
         </Td>
       )}
       <Td>

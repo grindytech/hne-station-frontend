@@ -1,11 +1,11 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { stringify } from "query-string";
 import toast from "hooks/useCustomToast";
 import configs from "configs";
 
 const API_URI = configs.API_URI;
 
-const onError = ({ response }) => {
+const onError = ({ response }: { response: AxiosResponse }) => {
   if (response) {
     const { data, status } = response;
     if (status === 404) {
@@ -19,15 +19,15 @@ const onError = ({ response }) => {
         data.errors?.message !== "undefined"
           ? data.errors?.message
           : null;
-      if (msg) toast.error(`${status} - ${msg}`);
+      if (msg) toast().error(`${status} - ${msg}`);
     }
   } else {
-    toast.error(`Cannot connect to Server`);
+    toast().error(`Cannot connect to Server`);
   }
   return Promise.reject(response);
 };
 
-const beforeRequest = (config) => {
+const beforeRequest = (config: any) => {
   // const { isLoggedIn, accessToken } = store.getState().profile;
   // if (isLoggedIn)
   //   Object.assign(config.headers, {

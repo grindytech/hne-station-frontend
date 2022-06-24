@@ -7,7 +7,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import { ProposalStatus } from "services/types/ProposalStatus";
-import { formatDate } from "utils/utils";
+import { colorsUtil, formatDate } from "utils/utils";
 import { ConfigVoteInfo } from "./ConfigVoteInfo";
 import Deposit from "./Deposit";
 import Depositors from "./Depositors";
@@ -80,7 +80,13 @@ export default function ProposalDetail() {
                     <Text fontSize="sm" color="primary.500" colorScheme="primary">
                       {proposalId}
                     </Text>
-                    <Text fontSize="sm" fontWeight="semibold" color="primary.300">
+                    <Text
+                      fontSize="sm"
+                      fontWeight="semibold"
+                      color={
+                        colorsUtil.PROPOSAL_STATUS_COLORS[proposal?.status ?? ProposalStatus.Voting]
+                      }
+                    >
                       {proposal?.status && ProposalStatus[proposal?.status]}
                     </Text>
                   </HStack>

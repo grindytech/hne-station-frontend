@@ -12,7 +12,7 @@ import { governanceService } from "services/governance";
 import { Pagination } from "services/types/Pagination";
 import { Proposal } from "services/types/Proposal";
 import { ProposalStatus } from "services/types/ProposalStatus";
-import { formatDate } from "utils/utils";
+import { colorsUtil, formatDate } from "utils/utils";
 
 export function ProposalItem({ proposal }: { proposal: Proposal }) {
   return (
@@ -28,7 +28,11 @@ export function ProposalItem({ proposal }: { proposal: Proposal }) {
             <Text fontSize="sm" color="primary.500" colorScheme="primary">
               {proposal.proposalID}
             </Text>
-            <Text fontSize="sm" fontWeight="semibold" color="primary.300">
+            <Text
+              fontSize="sm"
+              fontWeight="semibold"
+              color={colorsUtil.PROPOSAL_STATUS_COLORS[proposal.status]}
+            >
               {ProposalStatus[proposal.status]}
             </Text>
           </HStack>
@@ -63,7 +67,7 @@ export function Proposals({ status }: { status: ProposalStatus }) {
             ? [ProposalStatus.Failed, ProposalStatus.Rejected, ProposalStatus.Veto]
             : [status],
         page,
-        orderBy:'createdAt',
+        orderBy: "createdAt",
         desc: "desc",
       });
       setData(data);
@@ -82,7 +86,7 @@ export function Proposals({ status }: { status: ProposalStatus }) {
         <Card>
           <Loading />
         </Card>
-      ) : data?.total === 0 ? (
+      ) : !data || data?.total === 0 ? (
         <Card>
           <EmptyState
             msg={`No proposals in ${

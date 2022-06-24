@@ -36,7 +36,7 @@ export default function Governance() {
     <>
       <Card>
         <CardBody>
-          <ButtonGroup gap="4">
+          <ButtonGroup gap="4" flexWrap="wrap">
             <Button
               variant={status === ProposalStatus.Voting ? "outline" : "ghost"}
               colorScheme="primary"

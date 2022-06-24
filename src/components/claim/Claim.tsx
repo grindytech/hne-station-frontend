@@ -40,6 +40,7 @@ import ClaimableAmount, {
 } from "components/claimableAmount/ClaimableAmount";
 import { ErrorContract } from "types";
 import Countdown from "react-countdown";
+import { Link } from "react-router-dom";
 // import SwitchVersion from "components/SwitchVersion";
 
 const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
@@ -174,11 +175,10 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
         {isConnected() ? (
           <HStack>
             <Button
+              as={ Link}
               flex={1}
               colorScheme="primary"
-              onClick={() => {
-                window.open("https://stake.heroesempires.com/", "_blank");
-              }}
+              to="/stake"
             >
               Join Stake
             </Button>

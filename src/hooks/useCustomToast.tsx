@@ -1,4 +1,5 @@
-import { ToastPosition, useToast } from "@chakra-ui/react";
+import { ToastPosition } from "@chakra-ui/react";
+import { createStandaloneToast } from "@chakra-ui/toast";
 import React from "react";
 
 interface ConfigDefault {
@@ -14,10 +15,10 @@ interface CustomToast {
 }
 
 const useCustomToast = (): CustomToast => {
-  const toast = useToast();
+  const toast = createStandaloneToast();
   const configDefault: ConfigDefault = {
     isClosable: true,
-    position: "top-right"
+    position: "top-right",
   };
   function success(description: string | React.ReactNode) {
     toast({ status: "success", description, ...configDefault });

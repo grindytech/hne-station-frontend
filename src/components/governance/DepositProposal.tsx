@@ -35,7 +35,7 @@ import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import { ProposalStatus } from "services/types/ProposalStatus";
 import { useWallet } from "use-wallet";
-import { convertToContractValue, formatDate, numeralFormat } from "utils/utils";
+import { colorsUtil, convertToContractValue, formatDate, numeralFormat } from "utils/utils";
 
 function DepositForm({ proposalId }: { proposalId: string }) {
   const { account, isConnected } = useWallet();
@@ -263,7 +263,13 @@ export function ProposalInfo({ proposalId }: { proposalId: string }) {
                   <Text fontSize="sm" color="primary.500" colorScheme="primary">
                     {proposalId}
                   </Text>
-                  <Text fontSize="sm" fontWeight="semibold" color="primary.300">
+                  <Text
+                    fontSize="sm"
+                    fontWeight="semibold"
+                    color={
+                      colorsUtil.PROPOSAL_STATUS_COLORS[proposal?.status ?? ProposalStatus.Voting]
+                    }
+                  >
                     {proposal?.status && ProposalStatus[proposal?.status]}
                   </Text>
                 </HStack>

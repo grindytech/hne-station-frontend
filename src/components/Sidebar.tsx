@@ -1,29 +1,33 @@
 import {
   Box,
+  Button,
+  ButtonGroup,
+  Divider,
   Drawer,
-  DrawerOverlay,
-  DrawerCloseButton,
-  DrawerHeader,
   DrawerBody,
+  DrawerCloseButton,
   DrawerContent,
-  Stack,
+  DrawerHeader,
+  DrawerOverlay,
   Image,
   Link,
-  Text,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Stack,
   Tag,
-  Avatar,
-  Divider
+  Text,
 } from "@chakra-ui/react";
 
 import HELogo from "assets/heroes_empires_fa.png";
-import { useWallet } from "use-wallet";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
+import { getHEAccountBalance } from "contracts/contracts";
 import useCustomToast from "hooks/useCustomToast";
-import { shorten } from "utils/utils";
+import { FiChevronDown } from "react-icons/fi";
+import { useQuery } from "react-query";
+import { useWallet } from "use-wallet";
+import { numeralFormat, shorten } from "utils/utils";
 
 export type SidebarVariant = "drawer" | "sidebar";
 
@@ -40,19 +44,27 @@ interface SidebarContentProps {
 export const SidebarContent = ({ onClick }: SidebarContentProps) => {
   const { isConnected, account, reset } = useWallet();
   const toast = useCustomToast();
-
+  const { data: heBalance = 0, isRefetching: heBalanceFetching } = useQuery(
+    ["getHEAccountBalance", account],
+    async () => {
+      const balance = await getHEAccountBalance("HE", account || "");
+      return parseInt(String(balance ?? 0));
+    },
+    {
+      enabled: isConnected(),
+    }
+  );
   return (
-    <Stack
-      spacing={[0, 5]}
-      direction={["column", "row"]}
-      justifyContent="center"
-      alignItems="center"
-      fontWeight="semibold"
-    >
+    <Stack justifyContent="center" alignItems="center" fontWeight="semibold">
       {isConnected() && account ? (
         <Menu>
-          <MenuButton as={Avatar} cursor="pointer" size="sm" display={["none", "block"]} />
-          <MenuList>
+          <ButtonGroup color="primary.500" isAttached>
+            <Button size="sm">{numeralFormat(heBalance)} HE</Button>
+            <MenuButton as={Button} rightIcon={<FiChevronDown />} size="sm">
+              {shorten(account, 7, 5)}
+            </MenuButton>
+          </ButtonGroup>
+          <MenuList color="primary.500">
             <MenuItem
               flexDirection="column"
               alignItems="flex-start"
@@ -62,9 +74,7 @@ export const SidebarContent = ({ onClick }: SidebarContentProps) => {
               }}
             >
               <Text as="div">Your wallet:</Text>
-              <Tag size="sm" bg="primary.100">
-                {account}
-              </Tag>
+              <Tag size="sm">{account}</Tag>
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -75,38 +85,6 @@ export const SidebarContent = ({ onClick }: SidebarContentProps) => {
               Disconnect
             </MenuItem>
           </MenuList>
-          <>
-            <Divider display={["block", "none"]} />
-            <Box display={["block", "none"]} textAlign="center">
-              <Link
-                pt={4}
-                pb={10}
-                variant="no-underline"
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                onClick={() => {
-                  navigator.clipboard.writeText(account);
-                  toast.success("Copied!");
-                }}
-              >
-                <Text as="div">Your wallet:</Text>
-                <Tag size="sm" bg="primary.100">
-                  {shorten(account)}
-                </Tag>
-              </Link>
-              <Link
-                variant="no-underline"
-                height="64px"
-                onClick={() => {
-                  localStorage.removeItem("walletconnect");
-                  reset();
-                }}
-              >
-                Disconnect
-              </Link>
-            </Box>
-          </>
         </Menu>
       ) : (
         <ConnectWalletButton />
@@ -125,7 +103,11 @@ const Sidebar = ({ isOpen, variant = "drawer", onClose }: Props) => {
           <DrawerCloseButton />
           <DrawerHeader>
             <Box>
-              <Image src={HELogo} width={{ sm: "73px", lg: "93px" }} height={{ sm: "60px", lg: "76px" }} />
+              <Image
+                src={HELogo}
+                width={{ sm: "73px", lg: "93px" }}
+                height={{ sm: "60px", lg: "76px" }}
+              />
             </Box>
           </DrawerHeader>
           <DrawerBody>

@@ -101,7 +101,6 @@ export const getPairs = async (
   amount: number,
   bridgeToken = "BUSD"
 ): Promise<PairInfo[] | undefined> => {
-  debugger;
   let token1 = TOKEN_INFO[tk1];
   token1 = token1.isNative && token1.wrapper ? TOKEN_INFO[token1.wrapper] : token1;
   let token2 = TOKEN_INFO[tk2];

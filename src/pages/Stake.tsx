@@ -1,12 +1,15 @@
 import {
+  Button,
   Container,
   Heading,
   HStack,
+  Icon,
+  Link,
   Skeleton,
   Stack,
   Text,
   useBreakpointValue,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardHeader from "components/card/CardHeader";
@@ -18,6 +21,7 @@ import Stake from "components/stake/Stake";
 import { web3 } from "contracts/contracts";
 import { getDailyReward, getPoolInfo } from "contracts/stake";
 import { useEffect, useState } from "react";
+import { FiArrowUpRight } from "react-icons/fi";
 import { useQuery } from "react-query";
 import { useWallet } from "use-wallet";
 import { formatNumber } from "utils/utils";
@@ -43,7 +47,6 @@ const Home = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isHideNumbers, setIsHideNumbers] = useState(false);
 
-
   const { data: dailyReward = 0, isLoading: isLoadingDailyReward } = useQuery(
     ["getDailyReward", wallet.account],
     () => getDailyReward(),
@@ -62,9 +65,31 @@ const Home = () => {
 
   return (
     <>
-      <Heading as="h3" mt={[10, 5]} color="primary.500">
-        Staking Dashboard
-      </Heading>
+      <Stack justifyContent="space-between" direction={{ md: 'row', sm:'column'}} mt={[10, 5]} >
+        <Heading as="h3" color="primary.500">
+          Staking Dashboard
+        </Heading>
+        <HStack>
+          <Button
+            as={Link}
+            target="_blank"
+            href="https://cystack.net/projects/heroes-and-empires"
+            rightIcon={<Icon as={FiArrowUpRight} />}
+            color="primary.500"
+          >
+            Audit
+          </Button>
+          <Button
+            as={Link}
+            target="_blank"
+            href="https://support.heroesempires.com/hc/en-us/articles/4414424812057"
+            rightIcon={<Icon as={FiArrowUpRight} />}
+            color="primary.500"
+          >
+            Docs
+          </Button>
+        </HStack>
+      </Stack>
       <Stack
         direction={["column", "column", "column", "row"]}
         spacing={["0.5rem", 5]}
