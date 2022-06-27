@@ -38,30 +38,32 @@ import { formatDate, numeralFormat } from "utils/utils";
 
 function HistoryRow({ proposal }: { proposal: Proposal }) {
   const [loading, setLoading] = useState(false);
+  const { account } = useWallet();
   const toast = useCustomToast();
   const {
     data: isClaimed,
     refetch: hasWithdrawnFetch,
     isRefetching: hasWithdrawnFetching,
   } = useQuery(
-    ["hasWithdrawn", proposal.proposalID, proposal.userAddress, proposal.status],
-    async () => hasWithdrawn(String(proposal.userAddress), proposal.proposalID),
+    ["hasWithdrawn", proposal.proposalID, account, proposal.status],
+    () => hasWithdrawn(String(account), proposal.proposalID),
     {
       enabled:
-        proposal.status === ProposalStatus.Passed || proposal.status === ProposalStatus.Failed,
+        !!account &&
+        (proposal.status === ProposalStatus.Passed || proposal.status === ProposalStatus.Failed),
     }
   );
   const claim = async () => {
     try {
       setLoading(true);
       await withdrawal(proposal.proposalID, String(proposal.userAddress));
-      toast.error("Transaction successfully");
+      toast.success("Transaction successfully");
       hasWithdrawnFetch();
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
   return (

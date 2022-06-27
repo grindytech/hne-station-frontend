@@ -8,6 +8,7 @@ import CardHeader from "components/card/CardHeader";
 import CONFIGS from "configs";
 import { formatNumber } from "utils/utils";
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
+import { heStatsService } from "services/heStats";
 
 interface Props {
   isLoadingDailyReward: boolean;
@@ -19,7 +20,7 @@ const HEStats: React.FC<Props> = ({ dailyReward }) => {
 
   const { data: heInfo = {}, isLoading: isLoadingHEPrice } = useQuery(
     "getHEPrice",
-    async () => (await fetch(`${CONFIGS.DASHBOARD_API_URL}/api/v1/hePrice`)).json(),
+    async () => await heStatsService.hePrice(),
     {
       onError: (error) => {
         toast.error("Cannot connect to server!");

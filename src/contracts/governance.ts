@@ -77,7 +77,9 @@ export async function activeDeposit(proposalId: string, status: ProposalStatus, 
   await governanceContract().methods.activeDeposit(proposalId, status).send({ from: account });
 }
 export async function hasWithdrawn(proposalId: string, account: string): Promise<Boolean> {
-  const hasWithdrawn = await governanceContract().methods.withdrawId(account, proposalId).call();
+  const hasWithdrawn = await governanceContract().methods.withdrawID(account, proposalId).call();
+  console.log("hasWithdrawn");
+  console.log(hasWithdrawn);
   return hasWithdrawn;
 }
 

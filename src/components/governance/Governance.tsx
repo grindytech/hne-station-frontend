@@ -27,7 +27,7 @@ export default function Governance() {
     } else if (section === "pending") {
       setStatus(ProposalStatus.Pending);
     } else if (section === "admin-rejected") {
-      setStatus(ProposalStatus.RejectedByAdmin);
+      setStatus(ProposalStatus.AdminRejected);
     } else {
       setStatus(ProposalStatus.Voting);
     }
@@ -87,7 +87,7 @@ export default function Governance() {
                 </Button>
                 <Button
                   leftIcon={<Icon as={GrUserAdmin} />}
-                  variant={status === ProposalStatus.RejectedByAdmin ? "outline" : "ghost"}
+                  variant={status === ProposalStatus.AdminRejected ? "outline" : "ghost"}
                   colorScheme="primary"
                   to="#admin-rejected"
                   id="admin-rejected"

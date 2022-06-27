@@ -1,4 +1,5 @@
 import { Heading, VStack } from "@chakra-ui/react";
+import HeChart from "components/dashboard/HeChart";
 import HeStats from "components/dashboard/HeStats";
 
 export default function Dashboard() {
@@ -8,6 +9,7 @@ export default function Dashboard() {
         Dashboard
       </Heading>
       <HeStats />
+      <HeChart />
     </VStack>
   );
 }

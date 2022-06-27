@@ -45,6 +45,7 @@ import ClaimableAmount, {
 import { ErrorContract } from "types";
 import Countdown from "react-countdown";
 import { Link } from "react-router-dom";
+import { heStatsService } from "services/heStats";
 
 const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
   const { isConnected, account } = useWallet();
@@ -66,7 +67,7 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
 
   const { data: heInfo = {}, refetch: refetchHEPrice } = useQuery(
     "getHEPrice",
-    async () => (await fetch(`${CONFIGS.DASHBOARD_API_URL}/api/v1/hePrice`)).json(),
+    async () => await heStatsService.hePrice(),
     {
       onError: (error) => {
         toast.error("Cannot connect to server!");

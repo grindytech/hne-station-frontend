@@ -78,6 +78,8 @@ export default function NewProposal() {
       setLoading(true);
       await createProposal(String(title), String(description), String(account));
       toast.success(`Proposal created successfully`);
+      setTitle(undefined);
+      setDescription(undefined);
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");

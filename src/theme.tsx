@@ -66,6 +66,21 @@ export const theme = extendTheme({
       a: {
         color: "#4488F7",
       },
+      ".recharts-cartesian-axis-tick-value": {
+        fontSize: "12px",
+        fill: "#0A5BDF",
+        fontFamily: "var(--chakra-fonts-body)",
+      },
+      ".recharts-default-tooltip": {
+        boxShadow: "0px 3.5px 5.5px rgba(0, 0, 0, 0.02)",
+        borderRadius: "10px",
+        fontFamily: "var(--chakra-fonts-body)",
+        backgroundColor: "white",
+        border: "none",
+        ".recharts-tooltip-label": {
+          color: "#063582",
+        },
+      },
     },
   },
   colors: {

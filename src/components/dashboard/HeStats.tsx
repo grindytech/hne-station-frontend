@@ -1,12 +1,18 @@
-import { Skeleton, Stack, Tag, Text, VStack } from "@chakra-ui/react";
+import { Box, HStack, Icon, Skeleton, Stack, Tag, Text, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
+import { MultiProgress } from "components/progressMultiBar/MultiProgress";
+import { ProgressBar } from "components/progressMultiBar/ProgressBar";
 import { getDailyReward, getPoolInfo } from "contracts/stake";
+import useCustomToast from "hooks/useCustomToast";
 import { useQuery } from "react-query";
+import { heStatsService } from "services/heStats";
 import { useWallet } from "use-wallet";
-import { formatNumber } from "utils/utils";
+import { formatNumber, numeralFormat } from "utils/utils";
+import { BsCircleFill } from "react-icons/bs";
 
 export default function HeStats() {
   const { account } = useWallet();
+  const toast = useCustomToast();
   const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery(
     ["getPollInfo", account],
     () => getPoolInfo(0),
@@ -20,27 +26,90 @@ export default function HeStats() {
   const estimatedRewards = poolInfo
     ? ((dailyReward * 365) / (poolInfo?.balancePool || 1)) * 100
     : 0;
+
+  const { data: heExternalStats, isLoading: isLoadingHEExternalStats } = useQuery(
+    "getHEExternalStats",
+    async () => await heStatsService.heStats(),
+    {
+      onError: (error) => {
+        toast.error("Cannot connect to server!");
+      },
+    }
+  );
+  const { data: heInfo = {}, isLoading: isLoadingHEPrice } = useQuery(
+    "getHEPrice",
+    async () => await heStatsService.hePrice(),
+    {
+      onError: (error) => {
+        toast.error("Cannot connect to server!");
+      },
+    }
+  );
+  const { circulating_supply } = heExternalStats?.market_data || {};
+  const totalSupply = 1e9;
   return (
-    <Stack direction={["column", "row"]} spacing={5} w="100%">
+    <Stack direction={{ sm: "column", md: "row" }} spacing={5} w="100%">
       <Card>
         <VStack w="full" alignItems="start">
           <Text color="primary.500" fontWeight="semibold">
             Total Supply
           </Text>
           <Text color="primary.600" fontSize="xl" fontWeight="bold">
-            1,000,000,000 HE
+            {numeralFormat(totalSupply)} HE
           </Text>
+          <Skeleton isLoaded={!isLoadingHEPrice}>
+            <Text fontSize="sm" fontWeight="semibold" color="gray.400" w="100%">
+              {heInfo.price && `$${formatNumber(heInfo.price)}`}
+            </Text>
+          </Skeleton>
         </VStack>
       </Card>
-      <Card>
+      <Card position="relative" overflow="hidden">
         <VStack w="full" alignItems="start">
           <Text color="primary.500" fontWeight="semibold">
             Circle Supply
           </Text>
-          <Text color="primary.600" fontSize="xl" fontWeight="bold">
-            1,000,000 HE
-          </Text>
+          <Skeleton isLoaded={!isLoadingHEExternalStats}>
+            <Text color="primary.600" fontSize="xl" fontWeight="bold">
+              {circulating_supply ? numeralFormat(circulating_supply) : "--"} HE
+            </Text>
+          </Skeleton>
+          <HStack fontSize="xs" color="gray.400">
+            <HStack>
+              <Icon color="green.400" as={BsCircleFill} />
+              <Text>Stake</Text>
+            </HStack>
+            <HStack>
+              <Icon color="blue.400" as={BsCircleFill} />
+              <Text>Circle Supply</Text>
+            </HStack>
+            <HStack>
+              <Icon color="gray.200" as={BsCircleFill} />
+              <Text>Total Supply</Text>
+            </HStack>
+          </HStack>
         </VStack>
+        <Box
+          position="absolute"
+          __css={{ left: 0, bottom: 1 }}
+          paddingX={2}
+          width="full"
+          height="5px"
+        >
+          <MultiProgress overflow="hidden" borderRadius={15} width="full" height="full">
+            <ProgressBar
+              color="green.400"
+              value={(Number(poolInfo?.balancePool) / totalSupply) * 100}
+            />
+            <ProgressBar
+              color="blue.400"
+              value={
+                ((Number(circulating_supply) - Number(poolInfo?.balancePool)) / totalSupply) * 100
+              }
+            />
+            <ProgressBar color="gray.200" value={100} />
+          </MultiProgress>
+        </Box>
       </Card>
       <Card>
         <VStack w="full" alignItems="start">

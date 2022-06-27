@@ -1,7 +1,8 @@
-import { Button, HStack } from "@chakra-ui/react";
+import { Button, HStack, Icon } from "@chakra-ui/react";
 import { activeDeposit } from "contracts/governance";
 import useCustomToast from "hooks/useCustomToast";
 import { useState } from "react";
+import { AiOutlineFire } from "react-icons/ai";
 import { ProposalStatus } from "services/types/ProposalStatus";
 import { useWallet } from "use-wallet";
 
@@ -14,6 +15,7 @@ export default function AdminAction({
 }) {
   const [activeLoading, setActiveLoading] = useState(false);
   const [rejectLoading, setRejectLoading] = useState(false);
+  const [rejectAndBurnLoading, setRejectAndBurnLoading] = useState(false);
   const { account } = useWallet();
   const toast = useCustomToast();
   const active = async () => {
@@ -32,7 +34,7 @@ export default function AdminAction({
   const reject = async () => {
     try {
       setRejectLoading(true);
-      await activeDeposit(proposalId, ProposalStatus.RejectedByAdmin, String(account));
+      await activeDeposit(proposalId, ProposalStatus.AdminRejected, String(account));
       toast.success("Proposal rejected");
       onSuccess();
     } catch (error: any) {
@@ -40,6 +42,19 @@ export default function AdminAction({
       toast.error(error.message);
     } finally {
       setRejectLoading(false);
+    }
+  };
+  const rejectAndBurn = async () => {
+    try {
+      setRejectAndBurnLoading(true);
+      await activeDeposit(proposalId, ProposalStatus.AdminRejectAndBurn, String(account));
+      toast.success("Proposal has rejected and burned");
+      onSuccess();
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message);
+    } finally {
+      setRejectAndBurnLoading(false);
     }
   };
   return (
@@ -60,6 +75,16 @@ export default function AdminAction({
         variant="outline"
       >
         Reject
+      </Button>
+      <Button
+        disabled={activeLoading || rejectLoading || rejectAndBurnLoading}
+        isLoading={rejectAndBurnLoading}
+        onClick={rejectAndBurn}
+        colorScheme="primary"
+        variant="outline"
+        leftIcon={<Icon as={AiOutlineFire} />}
+      >
+        Reject and burn
       </Button>
     </HStack>
   );

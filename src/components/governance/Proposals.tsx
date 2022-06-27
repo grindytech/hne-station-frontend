@@ -65,6 +65,8 @@ export function Proposals({ status }: { status: ProposalStatus }) {
         status:
           status === ProposalStatus.Failed
             ? [ProposalStatus.Failed, ProposalStatus.Rejected, ProposalStatus.Veto]
+            : status === ProposalStatus.AdminRejected
+            ? [ProposalStatus.AdminRejected, ProposalStatus.AdminRejectAndBurn]
             : [status],
         page,
         orderBy: "createdAt",

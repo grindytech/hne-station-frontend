@@ -8,6 +8,7 @@ import { formatNumber } from "utils/utils";
 import useCustomToast from "hooks/useCustomToast";
 import CONFIGS from "configs";
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
+import { heStatsService } from "services/heStats";
 
 interface Props {
   isLoadingPoolBalance: boolean;
@@ -19,7 +20,7 @@ const PoolInfo: React.FC<Props> = ({ isLoadingPoolBalance, poolBalance }) => {
 
   const { data: heInfo = {}, isLoading: isLoadingHEPrice } = useQuery(
     "getHEPrice",
-    async () => (await fetch(`${CONFIGS.DASHBOARD_API_URL}/api/v1/hePrice`)).json(),
+    async () => await heStatsService.hePrice(),
     {
       onError: (error) => {
         toast.error("Cannot connect to server!");

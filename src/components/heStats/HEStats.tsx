@@ -8,28 +8,28 @@ import CardHeader from "components/card/CardHeader";
 import CONFIGS from "configs";
 import { formatNumber } from "utils/utils";
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
-
+import { heStatsService } from "services/heStats";
 
 const HEStats: React.FC = () => {
   const toast = useCustomToast();
 
   const { data: heInfo = {}, isLoading: isLoadingHEPrice } = useQuery(
     "getHEPrice",
-    async () => (await fetch(`${CONFIGS.DASHBOARD_API_URL}/api/v1/hePrice`)).json(),
+    async () => await heStatsService.hePrice(),
     {
       onError: (error) => {
         toast.error("Cannot connect to server!");
-      }
+      },
     }
   );
 
   const { data: heExternalStats, isLoading: isLoadingHEExternalStats } = useQuery(
     "getHEExternalStats",
-    async () => (await fetch("https://api.coingecko.com/api/v3/coins/heroes-empires?localization=false")).json(),
+    async () => await heStatsService.heStats(),
     {
       onError: (error) => {
         toast.error("Cannot connect to server!");
-      }
+      },
     }
   );
   const { circulating_supply } = heExternalStats?.market_data || {};

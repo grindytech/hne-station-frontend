@@ -65,7 +65,7 @@ export default function ProposalDetail() {
         {proposalRefetching ? (
           <Loading />
         ) : (Number(proposal?.status) === Number(ProposalStatus.Pending) ||
-            Number(proposal?.status) === Number(ProposalStatus.RejectedByAdmin)) &&
+            Number(proposal?.status) === Number(ProposalStatus.AdminRejected)) &&
           proposal?.proposer !== account &&
           !admin ? (
           <Card>

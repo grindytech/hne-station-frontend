@@ -36,6 +36,7 @@ import { ReactComponent as HEIcon } from "assets/he_coin.svg";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
 import Withdrawal from "components/stake/withdrawal/Withdrawal";
 import History from "components/stake/history/History";
+import { heStatsService } from "services/heStats";
 
 export const getStakingRewardAmountQueryKey = "getStakingRewardAmount";
 
@@ -60,7 +61,7 @@ const Stake: React.FC = () => {
 
   const { data: heInfo = {}, refetch: refetchHEPrice } = useQuery(
     "getHEPrice",
-    async () => (await fetch(`${CONFIGS.DASHBOARD_API_URL}/api/v1/hePrice`)).json(),
+    async () => await heStatsService.hePrice(),
     {
       onError: (error) => {
         toast.error("Cannot connect to server!");
