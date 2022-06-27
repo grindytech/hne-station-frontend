@@ -46,8 +46,8 @@ export function Vote({ proposal }: Props) {
       </CardHeader>
       <CardBody>
         <VStack w="full" spacing={[10, 10]}>
-          <Stack w="full" spacing={5} direction={{ md: "row", sm: "column" }}>
-            <VStack w={{ sm: "full", md: "25%" }} alignItems="start">
+          <Stack w="full" spacing={5} direction={{ md: "row", base: "column" }}>
+            <VStack w={{ base: "full", md: "25%" }} alignItems="start">
               <Text fontSize="sm" fontWeight="semibold" color="primary.500">
                 Total voted
               </Text>
@@ -124,11 +124,7 @@ export function Vote({ proposal }: Props) {
                 color="orange.400"
                 value={(proposal.votesVeto / 1e18 / totalVotes()) * 100}
               />
-              <ProgressLabel
-                color="blue.500"
-                label="Pass threshold"
-                left={thresholdPassed / 10}
-              />
+              <ProgressLabel color="blue.500" label="Pass threshold" left={thresholdPassed / 10} />
             </MultiProgress>
           </VStack>
           <VStack w="full">

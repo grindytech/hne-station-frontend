@@ -305,7 +305,7 @@ export function DepositProposal() {
       <Heading w="full" mb={5} mt={[10, 5]} as="h3" color="primary.500">
         Deposit
       </Heading>
-      <Stack spacing={[10, 5]} w="full" direction={{ md: "row", sm: "column" }}>
+      <Stack spacing={[10, 5]} w="full" direction={{ md: "row", base: "column-reverse" }}>
         <DepositForm proposalId={String(proposalId)} />
         <ProposalInfo proposalId={String(proposalId)} />
       </Stack>

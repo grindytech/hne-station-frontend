@@ -48,7 +48,7 @@ export default function HeStats() {
   const { circulating_supply } = heExternalStats?.market_data || {};
   const totalSupply = 1e9;
   return (
-    <Stack direction={{ sm: "column", md: "row" }} spacing={5} w="100%">
+    <Stack direction={{ base: "column", md: "row" }} spacing={5} w="100%">
       <Card>
         <VStack w="full" alignItems="start">
           <Text color="primary.500" fontWeight="semibold">

@@ -40,8 +40,8 @@ export default function HeChart() {
   return (
     <Card w="full">
       <VStack w="full" spacing={5}>
-        <HStack w="full" justifyContent="space-between">
-          <Text mb={5} fontSize="lg" fontWeight="semibold" color="primary.500">
+        <HStack w="full" justifyContent="space-between" alignItems="center">
+          <Text  fontSize="lg" fontWeight="semibold" color="primary.500">
             {dataType === "volume" ? "Transaction volume" : "HE price"}
           </Text>
           <Select
@@ -51,8 +51,8 @@ export default function HeChart() {
             color="primary.500"
             borderRadius={25}
           >
-            <option value="volume">Volumes</option>
-            <option value="price">Prices</option>
+            <option value="volume">Volume</option>
+            <option value="price">Price</option>
           </Select>
         </HStack>
         <Box w="full" minHeight={400}>

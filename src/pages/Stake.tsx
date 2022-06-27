@@ -1,15 +1,11 @@
 import {
-  Button,
-  Container,
-  Heading,
+  Button, Heading,
   HStack,
   Icon,
   Link,
   Skeleton,
   Stack,
-  Text,
-  useBreakpointValue,
-  VStack,
+  Text, VStack
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardHeader from "components/card/CardHeader";
@@ -18,9 +14,8 @@ import HEStats from "components/stake/heStats/HEStats";
 import History from "components/stake/history/History";
 import PoolInfo from "components/stake/pool/PoolInfo";
 import Stake from "components/stake/Stake";
-import { web3 } from "contracts/contracts";
 import { getDailyReward, getPoolInfo } from "contracts/stake";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import { useQuery } from "react-query";
 import { useWallet } from "use-wallet";
@@ -65,7 +60,7 @@ const Home = () => {
 
   return (
     <>
-      <Stack justifyContent="space-between" direction={{ md: 'row', sm:'column'}} mt={[10, 5]} >
+      <Stack justifyContent="space-between" direction={{ md: "row", base: "column" }} mt={[10, 5]}>
         <Heading as="h3" color="primary.500">
           Staking Dashboard
         </Heading>

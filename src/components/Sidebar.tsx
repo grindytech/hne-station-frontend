@@ -105,8 +105,8 @@ const Sidebar = ({ isOpen, variant = "drawer", onClose }: Props) => {
             <Box>
               <Image
                 src={HELogo}
-                width={{ sm: "73px", lg: "93px" }}
-                height={{ sm: "60px", lg: "76px" }}
+                width={{ base: "73px", lg: "93px" }}
+                height={{ base: "60px", lg: "76px" }}
               />
             </Box>
           </DrawerHeader>

@@ -118,7 +118,7 @@ export default function ProposalDetail() {
             </Card>
             {Number(proposal?.status) === Number(ProposalStatus.Deposit) ||
             Number(proposal?.status) === Number(ProposalStatus.Pending) ? (
-              <Stack direction={{ md: "row", sm: "column" }} spacing={5} w="full">
+              <Stack direction={{ md: "row", base: "column" }} spacing={5} w="full">
                 <Box minW={300}>
                   <Deposit
                     loading={proposalRefetching}

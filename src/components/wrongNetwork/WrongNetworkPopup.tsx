@@ -78,7 +78,7 @@ const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose }) => {
         <ModalOverlay />
         <ModalContent textAlign="center">
           <ModalHeader>Wrong network</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton _focus={{}}/>
           <ModalBody py="5">
             <Text>Please switch to {configs.NETWORK.chainName}</Text>
           </ModalBody>

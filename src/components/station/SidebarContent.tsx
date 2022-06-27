@@ -53,13 +53,13 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
       <VStack w="full" h="full" justifyContent="space-between">
         <VStack alignItems="flex-start">
           <Flex
-            w={{ md: "auto", sm: "full" }}
+            w={{ md: "auto", base: "full" }}
             h="20"
             alignItems="center"
             mx="8"
             justifyContent="space-between"
           >
-            <Link to="/">
+            <Link to="/" onClick={onClose}>
               <Text color={"white"} fontSize="2xl" fontFamily="monospace" fontWeight="bold">
                 HE Station
               </Text>

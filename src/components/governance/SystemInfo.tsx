@@ -1,10 +1,10 @@
-import { HStack, Skeleton, Text, Tooltip, VStack } from "@chakra-ui/react";
+import { HStack, Skeleton, Text, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import { durationDeposit, durationVote, minDeposit } from "contracts/governance";
-import { format, formatDistance } from "date-fns";
+import { formatDistance } from "date-fns";
 import { useQuery } from "react-query";
-import { formatDate, formatNumber } from "utils/utils";
+import { formatNumber } from "utils/utils";
 
 export function SystemInfo() {
   const { data: minimumDeposit, isFetching: minDepositFetching } = useQuery(
@@ -29,7 +29,7 @@ export function SystemInfo() {
             </Text>
             <Text fontSize="sm" color="primary.500">
               <Skeleton isLoaded={!minDepositFetching}>
-                {minimumDeposit && formatNumber(Number(minimumDeposit) / 1e18)} HE
+                {minimumDeposit ? formatNumber(Number(minimumDeposit) / 1e18) : "--"} HE
               </Skeleton>
             </Text>
           </VStack>
@@ -39,10 +39,11 @@ export function SystemInfo() {
             </Text>
             <Text fontSize="sm" color="primary.500">
               <Skeleton isLoaded={!durationDepositFetching}>
-                {depositPeriod &&
-                  formatDistance(0, Number(depositPeriod) * 1000, {
-                    includeSeconds: false,
-                  })}
+                {depositPeriod
+                  ? formatDistance(0, Number(depositPeriod) * 1000, {
+                      includeSeconds: false,
+                    })
+                  : "--"}
               </Skeleton>
             </Text>
           </VStack>
@@ -52,10 +53,11 @@ export function SystemInfo() {
             </Text>
             <Text fontSize="sm" color="primary.500">
               <Skeleton isLoaded={!durationVoteFetching}>
-                {votePeriod &&
-                  formatDistance(0, Number(votePeriod) * 1000, {
-                    includeSeconds: false,
-                  })}
+                {votePeriod
+                  ? formatDistance(0, Number(votePeriod) * 1000, {
+                      includeSeconds: false,
+                    })
+                  : "--"}
               </Skeleton>
             </Text>
           </VStack>

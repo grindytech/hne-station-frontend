@@ -1,7 +1,6 @@
 import configs from "configs";
 import { BURN_ADDRESS, MAX_INT } from "constant";
 import { convertToContractValue, covertToContractValue } from "utils/utils";
-import Web3 from "web3";
 import { erc20Contract, factoryV2Contract, getErc20Balance, routerV2Contract } from "./contracts";
 
 type TokenInfo = {
