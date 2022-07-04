@@ -12,7 +12,9 @@ export function ProgressLabel({
   return (
     <Box __css={{ position: "absolute", left: `${left}%`, bottom: "100%" }}>
       <Box __css={{ position: "absolute", left: "-50px", width: "200px", bottom: "100%" }}>
-        <Text fontFamily="mono" fontSize="sm" color={color}>
+        <Text
+          // fontFamily="mono"
+          fontSize="sm" color={color}>
           {label}
         </Text>
       </Box>

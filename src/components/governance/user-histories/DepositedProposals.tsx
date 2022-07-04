@@ -166,7 +166,7 @@ export default function DepositedProposals() {
           <HStack padding={5} overflow="auto" spacing={5} w="full">
             <ButtonGroup>
               <Button
-                fontFamily="mono"
+                // fontFamily="mono"
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
@@ -177,7 +177,7 @@ export default function DepositedProposals() {
                 Passed
               </Button>
               <Button
-                fontFamily="mono"
+                // fontFamily="mono"
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
@@ -188,7 +188,7 @@ export default function DepositedProposals() {
                 Failed
               </Button>
               <Button
-                fontFamily="mono"
+                // fontFamily="mono"
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
@@ -199,7 +199,7 @@ export default function DepositedProposals() {
                 Voting
               </Button>
               <Button
-                fontFamily="mono"
+                // fontFamily="mono"
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
@@ -210,7 +210,7 @@ export default function DepositedProposals() {
                 Deposit
               </Button>
               <Button
-                fontFamily="mono"
+                // fontFamily="mono"
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {

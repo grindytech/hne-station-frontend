@@ -125,7 +125,7 @@ export default function Histories() {
           <HStack padding={5} overflow="auto" spacing={5} w="full">
             <ButtonGroup>
               <Button
-                fontFamily="mono"
+                // fontFamily="mono"
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
@@ -139,7 +139,7 @@ export default function Histories() {
                 Votes
               </Button>
               <Button
-                fontFamily="mono"
+                // fontFamily="mono"
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {

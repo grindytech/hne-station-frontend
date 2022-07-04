@@ -83,7 +83,7 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
         <VStack spacing={2} paddingX={5} w="full" alignItems="flex-start">
           <ChakraLink
             _hover={{}}
-            fontFamily="mono"
+            // fontFamily="mono"
             color="gray.200"
             variant="unstyled"
             fontSize="sm"

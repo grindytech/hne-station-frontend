@@ -6,6 +6,7 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   HStack,
@@ -131,9 +132,12 @@ export default function NewProposal() {
               </AlertDescription>
             </Alert>
             <FormControl isInvalid={title !== undefined && !!titleError} colorScheme="primary">
-              <FormLabel color="primary.500" htmlFor="title">
-                Title
-              </FormLabel>
+              <HStack w="full" justifyContent="space-between">
+                <FormLabel color="primary.500" htmlFor="title">
+                  Title
+                </FormLabel>
+                <FormHelperText textAlign="right">{title ? title.length : 0}/150</FormHelperText>
+              </HStack>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -142,12 +146,18 @@ export default function NewProposal() {
                 id="title"
                 type="text"
               />
+
               <FormErrorMessage>{titleError}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={description !== undefined && !!descriptionError}>
-              <FormLabel color="primary.500" htmlFor="description">
-                Description
-              </FormLabel>
+              <HStack w="full" justifyContent="space-between">
+                <FormLabel color="primary.500" htmlFor="description">
+                  Description
+                </FormLabel>
+                <FormHelperText textAlign="right">
+                  {description ? description.length : 0}/500
+                </FormHelperText>
+              </HStack>
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -156,6 +166,7 @@ export default function NewProposal() {
                 maxLength={500}
                 id="description"
               />
+
               <FormErrorMessage>{descriptionError}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={initial !== undefined && !!initialError} colorScheme="primary">

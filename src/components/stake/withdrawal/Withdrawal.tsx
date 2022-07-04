@@ -23,17 +23,17 @@ const Withdrawal: React.FC<Props> = ({ isHideNumbers, onSuccess }) => {
   const {
     data: pendingWithdraws,
     isLoading,
-    refetch: refetchPendingWithdraws
+    refetch: refetchPendingWithdraws,
   } = useQuery(pendingWithdrawQueryKey, () => getUserPendingWithdraw(0, account || ""), {
-    enabled: isConnected()
+    enabled: isConnected(),
   });
 
   const {
     data: pendingClaims,
     isLoading: isLoadingClaims,
-    refetch: refetchPendingClaims
+    refetch: refetchPendingClaims,
   } = useQuery([pendingClaimQueryKey, account], () => getUserPendingClaim(0, account || ""), {
-    enabled: isConnected()
+    enabled: isConnected(),
   });
 
   const isShow =
@@ -47,7 +47,7 @@ const Withdrawal: React.FC<Props> = ({ isHideNumbers, onSuccess }) => {
           Withdrawal
         </Text>
       </CardHeader>
-      <VStack alignItems="stretch">
+      <VStack alignItems="stretch" maxH={200} overflow="auto">
         <PendingWithdraw
           withdrawStatus={0}
           pendingWithdraws={pendingWithdraws}

@@ -108,7 +108,7 @@ export function Voters({ proposalId }: { proposalId: string }) {
         <VStack w="full" spacing={5}>
           <HStack w="full" px={5}>
             <Button
-              fontFamily="mono"
+              // fontFamily="mono"
               colorScheme="primary"
               size="sm"
               onClick={() => {
@@ -119,7 +119,7 @@ export function Voters({ proposalId }: { proposalId: string }) {
               Yes({countYes})
             </Button>
             <Button
-              fontFamily="mono"
+              // fontFamily="mono"
               colorScheme="primary"
               size="sm"
               onClick={() => {

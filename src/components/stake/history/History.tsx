@@ -72,7 +72,7 @@ const History: React.FC<Props> = ({ isHideNumbers }) => {
           Withdraw History
         </Text>
       </CardHeader>
-      <VStack alignItems="stretch">
+      <VStack alignItems="stretch" maxH={400} overflow="auto">
         {historyData?.map(({ withdrawTime, amount, type }, index) => (
           <HStack key={index} gap={1}>
             <HStack flex={1}>
