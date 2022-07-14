@@ -12,15 +12,17 @@ export default function Paginator({
   onChange: (page: number) => void;
 }) {
   const [inputPage, setInputPage] = useState<string>(String(page));
+  const [currentPage, setCurrentPage] = useState(page);
   return totalPage > 1 ? (
     <HStack>
       <Button
         disabled={page <= 1}
         onClick={() => {
-          const iPage = Number(inputPage);
+          const iPage = currentPage;
           if (iPage > 1) {
             const newPage = iPage - 1;
             setInputPage(String(newPage));
+            setCurrentPage(newPage);
             onChange(newPage);
           }
         }}
@@ -42,7 +44,7 @@ export default function Paginator({
             }
           }
         }}
-        placeholder={String(inputPage)}
+        placeholder={String(currentPage)}
         onChange={(e) => {
           setInputPage(e.target.value);
         }}
@@ -51,10 +53,11 @@ export default function Paginator({
       <Button
         onClick={() => {
           if (page < totalPage) {
-            const iPage = Number(inputPage);
+            const iPage = currentPage;
             if (iPage < totalPage) {
               const newPage = iPage + 1;
               setInputPage(String(newPage));
+              setCurrentPage(newPage);
               onChange(newPage);
             }
           }
