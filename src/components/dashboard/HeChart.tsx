@@ -41,7 +41,7 @@ export default function HeChart() {
     <Card w="full">
       <VStack w="full" spacing={5}>
         <HStack w="full" justifyContent="space-between" alignItems="center">
-          <Text  fontSize="lg" fontWeight="semibold" color="primary.500">
+          <Text fontSize="lg" fontWeight="semibold" color="primary.500">
             {dataType === "volume" ? "Transaction volume" : "HE price"}
           </Text>
           <Select
@@ -61,8 +61,8 @@ export default function HeChart() {
               <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4488F7" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#4488F7" stopOpacity={0.1} />
+                    <stop offset="5%" stopColor="#30E9B1" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#30E9B1" stopOpacity={0.1} />
                   </linearGradient>
                 </defs>
                 <XAxis
@@ -92,7 +92,7 @@ export default function HeChart() {
                   type="monotone"
                   name="$"
                   dataKey="1"
-                  stroke="#8884d8"
+                  stroke="#13B584"
                   strokeWidth="2px"
                   dot={false}
                   fillOpacity={1}
