@@ -64,7 +64,7 @@ export const SidebarContent = ({ onClick }: SidebarContentProps) => {
               {shorten(account, 7, 5)}
             </MenuButton>
           </ButtonGroup>
-          <MenuList color="primary.500">
+          <MenuList p={1} color="primary.500">
             <MenuItem
               flexDirection="column"
               alignItems="flex-start"
