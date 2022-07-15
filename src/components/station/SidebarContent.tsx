@@ -88,6 +88,7 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
             variant="unstyled"
             fontSize="sm"
             target="_blank"
+            href="https://support.heroesempires.com/hc/en-us/articles/8126864210457-Oversky-s-Governance"
           >
             <Icon as={FaBook} />
             &nbsp;Docs
