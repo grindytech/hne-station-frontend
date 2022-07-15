@@ -1,13 +1,21 @@
 import {
-  Button, ButtonProps, Icon, Modal, ModalBody, ModalCloseButton, ModalContent,
-  ModalHeader, ModalOverlay, useDisclosure, VStack
+  Button,
+  ButtonProps,
+  Icon,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
 import { ReactComponent as Metamask } from "assets/metamask.svg";
 import { ReactComponent as Walletconnect } from "assets/walletconnect.svg";
 import RequireWalletPopup from "components/requireWalletPopup/RequireWalletPopup";
 import React, { useEffect } from "react";
 import { useWallet } from "use-wallet";
-
 
 const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
   const wallet = useWallet();
@@ -19,7 +27,12 @@ const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
     onClose: onCloseRequireWallet,
   } = useDisclosure();
   useEffect(() => {
-    if (wallet.error) {
+    console.log(JSON.stringify(wallet.error));
+    if (
+      wallet.error &&
+      (wallet.error.name === "NoEthereumProviderError" ||
+        wallet.error.message === "No Ethereum provider was found on window.ethereum.")
+    ) {
       onOpenRequireWallet();
       onClose();
     }
