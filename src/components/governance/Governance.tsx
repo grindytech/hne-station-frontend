@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Icon } from "@chakra-ui/react";
+import { Button, ButtonGroup, HStack, Icon } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import { isAdmin } from "contracts/governance";
@@ -9,7 +9,7 @@ import { ProposalStatus } from "services/types/ProposalStatus";
 import { useWallet } from "use-wallet";
 import { Proposals } from "./Proposals";
 import { SystemInfo } from "./SystemInfo";
-import { GrUserAdmin} from 'react-icons/gr'
+import { GrUserAdmin } from "react-icons/gr";
 
 export default function Governance() {
   const [status, setStatus] = useState(ProposalStatus.Voting);
@@ -35,8 +35,8 @@ export default function Governance() {
   return (
     <>
       <Card>
-        <CardBody>
-          <ButtonGroup gap="4" flexWrap="wrap">
+        <CardBody overflow="auto">
+          <HStack m={2} gap="4">
             <Button
               variant={status === ProposalStatus.Voting ? "outline" : "ghost"}
               colorScheme="primary"
@@ -97,7 +97,7 @@ export default function Governance() {
                 </Button>
               </>
             )}
-          </ButtonGroup>
+          </HStack>
         </CardBody>
       </Card>
       <Proposals key={`proposals-${status}`} status={status} />

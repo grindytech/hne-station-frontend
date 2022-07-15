@@ -118,7 +118,7 @@ export function Proposals({ status }: { status: ProposalStatus }) {
             {data?.items?.map((proposal, i) => (
               <Box
                 w={{ base: "full", md: data?.total === 1 ? "full" : "50%" }}
-                pr={i % 2 === 0 ? 2 : 0}
+                pr={{ base: 0, md: i % 2 === 0 ? 2 : 0 }}
                 pb={2}
               >
                 <ProposalItem key={proposal.proposalID} proposal={proposal} />
