@@ -23,8 +23,8 @@ const configs: Configs = {
   WBNB_CONTRACT: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
   FACTORY_V2_CONTRACT: "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
   ROUTER_V2_CONTRACT: "0x10ED43C718714eb63d5aA57B78B54704E256024E",
-  GOVERNANCE_CONTRACT: "",
-  API_URI: "",
+  GOVERNANCE_CONTRACT: "0xa1a49A5E20583708F9a3D43a8CbBfeb77B610840",
+  API_URI: "https://station-api.heroesempires.com/",
   BSC_SCAN: "https://bscscan.com",
 };
 export default configs;

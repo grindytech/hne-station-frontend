@@ -102,6 +102,12 @@ export const numeralFormat = (price: number, decimal = 2) => {
   if (returnStr === "NaN") return 0;
   return returnStr;
 };
+export const numeralFormat1 = (price: number, decimal = 2) => {
+  const decimalAsString = Array(decimal).fill("0").join("");
+  const returnStr = numeral(price).format(`0.[${decimalAsString}]`);
+  if (returnStr === "NaN") return 0;
+  return returnStr;
+};
 
 export function numberOnly(key: string, amount: string) {
   console.log(key);

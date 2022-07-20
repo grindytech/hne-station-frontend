@@ -12,7 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FiArrowDownCircle, FiRefreshCw, FiRotateCw } from "react-icons/fi";
 import { useQuery } from "react-query";
 import { useWallet } from "use-wallet";
-import { numberOnly, numeralFormat } from "utils/utils";
+import { numberOnly, numeralFormat, numeralFormat1 } from "utils/utils";
 import ChooseTokenButton from "./ChooseTokenButton";
 import SettingButton from "./SettingButton";
 import TxHistories, { Transaction } from "./TxHistories";
@@ -103,7 +103,7 @@ export default function Swap() {
         });
         setPrice1(price1);
         setPrice2(1 / price1);
-        setAmount2(amount ? String(price1 * Number(amount)) : "");
+        setAmount2(amount ? String(numeralFormat1(price1 * Number(amount), numberPoint)) : "");
         setPriceImpact(priceImpact ?? 0);
         setRoute(route);
       }
@@ -133,7 +133,7 @@ export default function Swap() {
         });
         setPrice2(price2);
         setPrice1(1 / price2);
-        setAmount1(amount ? String(price2 * Number(amount)) : "");
+        setAmount1(amount ? String(numeralFormat1(price2 * Number(amount), numberPoint)) : "");
         setPriceImpact(priceImpact ?? 0);
       }
     } catch (error) {
@@ -245,6 +245,9 @@ export default function Swap() {
       clearInterval(autoRefresh);
     };
   }, [amount1, fee, token1, token2]);
+
+  const numberPoint = 6;
+
   return (
     <VStack spacing={5}>
       <Card flex={{ lg: 1 }} maxW={400}>
@@ -333,7 +336,9 @@ export default function Swap() {
                         variant="unstyled"
                         fontSize="sm"
                       >
-                        <Text fontSize="sm">Balance: {numeralFormat(Number(balance1), 8)}</Text>
+                        <Text fontSize="sm">
+                          Balance: {numeralFormat(Number(balance1), numberPoint)}
+                        </Text>
                       </Link>
                     )}
                   </Skeleton>
@@ -401,7 +406,7 @@ export default function Swap() {
                         variant="unstyled"
                         fontSize="sm"
                       >
-                        Balance: {numeralFormat(Number(balance2), 8)}
+                        Balance: {numeralFormat(Number(balance2), numberPoint)}
                       </Link>
                     )}
                   </Skeleton>
@@ -418,12 +423,12 @@ export default function Swap() {
                     <Skeleton isLoaded={!loading || !!price2}>
                       {priceType === 2 && (
                         <>
-                          {numeralFormat(price2, 8)} {token1} per {token2}
+                          {numeralFormat(price2, numberPoint)} {token1} per {token2}
                         </>
                       )}
                       {priceType === 1 && (
                         <>
-                          {numeralFormat(price1, 8)} {token2} per {token1}
+                          {numeralFormat(price1, numberPoint)} {token2} per {token1}
                         </>
                       )}
                     </Skeleton>
@@ -499,7 +504,7 @@ export default function Swap() {
                 </Text>
                 <Text color="gray" fontSize="sm">
                   <Skeleton isLoaded={!loading}>
-                    {numeralFormat(getMinimumReceive(), 8)} {token2}
+                    {numeralFormat(getMinimumReceive(), numberPoint)} {token2}
                   </Skeleton>
                 </Text>
               </HStack>
@@ -524,7 +529,7 @@ export default function Swap() {
                 </Text>
                 <Text color="gray" fontSize="sm">
                   <Skeleton isLoaded={!loading}>
-                    {numeralFormat(Number(amount1) * fee, 8)} {token1}
+                    {numeralFormat(Number(amount1) * fee, numberPoint)} {token1}
                   </Skeleton>
                 </Text>
               </HStack>
