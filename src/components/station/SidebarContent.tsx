@@ -61,7 +61,7 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
           >
             <Link to="/" onClick={onClose}>
               <Text color={"white"} fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-                HE Station
+                OverSky Gov
               </Text>
             </Link>
             <CloseButton onClick={onClose} display={{ base: "flex", md: "none" }} />
