@@ -10,6 +10,8 @@ import {
   useColorModeValue,
   VStack,
   Link as ChakraLink,
+  HStack,
+  Image,
 } from "@chakra-ui/react";
 import {
   FaBook,
@@ -23,6 +25,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import NavItem from "./NavItem";
 
+import OverskyLogo from "assets/oversky.png";
 interface LinkItem {
   key: string;
   name: string;
@@ -51,21 +54,38 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
       {...rest}
     >
       <VStack w="full" h="full" justifyContent="space-between">
-        <VStack alignItems="flex-start">
-          <Flex
-            w={{ md: "auto", base: "full" }}
-            h="20"
-            alignItems="center"
-            mx="8"
-            justifyContent="space-between"
-          >
-            <Link to="/" onClick={onClose}>
-              <Text color={"white"} fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-                OverSky Gov
-              </Text>
-            </Link>
-            <CloseButton onClick={onClose} display={{ base: "flex", md: "none" }} />
-          </Flex>
+        <VStack w="full" alignItems="flex-start">
+          <HStack paddingX={5} w="full">
+            <Box w="full">
+              <Link to="/" onClick={onClose}>
+                <HStack spacing={0}>
+                  <Image sx={{ height: "63px" }} src={OverskyLogo} />
+                  <VStack spacing={0}>
+                    <Text
+                      lineHeight={1}
+                      color={"white"}
+                      fontSize="2xl"
+                      fontFamily="monospace"
+                      fontWeight="bold"
+                    >
+                      OverSky
+                    </Text>
+                    <Text
+                      textAlign="start"
+                      color={"white"}
+                      fontSize="sm"
+                      fontFamily="monospace"
+                      fontWeight="semibold"
+                      lineHeight={1}
+                    >
+                      Governance
+                    </Text>
+                  </VStack>
+                </HStack>
+              </Link>
+            </Box>
+            <CloseButton onClick={onClose} display={{ base: "block", md: "none" }} />
+          </HStack>
           {LinkItems.map((link) => (
             <Box w="full" onClick={onClose}>
               <NavItem
