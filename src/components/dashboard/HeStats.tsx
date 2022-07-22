@@ -107,7 +107,14 @@ export default function HeStats() {
                 ((Number(circulating_supply) - Number(poolInfo?.balancePool)) / totalSupply) * 100
               }
             />
-            <ProgressBar color="gray.200" value={100} />
+            <ProgressBar
+              color="gray.200"
+              value={
+                100 -
+                (Number(poolInfo?.balancePool) / totalSupply) * 100 -
+                ((Number(circulating_supply) - Number(poolInfo?.balancePool)) / totalSupply) * 100
+              }
+            />
           </MultiProgress>
         </Box>
       </Card>
