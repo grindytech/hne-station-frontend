@@ -68,12 +68,20 @@ export default function Swap() {
     }
     return balance;
   }
-  const { data: balance1, isFetching: balance1Fetching } = useQuery(
+  const {
+    data: balance1,
+    refetch: refetchBalance1,
+    isFetching: balance1Fetching,
+  } = useQuery(
     ["balance1", token1, wallet.account],
     () => getBalance(token1, String(wallet.account)),
     { enabled: !!wallet.account }
   );
-  const { data: balance2, isFetching: balance2Fetching } = useQuery(
+  const {
+    data: balance2,
+    refetch: refetchBalance2,
+    isFetching: balance2Fetching,
+  } = useQuery(
     ["balance2", token2, wallet.account],
     () => getBalance(token2, String(wallet.account)),
     { enabled: !!wallet.account }
@@ -183,6 +191,8 @@ export default function Swap() {
           h.status = "success";
           toast.success("Transaction success!");
           amount1OnChange(0, token1, token2);
+          refetchBalance1();
+          refetchBalance2();
         }
       })
       .on("error", (error: any) => {
@@ -214,9 +224,11 @@ export default function Swap() {
         h.txHash = hash;
       })
       .on("confirmation", (confNumber: number, receipt: string) => {
-        h.status = "success";
-        toast.success("Transaction success!");
-        setRefreshApprove(Date.now());
+        if (confNumber === 0) {
+          h.status = "success";
+          toast.success("Transaction success!");
+          setRefreshApprove(Date.now());
+        }
       })
       .on("error", (error: any) => {
         if (error.code === 4001) {

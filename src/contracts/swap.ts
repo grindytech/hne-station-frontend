@@ -140,7 +140,7 @@ export function swap(
         from: from,
         value: toDecimals(amountIn),
       });
-  } else if (token2 === "WBNB") {
+  } else if (token2 === "WBNB" || token2 === "BNB") {
     const path = [token1, ...route].map((token) => TOKEN_INFO[token].address);
     return routerV2Contract()
       .methods.swapExactTokensForETH(
