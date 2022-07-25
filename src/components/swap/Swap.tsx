@@ -179,9 +179,11 @@ export default function Swap() {
         h.txHash = hash;
       })
       .on("confirmation", (confNumber: number, receipt: string) => {
-        h.status = "success";
-        toast.success("Transaction success!");
-        amount1OnChange(0, token1, token2);
+        if (confNumber === 0) {
+          h.status = "success";
+          toast.success("Transaction success!");
+          amount1OnChange(0, token1, token2);
+        }
       })
       .on("error", (error: any) => {
         if (error.code === 4001) {
