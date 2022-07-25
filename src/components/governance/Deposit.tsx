@@ -31,7 +31,7 @@ export default function Deposit({
     }
   );
   return (
-    <Card>
+    <Card h="full">
       <CardHeader>
         <Text mb={5} fontSize="lg" fontWeight="semibold" color="primary.500">
           Deposit

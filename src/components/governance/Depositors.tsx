@@ -48,7 +48,7 @@ export default function Depositors({ proposalId }: { proposalId?: string }) {
   }, [fetchData]);
 
   return (
-    <Card>
+    <Card h="full" w="full">
       <CardHeader>
         <Text mb={5} fontSize="lg" fontWeight="semibold" color="primary.500">
           Depositors

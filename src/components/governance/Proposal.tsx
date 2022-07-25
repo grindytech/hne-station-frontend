@@ -107,11 +107,14 @@ export default function ProposalDetail() {
                     )}
                   </VStack>
                   {proposal?.description && (
-                    <Box
-                      dangerouslySetInnerHTML={{ __html: linkifyStr(proposal?.description) }}
+                    <Text
+                      wordBreak="break-word"
+                      dangerouslySetInnerHTML={{
+                        __html: linkifyStr(proposal?.description),
+                      }}
                       fontSize="md"
                       color="primary.500"
-                    ></Box>
+                    ></Text>
                   )}
                 </VStack>
               </CardBody>
@@ -130,7 +133,9 @@ export default function ProposalDetail() {
                     deposited={Number(proposal?.deposit) / 1e18}
                   />
                 </Box>
-                <Depositors proposalId={proposalId} />
+                <Box w="full">
+                  <Depositors proposalId={proposalId} />
+                </Box>
               </Stack>
             ) : (
               <VStack spacing={[10, 5]} w="full">
