@@ -1,0 +1,21 @@
+name: Release
+on:
+  push:
+    tags: ["*"]
+
+jobs:
+  build_and_preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - run: yarn
+      - run: CI=false yarn build:mainnet
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_HE_STATION }}"
+          projectId: he-station
+          channelId: live
