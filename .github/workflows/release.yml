@@ -1,7 +1,8 @@
 name: Release
 on:
-  release:
-    types: [released]
+  push:
+    tags:
+      - 'prod_*'
 
 jobs:
   build_and_preview:
