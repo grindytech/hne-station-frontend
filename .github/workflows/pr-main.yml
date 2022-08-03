@@ -1,4 +1,4 @@
-name: Deploy preview testnet
+name: Deploy preview
 on:
   pull_request:
     branches: [main]
@@ -12,9 +12,9 @@ jobs:
         with:
           node-version: 14
       - run: yarn
-      - run: CI=false yarn build
+      - run: CI=false yarn build:mainnet
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_HE_STATION_TEST }}"
-          projectId: he-station-test
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_HE_STATION }}"
+          projectId: he-station

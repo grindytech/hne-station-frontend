@@ -1,7 +1,7 @@
 name: Deploy testnet
 on:
   push:
-    branches: [main]
+    branches: [dev]
     paths:
     - "src/**"
     - "public/**"
