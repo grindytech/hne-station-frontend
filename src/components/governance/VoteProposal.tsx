@@ -28,6 +28,7 @@ import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import { VoteType } from "services/types/VoteType";
 import { useWallet } from "use-wallet";
+import { gaEvent } from "utils/gAnalytics";
 import { convertToContractValue, formatDate, numeralFormat } from "utils/utils";
 import { ProposalInfo } from "./DepositProposal";
 
@@ -85,6 +86,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
       );
       toast.success("Transaction successfully");
       avlPowerRefetch();
+      gaEvent({ voteProposal: { proposalId, amount, voteType, address: account } });
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");
@@ -250,7 +252,7 @@ export function VoteProposal() {
       <Heading w="full" mb={5} mt={[10, 5]} as="h3" color="primary.500">
         Vote
       </Heading>
-      <Stack spacing={[10, 5]} w="full" direction={{ md: "row", base: "column-reverse"}}>
+      <Stack spacing={[10, 5]} w="full" direction={{ md: "row", base: "column-reverse" }}>
         <VoteForm proposalId={String(proposalId)} />
         <ProposalInfo proposalId={String(proposalId)} />
       </Stack>

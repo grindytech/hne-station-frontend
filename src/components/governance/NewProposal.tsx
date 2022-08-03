@@ -29,6 +29,7 @@ import useCustomToast from "hooks/useCustomToast";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { useWallet } from "use-wallet";
+import { gaEvent } from "utils/gAnalytics";
 import { numeralFormat } from "utils/utils";
 
 export default function NewProposal() {
@@ -81,6 +82,7 @@ export default function NewProposal() {
       toast.success(`Proposal created successfully`);
       setTitle(undefined);
       setDescription(undefined);
+      gaEvent({ newProposal: { address: String(account) } });
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");
