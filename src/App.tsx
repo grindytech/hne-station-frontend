@@ -8,6 +8,7 @@ import { theme } from "theme";
 import { UseWalletProvider } from "use-wallet";
 import Station from "./Home";
 import Home from "./Home";
+import { init } from "./utils/gAnalytics";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,31 +19,36 @@ const queryClient = new QueryClient({
   },
 });
 
-export const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ChakraProvider theme={theme}>
-      <ErrorBoundary
-        FallbackComponent={ErrorFallback}
-        onReset={() => {
-          window.location.reload();
-        }}
-      >
-        <UseWalletProvider
-          connectors={{
-            walletconnect: {
-              rpc: {
-                56: "https://bsc-dataseed.binance.org/",
-                97: "https://data-seed-prebsc-1-s1.binance.org:8545/",
-              },
-            },
+export const App = () => {
+  React.useEffect(() => {
+    init();
+  }, []);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider theme={theme}>
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+          onReset={() => {
+            window.location.reload();
           }}
-          autoConnect
         >
-          <BrowserRouter>
-            <Station />
-          </BrowserRouter>
-        </UseWalletProvider>
-      </ErrorBoundary>
-    </ChakraProvider>
-  </QueryClientProvider>
-);
+          <UseWalletProvider
+            connectors={{
+              walletconnect: {
+                rpc: {
+                  56: "https://bsc-dataseed.binance.org/",
+                  97: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+                },
+              },
+            }}
+            autoConnect
+          >
+            <BrowserRouter>
+              <Station />
+            </BrowserRouter>
+          </UseWalletProvider>
+        </ErrorBoundary>
+      </ChakraProvider>
+    </QueryClientProvider>
+  );
+};
