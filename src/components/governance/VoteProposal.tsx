@@ -143,13 +143,15 @@ function VoteForm({ proposalId }: { proposalId: string }) {
             <FormLabel w="full" color="primary.500">
               Vote option
             </FormLabel>
-            <HStack>
+            <HStack wrap="wrap" spacing={1}>
               <Button
                 onClick={() => {
                   setVoteType(VoteType.Pass);
                 }}
                 variant={voteType === VoteType.Pass ? "solid" : "outline"}
                 colorScheme="blue"
+                size="md"
+                my={1}
               >
                 Yes
               </Button>
@@ -159,6 +161,8 @@ function VoteForm({ proposalId }: { proposalId: string }) {
                 }}
                 variant={voteType === VoteType.Fail ? "solid" : "outline"}
                 colorScheme="red"
+                size="md"
+                my={1}
               >
                 No
               </Button>
@@ -168,6 +172,8 @@ function VoteForm({ proposalId }: { proposalId: string }) {
                 }}
                 variant={voteType === VoteType.Veto ? "solid" : "outline"}
                 colorScheme="orange"
+                size="md"
+                my={1}
               >
                 No with veto
               </Button>

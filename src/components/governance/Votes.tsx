@@ -59,6 +59,7 @@ export function Vote({ proposal }: Props) {
             <HStack w="full" spacing={5}>
               <VStack
                 w="full"
+                h="full"
                 padding={[2, 5]}
                 borderRadius="15"
                 border="1px"
@@ -76,6 +77,7 @@ export function Vote({ proposal }: Props) {
               </VStack>
               <VStack
                 w="full"
+                h="full"
                 padding={[2, 5]}
                 borderRadius="15"
                 border="1px"
@@ -93,6 +95,7 @@ export function Vote({ proposal }: Props) {
               </VStack>
               <VStack
                 w="full"
+                h="full"
                 padding={[2, 5]}
                 borderRadius="15"
                 border="1px"
