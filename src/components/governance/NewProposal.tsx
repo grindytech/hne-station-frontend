@@ -82,7 +82,7 @@ export default function NewProposal() {
       toast.success(`Proposal created successfully`);
       setTitle(undefined);
       setDescription(undefined);
-      gaEvent({ newProposal: { address: String(account) } });
+      gaEvent("new_proposal", { address: String(account) });
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");

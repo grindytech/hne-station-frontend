@@ -5,6 +5,7 @@ import { useState } from "react";
 import { AiOutlineFire } from "react-icons/ai";
 import { ProposalStatus } from "services/types/ProposalStatus";
 import { useWallet } from "use-wallet";
+import { gaEvent } from "utils/gAnalytics";
 
 export default function AdminAction({
   proposalId,
@@ -23,6 +24,11 @@ export default function AdminAction({
       setActiveLoading(true);
       await activeDeposit(proposalId, ProposalStatus.Deposit, String(account));
       toast.success("Active proposal successfully");
+      gaEvent("admin_active_proposal", {
+        address: String(account),
+        proposal: proposalId,
+        status: ProposalStatus.Deposit,
+      });
       onSuccess();
     } catch (error: any) {
       console.error(error);
@@ -36,6 +42,11 @@ export default function AdminAction({
       setRejectLoading(true);
       await activeDeposit(proposalId, ProposalStatus.AdminRejected, String(account));
       toast.success("Proposal rejected");
+      gaEvent("admin_rejected_proposal", {
+        address: String(account),
+        proposal: proposalId,
+        status: ProposalStatus.Deposit,
+      });
       onSuccess();
     } catch (error: any) {
       console.error(error);
@@ -49,6 +60,11 @@ export default function AdminAction({
       setRejectAndBurnLoading(true);
       await activeDeposit(proposalId, ProposalStatus.AdminRejectAndBurn, String(account));
       toast.success("Proposal has rejected and burned");
+      gaEvent("admin_rejected_and_burn_proposal", {
+        address: String(account),
+        proposal: proposalId,
+        status: ProposalStatus.Deposit,
+      });
       onSuccess();
     } catch (error: any) {
       console.error(error);

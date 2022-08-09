@@ -101,7 +101,7 @@ function DepositForm({ proposalId }: { proposalId: string }) {
         String(account)
       );
       toast.success("Transaction successfully");
-      gaEvent({ depositProposal: { proposalId, amount, address: account } });
+      gaEvent("deposit_proposal",{ proposalId, amount, address: account } );
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");
