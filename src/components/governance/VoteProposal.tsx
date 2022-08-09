@@ -86,7 +86,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
       );
       toast.success("Transaction successfully");
       avlPowerRefetch();
-      gaEvent({ voteProposal: { proposalId, amount, voteType, address: account } });
+      gaEvent("vote_proposal", { proposalId, amount, voteType, address: account });
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");
