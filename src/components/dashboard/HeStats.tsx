@@ -6,6 +6,7 @@ import { getDailyReward, getPoolInfo } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
 import { useQuery } from "react-query";
 import { heStatsService } from "services/heStats";
+import { governanceService } from "services/governance";
 import { useWallet } from "use-wallet";
 import { formatNumber, numeralFormat } from "utils/utils";
 import { BsCircleFill } from "react-icons/bs";
@@ -45,6 +46,15 @@ export default function HeStats() {
       },
     }
   );
+  const { data: heBurned = {}, isLoading: isLoadingHEBurned } = useQuery(
+    "getHEBurned",
+    async () => await governanceService.getHEBurned(),
+    {
+      onError: (error) => {
+        toast.error("Cannot connect to server!");
+      },
+    }
+  );
   const { circulating_supply } = heExternalStats?.market_data || {};
   const totalSupply = 1e9;
   return (
@@ -76,6 +86,10 @@ export default function HeStats() {
           </Skeleton>
           <HStack fontSize="xs" color="gray.400">
             <HStack>
+              <Icon color="red.400" as={BsCircleFill} />
+              <Text>Burned</Text>
+            </HStack>
+            <HStack>
               <Icon color="green.400" as={BsCircleFill} />
               <Text>Stake</Text>
             </HStack>
@@ -97,6 +111,7 @@ export default function HeStats() {
           height="5px"
         >
           <MultiProgress overflow="hidden" borderRadius={15} width="full" height="full">
+            <ProgressBar color="red.400" value={(Number(heBurned) / totalSupply) * 100} />
             <ProgressBar
               color="green.400"
               value={(Number(poolInfo?.balancePool) / totalSupply) * 100}
@@ -112,7 +127,8 @@ export default function HeStats() {
               value={
                 100 -
                 (Number(poolInfo?.balancePool) / totalSupply) * 100 -
-                ((Number(circulating_supply) - Number(poolInfo?.balancePool)) / totalSupply) * 100
+                ((Number(circulating_supply) - Number(poolInfo?.balancePool)) / totalSupply) * 100 -
+                (Number(heBurned) / totalSupply) * 100
               }
             />
           </MultiProgress>
