@@ -1,4 +1,4 @@
-import { Box, HStack, Icon, Skeleton, Stack, Tag, Text, VStack } from "@chakra-ui/react";
+import { Box, HStack, Icon, Skeleton, Stack, Tag, Text, Tooltip, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import { MultiProgress } from "components/progressMultiBar/MultiProgress";
 import { ProgressBar } from "components/progressMultiBar/ProgressBar";
@@ -85,22 +85,30 @@ export default function HeStats() {
             </Text>
           </Skeleton>
           <HStack fontSize="xs" color="gray.400">
-            <HStack>
-              <Icon color="red.400" as={BsCircleFill} />
-              <Text>Burned</Text>
-            </HStack>
-            <HStack>
-              <Icon color="green.400" as={BsCircleFill} />
-              <Text>Stake</Text>
-            </HStack>
-            <HStack>
-              <Icon color="blue.400" as={BsCircleFill} />
-              <Text>Circle Supply</Text>
-            </HStack>
-            <HStack>
-              <Icon color="gray.200" as={BsCircleFill} />
-              <Text>Total Supply</Text>
-            </HStack>
+            <Tooltip label={String(numeralFormat(Number(heBurned)))}>
+              <HStack>
+                <Icon color="red.400" as={BsCircleFill} />
+                <Text>Burned</Text>
+              </HStack>
+            </Tooltip>
+            <Tooltip label={String(numeralFormat(Number(poolInfo?.balancePool)))}>
+              <HStack>
+                <Icon color="green.400" as={BsCircleFill} />
+                <Text>Stake</Text>
+              </HStack>
+            </Tooltip>
+            <Tooltip label={String(numeralFormat(Number(circulating_supply)))}>
+              <HStack>
+                <Icon color="blue.400" as={BsCircleFill} />
+                <Text>Circle Supply</Text>
+              </HStack>
+            </Tooltip>
+            <Tooltip label={String(numeralFormat(Number(totalSupply)))}>
+              <HStack>
+                <Icon color="gray.200" as={BsCircleFill} />
+                <Text>Total Supply</Text>
+              </HStack>
+            </Tooltip>
           </HStack>
         </VStack>
         <Box
