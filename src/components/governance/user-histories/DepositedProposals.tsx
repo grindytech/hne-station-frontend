@@ -46,7 +46,7 @@ function HistoryRow({ proposal }: { proposal: Proposal }) {
     isRefetching: hasWithdrawnFetching,
   } = useQuery(
     ["hasWithdrawn", proposal.proposalID, account, proposal.status],
-    () => hasWithdrawn(String(account), proposal.proposalID),
+    () => hasWithdrawn(proposal.proposalID, String(account)),
     {
       enabled:
         !!account &&
