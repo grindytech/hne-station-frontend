@@ -1,6 +1,7 @@
 import { HStack, Skeleton, Text, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
+import { governanceContractV2 } from "contracts/contracts";
 import { durationDeposit, durationVote, minDeposit } from "contracts/governance";
 import { formatDistance } from "date-fns";
 import { useQuery } from "react-query";
@@ -9,15 +10,15 @@ import { formatNumber } from "utils/utils";
 export function SystemInfo() {
   const { data: minimumDeposit, isFetching: minDepositFetching } = useQuery(
     "minDeposit",
-    async () => minDeposit()
+    async () => minDeposit(governanceContractV2())
   );
   const { data: depositPeriod, isFetching: durationDepositFetching } = useQuery(
     "durationDeposit",
-    async () => durationDeposit()
+    async () => durationDeposit(governanceContractV2())
   );
   const { data: votePeriod, isFetching: durationVoteFetching } = useQuery(
     "durationVote",
-    async () => durationVote()
+    async () => durationVote(governanceContractV2())
   );
   return (
     <Card>

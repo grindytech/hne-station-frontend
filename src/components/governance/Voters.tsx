@@ -20,6 +20,7 @@ import Paginator from "components/paging/Paginator";
 import EmptyState from "components/state/EmptyState";
 import Loading from "components/state/Loading";
 import configs from "configs";
+import { getDAOContract } from "contracts/contracts";
 import { getProposal, ProposalOnchain } from "contracts/governance";
 import { useCallback, useEffect, useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
@@ -35,11 +36,10 @@ export function Voters({ proposalId }: { proposalId: string }) {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Pagination<Vote>>();
   const [loading, setLoading] = useState(false);
-
   const { data: proposal } = useQuery(
     ["getProposal1", proposalId],
     async () => {
-      return await getProposal(String(proposalId));
+      return await getProposal(getDAOContract(Number(proposalId)), String(proposalId));
     },
     { enabled: !!proposalId }
   );

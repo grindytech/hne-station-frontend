@@ -18,6 +18,7 @@ import { useIsAdmin } from "hooks/useIsAdmin";
 import { useWallet } from "use-wallet";
 import AdminAction from "./admin/AdminAction";
 import EmptyState from "components/state/EmptyState";
+import { getDAOContract } from "contracts/contracts";
 
 export default function ProposalDetail() {
   const { proposalId } = useParams();
@@ -32,7 +33,7 @@ export default function ProposalDetail() {
       // if (proposals && proposals?.items.length > 0) {
       //   return proposals.items[0];
       // }
-      return await getProposal(String(proposalId));
+      return await getProposal(getDAOContract(Number(proposalId)), String(proposalId));
     },
     { enabled: !!proposalId }
   );

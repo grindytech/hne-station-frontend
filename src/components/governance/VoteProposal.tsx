@@ -19,6 +19,7 @@ import {
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
+import { getDAOContract } from "contracts/contracts";
 import { getProposal, getVoted, vote } from "contracts/governance";
 import { getUserInfo } from "contracts/stake";
 import { formatDistance } from "date-fns";
@@ -50,7 +51,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
   const { data: proposal, isFetching: proposalRefetching } = useQuery(
     ["getProposal", proposalId],
     async () => {
-      return await getProposal(String(proposalId));
+      return await getProposal(getDAOContract(Number(proposalId)), String(proposalId));
     },
     { enabled: !!proposalId }
   );
@@ -62,7 +63,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
   } = useQuery(
     ["availableVotingPower", proposalId, account],
     async () => {
-      const voted = await getVoted(proposalId, String(account));
+      const voted = await getVoted(getDAOContract(Number(proposalId)),proposalId, String(account));
       const power = Number(userStakeInfo?.stakeAmount) - Number(voted) / 1e18;
       return power > 0 ? parseInt(String(power)) : 0;
     },
@@ -79,6 +80,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
     try {
       setLoading(true);
       await vote(
+        getDAOContract(Number(proposalId)),
         proposalId,
         convertToContractValue({ amount: Number(amount) }),
         voteType,

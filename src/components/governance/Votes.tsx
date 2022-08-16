@@ -5,6 +5,7 @@ import CardHeader from "components/card/CardHeader";
 import { MultiProgress } from "components/progressMultiBar/MultiProgress";
 import { ProgressBar } from "components/progressMultiBar/ProgressBar";
 import { ProgressLabel } from "components/progressMultiBar/ProgressLabel";
+import { governanceContractV2 } from "contracts/contracts";
 import { getThresholdPassed, ProposalOnchain } from "contracts/governance";
 import { getPoolInfo } from "contracts/stake";
 import { formatDistanceToNow } from "date-fns";
@@ -35,7 +36,7 @@ export function Vote({ proposal }: Props) {
   );
   const { data: thresholdPassed, isFetching: thresholdPassedFetching } = useQuery(
     "thresholdPassed",
-    async () => getThresholdPassed()
+    async () => getThresholdPassed(governanceContractV2())
   );
   return (
     <Card w="full">

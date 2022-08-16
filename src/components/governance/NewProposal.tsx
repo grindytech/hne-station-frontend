@@ -22,7 +22,7 @@ import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
 import configs from "configs";
-import { getHEAccountBalance } from "contracts/contracts";
+import { getHEAccountBalance, governanceContractV2 } from "contracts/contracts";
 import { createProposal, initialProposal } from "contracts/governance";
 import { erc20Approve, erc20Approved } from "contracts/swap";
 import useCustomToast from "hooks/useCustomToast";
@@ -60,7 +60,7 @@ export default function NewProposal() {
   const { data: initial, isFetching: initialProposalFetching } = useQuery(
     "initialProposal",
     async () => {
-      return Number(await initialProposal()) / 1e18;
+      return Number(await initialProposal(governanceContractV2())) / 1e18;
     }
   );
 
@@ -78,7 +78,12 @@ export default function NewProposal() {
   const createProposalHandle = async () => {
     try {
       setLoading(true);
-      await createProposal(String(title), String(description), String(account));
+      await createProposal(
+        governanceContractV2(),
+        String(title),
+        String(description),
+        String(account)
+      );
       toast.success(`Proposal created successfully`);
       setTitle(undefined);
       setDescription(undefined);
@@ -96,13 +101,13 @@ export default function NewProposal() {
     refetch: refetchApproved,
   } = useQuery(
     ["approved", account, initial],
-    () => erc20Approved(Number(initial), "HE", configs.GOVERNANCE_CONTRACT, String(account)),
+    () => erc20Approved(Number(initial), "HE", configs.GOVERNANCE_CONTRACT_V2, String(account)),
     { enabled: !!account }
   );
   const approve = async () => {
     try {
       setApproving(true);
-      await erc20Approve("HE", configs.GOVERNANCE_CONTRACT, String(account));
+      await erc20Approve("HE", configs.GOVERNANCE_CONTRACT_V2, String(account));
       await refetchApproved();
       toast.success("Approve successfully");
     } catch (error) {

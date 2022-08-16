@@ -1,4 +1,5 @@
 import { Button, HStack, Icon } from "@chakra-ui/react";
+import { getDAOContract } from "contracts/contracts";
 import { activeDeposit } from "contracts/governance";
 import useCustomToast from "hooks/useCustomToast";
 import { useState } from "react";
@@ -22,7 +23,12 @@ export default function AdminAction({
   const active = async () => {
     try {
       setActiveLoading(true);
-      await activeDeposit(proposalId, ProposalStatus.Deposit, String(account));
+      await activeDeposit(
+        getDAOContract(Number(proposalId)),
+        proposalId,
+        ProposalStatus.Deposit,
+        String(account)
+      );
       toast.success("Active proposal successfully");
       gaEvent("admin_active_proposal", {
         address: String(account),
@@ -40,7 +46,12 @@ export default function AdminAction({
   const reject = async () => {
     try {
       setRejectLoading(true);
-      await activeDeposit(proposalId, ProposalStatus.AdminRejected, String(account));
+      await activeDeposit(
+        getDAOContract(Number(proposalId)),
+        proposalId,
+        ProposalStatus.AdminRejected,
+        String(account)
+      );
       toast.success("Proposal rejected");
       gaEvent("admin_rejected_proposal", {
         address: String(account),
@@ -58,7 +69,12 @@ export default function AdminAction({
   const rejectAndBurn = async () => {
     try {
       setRejectAndBurnLoading(true);
-      await activeDeposit(proposalId, ProposalStatus.AdminRejectAndBurn, String(account));
+      await activeDeposit(
+        getDAOContract(Number(proposalId)),
+        proposalId,
+        ProposalStatus.AdminRejectAndBurn,
+        String(account)
+      );
       toast.success("Proposal has rejected and burned");
       gaEvent("admin_rejected_and_burn_proposal", {
         address: String(account),

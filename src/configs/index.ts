@@ -14,6 +14,8 @@ export interface Configs {
   FACTORY_V2_CONTRACT: string;
   ROUTER_V2_CONTRACT: string;
   GOVERNANCE_CONTRACT: string;
+  GOVERNANCE_CONTRACT_V2: string;
+  BEGIN_V2_ID: number;
   API_URI: string;
   BSC_SCAN: string;
 }

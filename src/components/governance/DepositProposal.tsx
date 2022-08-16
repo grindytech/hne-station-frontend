@@ -25,7 +25,7 @@ import CardHeader from "components/card/CardHeader";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
 import Loading from "components/state/Loading";
 import configs from "configs";
-import { getHEAccountBalance } from "contracts/contracts";
+import { getDAOContract, getHEAccountBalance } from "contracts/contracts";
 import { depositProposal, getProposal } from "contracts/governance";
 import { erc20Approve, erc20Approved } from "contracts/swap";
 import { formatDistance, formatDistanceToNow } from "date-fns";
@@ -65,7 +65,7 @@ function DepositForm({ proposalId }: { proposalId: string }) {
   const { data: proposal, isFetching: proposalRefetching } = useQuery(
     ["getProposal", proposalId],
     async () => {
-      return await getProposal(String(proposalId));
+      return await getProposal(getDAOContract(Number(proposalId)), String(proposalId));
     },
     { enabled: !!proposalId }
   );
@@ -96,12 +96,13 @@ function DepositForm({ proposalId }: { proposalId: string }) {
     try {
       setLoading(true);
       await depositProposal(
+        getDAOContract(Number(proposalId)),
         proposalId,
         convertToContractValue({ amount: Number(amount) }),
         String(account)
       );
       toast.success("Transaction successfully");
-      gaEvent("deposit_proposal",{ proposalId, amount, address: account } );
+      gaEvent("deposit_proposal", { proposalId, amount, address: account });
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");
@@ -244,7 +245,7 @@ export function ProposalInfo({ proposalId }: { proposalId: string }) {
       // if (proposals && proposals?.items.length > 0) {
       //   return proposals.items[0];
       // }
-      return await getProposal(String(proposalId));
+      return await getProposal(getDAOContract(Number(proposalId)), String(proposalId));
     },
     { enabled: !!proposalId }
   );
