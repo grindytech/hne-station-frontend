@@ -74,7 +74,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
   );
   useEffect(() => {
     setAmount(availableVotingPower ? String(Number(availableVotingPower)) : undefined);
-  }, [avlPowerFetching]);
+  }, [availableVotingPower, avlPowerFetching]);
   const voteProposalHandle = async () => {
     if (!voteType) return;
     try {

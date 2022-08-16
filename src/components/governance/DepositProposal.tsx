@@ -25,7 +25,7 @@ import CardHeader from "components/card/CardHeader";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
 import Loading from "components/state/Loading";
 import configs from "configs";
-import { getDAOContract, getHEAccountBalance } from "contracts/contracts";
+import { getDAOContract, getDAOContractAddress, getHEAccountBalance } from "contracts/contracts";
 import { depositProposal, getProposal } from "contracts/governance";
 import { erc20Approve, erc20Approved } from "contracts/swap";
 import { formatDistance, formatDistanceToNow } from "date-fns";
@@ -46,7 +46,10 @@ function DepositForm({ proposalId }: { proposalId: string }) {
   const toast = useCustomToast();
   const [now, setNow] = useState(Date.now());
 
-  const { data: heBalance = 0, isRefetching: heBalanceFetching } = useQuery(
+  const {
+    data: heBalance = 0,
+    isRefetching: heBalanceFetching,
+    refetch: refetchHEBalance} = useQuery(
     ["getHEAccountBalance", account],
     async () => {
       const balance = await getHEAccountBalance("HE", account || "");
@@ -76,13 +79,13 @@ function DepositForm({ proposalId }: { proposalId: string }) {
     refetch: refetchApproved,
   } = useQuery(
     ["approved", account],
-    () => erc20Approved(1e9, "HE", configs.GOVERNANCE_CONTRACT, String(account)),
+    () => erc20Approved(1e9, "HE", getDAOContractAddress(Number(proposalId)), String(account)),
     { enabled: !!account }
   );
   const approve = async () => {
     try {
       setApproving(true);
-      await erc20Approve("HE", configs.GOVERNANCE_CONTRACT, String(account));
+      await erc20Approve("HE", getDAOContractAddress(Number(proposalId)), String(account));
       await refetchApproved();
       toast.success("Approve successfully");
     } catch (error) {
@@ -102,6 +105,7 @@ function DepositForm({ proposalId }: { proposalId: string }) {
         String(account)
       );
       toast.success("Transaction successfully");
+      refetchHEBalance();
       gaEvent("deposit_proposal", { proposalId, amount, address: account });
     } catch (error) {
       console.error(error);

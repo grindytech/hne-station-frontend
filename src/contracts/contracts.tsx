@@ -92,3 +92,7 @@ export const governanceContractV2 = () => {
 export const getDAOContract = (id: number) => {
   return id >= CONFIGS.BEGIN_V2_ID ? governanceContractV2() : governanceContract();
 };
+
+export const getDAOContractAddress = (id: number) => {
+  return id >= CONFIGS.BEGIN_V2_ID ? CONFIGS.GOVERNANCE_CONTRACT_V2 : CONFIGS.GOVERNANCE_CONTRACT;
+};
