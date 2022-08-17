@@ -173,6 +173,13 @@
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "CloseCreateProposal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [{ "internalType": "uint256", "name": "_proposalNumber", "type": "uint256" }],
     "name": "UpdateProposalNumber",
     "outputs": [],
