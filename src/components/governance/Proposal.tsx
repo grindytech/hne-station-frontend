@@ -18,6 +18,7 @@ import { useIsAdmin } from "hooks/useIsAdmin";
 import { useWallet } from "use-wallet";
 import AdminAction from "./admin/AdminAction";
 import EmptyState from "components/state/EmptyState";
+import { getDAOContract } from "contracts/contracts";
 
 export default function ProposalDetail() {
   const { proposalId } = useParams();
@@ -32,7 +33,7 @@ export default function ProposalDetail() {
       // if (proposals && proposals?.items.length > 0) {
       //   return proposals.items[0];
       // }
-      return await getProposal(String(proposalId));
+      return await getProposal(getDAOContract(Number(proposalId)), String(proposalId));
     },
     { enabled: !!proposalId }
   );
@@ -124,6 +125,7 @@ export default function ProposalDetail() {
               <Stack direction={{ md: "row", base: "column" }} spacing={5} w="full">
                 <Box minW={300}>
                   <Deposit
+                    proposalId={Number(proposalId)}
                     loading={proposalRefetching}
                     endDeposit={
                       Number(proposal?.endDeposit) && Number(proposal?.endDeposit) > 0
@@ -139,11 +141,11 @@ export default function ProposalDetail() {
               </Stack>
             ) : (
               <VStack spacing={[10, 5]} w="full">
-                {proposal && <Vote proposal={proposal} />}
+                {proposal && <Vote proposal={proposal} proposalId={Number(proposalId)} />}
                 <Voters proposalId={String(proposalId)} />
               </VStack>
             )}
-            <ConfigVoteInfo />
+            <ConfigVoteInfo proposalId={Number(proposalId)}/>
           </VStack>
         )}
       </Stack>

@@ -23,8 +23,10 @@ const configs: Configs = {
   WBNB_CONTRACT: "",
   FACTORY_V2_CONTRACT: "",
   ROUTER_V2_CONTRACT: "",
-  GOVERNANCE_CONTRACT: "0x22600f0EAc28A97aa59380B429ee75a2BAa46F7B",
+  GOVERNANCE_CONTRACT: "0xec71D5D5060f7E495C47f7e28fe8b07b3aa88e8b",
   API_URI: "https://mpapi-testnet.heroesempires.com/station/",
   BSC_SCAN: "https://testnet.bscscan.com",
+  GOVERNANCE_CONTRACT_V2: "0x28f35848Cc0eDDdc589311510eDf149F43f8f55c",
+  BEGIN_V2_ID: 22,
 };
 export default configs;

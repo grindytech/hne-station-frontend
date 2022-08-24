@@ -21,6 +21,7 @@ import CardHeader from "components/card/CardHeader";
 import Paginator from "components/paging/Paginator";
 import EmptyState from "components/state/EmptyState";
 import Loading from "components/state/Loading";
+import { getDAOContract } from "contracts/contracts";
 import { hasWithdrawn, withdrawal } from "contracts/governance";
 import { formatDistance } from "date-fns";
 import useCustomToast from "hooks/useCustomToast";
@@ -46,7 +47,12 @@ function HistoryRow({ proposal }: { proposal: Proposal }) {
     isRefetching: hasWithdrawnFetching,
   } = useQuery(
     ["hasWithdrawn", proposal.proposalID, account, proposal.status],
-    () => hasWithdrawn(proposal.proposalID, String(account)),
+    () =>
+      hasWithdrawn(
+        getDAOContract(Number(proposal.proposalID)),
+        proposal.proposalID,
+        String(account)
+      ),
     {
       enabled:
         !!account &&
@@ -56,7 +62,11 @@ function HistoryRow({ proposal }: { proposal: Proposal }) {
   const claim = async () => {
     try {
       setLoading(true);
-      await withdrawal(proposal.proposalID, String(proposal.userAddress));
+      await withdrawal(
+        getDAOContract(Number(proposal.proposalID)),
+        proposal.proposalID,
+        String(proposal.userAddress)
+      );
       toast.success("Transaction successfully");
       hasWithdrawnFetch();
     } catch (error) {
@@ -170,6 +180,7 @@ export default function DepositedProposals() {
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
+                  setPage(1);
                   setStatus(ProposalStatus.Passed);
                 }}
                 variant={status === ProposalStatus.Passed ? "solid" : "ghost"}
@@ -181,6 +192,7 @@ export default function DepositedProposals() {
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
+                  setPage(1);
                   setStatus(ProposalStatus.Failed);
                 }}
                 variant={status === ProposalStatus.Failed ? "solid" : "ghost"}
@@ -192,6 +204,7 @@ export default function DepositedProposals() {
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
+                  setPage(1);
                   setStatus(ProposalStatus.Voting);
                 }}
                 variant={status === ProposalStatus.Voting ? "solid" : "ghost"}
@@ -203,6 +216,7 @@ export default function DepositedProposals() {
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
+                  setPage(1);
                   setStatus(ProposalStatus.Deposit);
                 }}
                 variant={status === ProposalStatus.Deposit ? "solid" : "ghost"}
@@ -214,6 +228,7 @@ export default function DepositedProposals() {
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
+                  setPage(1);
                   setStatus(ProposalStatus.Rejected);
                 }}
                 variant={status === ProposalStatus.Rejected ? "solid" : "ghost"}

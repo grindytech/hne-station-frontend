@@ -13,6 +13,7 @@ import { TOKENS_INFO } from "constant";
 import stake from "./stake.json";
 import communityAirdrop from "./communityAirdropAbi.json";
 import governance from "./governance.json";
+import governanceV2 from "./governanceV2.json";
 
 import configs from "configs";
 
@@ -82,4 +83,16 @@ export const communityAirdropContract = () => {
 
 export const governanceContract = () => {
   return new web3.eth.Contract(governance as AbiItem[], CONFIGS.GOVERNANCE_CONTRACT);
+};
+
+export const governanceContractV2 = () => {
+  return new web3.eth.Contract(governanceV2 as AbiItem[], CONFIGS.GOVERNANCE_CONTRACT_V2);
+};
+
+export const getDAOContract = (id: number) => {
+  return id >= CONFIGS.BEGIN_V2_ID ? governanceContractV2() : governanceContract();
+};
+
+export const getDAOContractAddress = (id: number) => {
+  return id >= CONFIGS.BEGIN_V2_ID ? CONFIGS.GOVERNANCE_CONTRACT_V2 : CONFIGS.GOVERNANCE_CONTRACT;
 };

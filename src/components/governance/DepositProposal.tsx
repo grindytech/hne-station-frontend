@@ -25,7 +25,7 @@ import CardHeader from "components/card/CardHeader";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
 import Loading from "components/state/Loading";
 import configs from "configs";
-import { getHEAccountBalance } from "contracts/contracts";
+import { getDAOContract, getDAOContractAddress, getHEAccountBalance } from "contracts/contracts";
 import { depositProposal, getProposal } from "contracts/governance";
 import { erc20Approve, erc20Approved } from "contracts/swap";
 import { formatDistance, formatDistanceToNow } from "date-fns";
@@ -46,7 +46,10 @@ function DepositForm({ proposalId }: { proposalId: string }) {
   const toast = useCustomToast();
   const [now, setNow] = useState(Date.now());
 
-  const { data: heBalance = 0, isRefetching: heBalanceFetching } = useQuery(
+  const {
+    data: heBalance = 0,
+    isRefetching: heBalanceFetching,
+    refetch: refetchHEBalance} = useQuery(
     ["getHEAccountBalance", account],
     async () => {
       const balance = await getHEAccountBalance("HE", account || "");
@@ -65,7 +68,7 @@ function DepositForm({ proposalId }: { proposalId: string }) {
   const { data: proposal, isFetching: proposalRefetching } = useQuery(
     ["getProposal", proposalId],
     async () => {
-      return await getProposal(String(proposalId));
+      return await getProposal(getDAOContract(Number(proposalId)), String(proposalId));
     },
     { enabled: !!proposalId }
   );
@@ -76,13 +79,13 @@ function DepositForm({ proposalId }: { proposalId: string }) {
     refetch: refetchApproved,
   } = useQuery(
     ["approved", account],
-    () => erc20Approved(1e9, "HE", configs.GOVERNANCE_CONTRACT, String(account)),
+    () => erc20Approved(1e9, "HE", getDAOContractAddress(Number(proposalId)), String(account)),
     { enabled: !!account }
   );
   const approve = async () => {
     try {
       setApproving(true);
-      await erc20Approve("HE", configs.GOVERNANCE_CONTRACT, String(account));
+      await erc20Approve("HE", getDAOContractAddress(Number(proposalId)), String(account));
       await refetchApproved();
       toast.success("Approve successfully");
     } catch (error) {
@@ -96,12 +99,14 @@ function DepositForm({ proposalId }: { proposalId: string }) {
     try {
       setLoading(true);
       await depositProposal(
+        getDAOContract(Number(proposalId)),
         proposalId,
         convertToContractValue({ amount: Number(amount) }),
         String(account)
       );
       toast.success("Transaction successfully");
-      gaEvent("deposit_proposal",{ proposalId, amount, address: account } );
+      refetchHEBalance();
+      gaEvent("deposit_proposal", { proposalId, amount, address: account });
     } catch (error) {
       console.error(error);
       toast.error("Transaction fail");
@@ -244,7 +249,7 @@ export function ProposalInfo({ proposalId }: { proposalId: string }) {
       // if (proposals && proposals?.items.length > 0) {
       //   return proposals.items[0];
       // }
-      return await getProposal(String(proposalId));
+      return await getProposal(getDAOContract(Number(proposalId)), String(proposalId));
     },
     { enabled: !!proposalId }
   );

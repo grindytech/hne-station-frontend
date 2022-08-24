@@ -26,5 +26,7 @@ const configs: Configs = {
   GOVERNANCE_CONTRACT: "0xa1a49A5E20583708F9a3D43a8CbBfeb77B610840",
   API_URI: "https://station-api.heroesempires.com/",
   BSC_SCAN: "https://bscscan.com",
+  GOVERNANCE_CONTRACT_V2: "0x6e7930206bcC0678964943a9099EC685AB10C7D2",
+  BEGIN_V2_ID: 6,
 };
 export default configs;

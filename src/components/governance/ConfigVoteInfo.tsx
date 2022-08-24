@@ -1,18 +1,21 @@
 import { HStack, Skeleton, Text, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
+import { getDAOContract, governanceContractV2 } from "contracts/contracts";
 import { getQuorum, getThresholdPassed, getThresholdVeto } from "contracts/governance";
 import { useQuery } from "react-query";
 
-export function ConfigVoteInfo() {
-  const { data: quorum, isFetching: quorumFetching } = useQuery("quorum", async () => getQuorum());
+export function ConfigVoteInfo({ proposalId }: { proposalId: number }) {
+  const { data: quorum, isFetching: quorumFetching } = useQuery("quorum", async () =>
+    getQuorum(getDAOContract(proposalId))
+  );
   const { data: thresholdPassed, isFetching: thresholdPassedFetching } = useQuery(
     "thresholdPassed",
-    async () => getThresholdPassed()
+    async () => getThresholdPassed(getDAOContract(proposalId))
   );
   const { data: thresholdVeto, isFetching: thresholdVetoFetching } = useQuery(
     "thresholdVeto",
-    async () => getThresholdVeto()
+    async () => getThresholdVeto(getDAOContract(proposalId))
   );
   return (
     <Card>
