@@ -10,7 +10,7 @@ import {
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import CardHeader from "components/card/CardHeader";
-import { governanceContractV2 } from "contracts/contracts";
+import { getDAOContract, governanceContractV2 } from "contracts/contracts";
 import { minDeposit } from "contracts/governance";
 import { format, formatDistance } from "date-fns";
 import { useQuery } from "react-query";
@@ -20,15 +20,17 @@ export default function Deposit({
   deposited,
   endDeposit,
   loading,
+  proposalId,
 }: {
   deposited: number;
   endDeposit?: Date;
   loading: boolean;
+  proposalId: number;
 }) {
   const { data: minimumDeposit, isFetching: minDepositFetching } = useQuery(
     "minDeposit",
     async () => {
-      return Number(await minDeposit(governanceContractV2())) / 1e18;
+      return Number(await minDeposit(getDAOContract(proposalId))) / 1e18;
     }
   );
   return (

@@ -5,7 +5,7 @@ import CardHeader from "components/card/CardHeader";
 import { MultiProgress } from "components/progressMultiBar/MultiProgress";
 import { ProgressBar } from "components/progressMultiBar/ProgressBar";
 import { ProgressLabel } from "components/progressMultiBar/ProgressLabel";
-import { governanceContractV2 } from "contracts/contracts";
+import { getDAOContract, governanceContractV2 } from "contracts/contracts";
 import { getThresholdPassed, ProposalOnchain } from "contracts/governance";
 import { getPoolInfo } from "contracts/stake";
 import { formatDistanceToNow } from "date-fns";
@@ -15,9 +15,10 @@ import { formatDate, numeralFormat } from "utils/utils";
 
 type Props = {
   proposal: ProposalOnchain;
+  proposalId: number;
 };
 
-export function Vote({ proposal }: Props) {
+export function Vote({ proposal, proposalId }: Props) {
   const totalVotes = useCallback(
     () =>
       Number(proposal.votesFail) / 1e18 +
@@ -36,7 +37,7 @@ export function Vote({ proposal }: Props) {
   );
   const { data: thresholdPassed, isFetching: thresholdPassedFetching } = useQuery(
     "thresholdPassed",
-    async () => getThresholdPassed(governanceContractV2())
+    async () => getThresholdPassed(getDAOContract(Number(proposalId)))
   );
   return (
     <Card w="full">

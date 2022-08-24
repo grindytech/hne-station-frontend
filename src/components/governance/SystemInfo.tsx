@@ -5,7 +5,7 @@ import { governanceContractV2 } from "contracts/contracts";
 import { durationDeposit, durationVote, minDeposit } from "contracts/governance";
 import { formatDistance } from "date-fns";
 import { useQuery } from "react-query";
-import { formatNumber } from "utils/utils";
+import { formatNumber, numeralFormat } from "utils/utils";
 
 export function SystemInfo() {
   const { data: minimumDeposit, isFetching: minDepositFetching } = useQuery(
@@ -30,7 +30,7 @@ export function SystemInfo() {
             </Text>
             <Text fontSize="sm" color="primary.500">
               <Skeleton isLoaded={!minDepositFetching}>
-                {minimumDeposit ? formatNumber(Number(minimumDeposit) / 1e18) : "--"} HE
+                {minimumDeposit ? numeralFormat(Number(minimumDeposit) / 1e18) : "--"} HE
               </Skeleton>
             </Text>
           </VStack>
