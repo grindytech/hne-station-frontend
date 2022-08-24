@@ -180,6 +180,7 @@ export default function DepositedProposals() {
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
+                  setPage(1);
                   setStatus(ProposalStatus.Passed);
                 }}
                 variant={status === ProposalStatus.Passed ? "solid" : "ghost"}
@@ -191,6 +192,7 @@ export default function DepositedProposals() {
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
+                  setPage(1);
                   setStatus(ProposalStatus.Failed);
                 }}
                 variant={status === ProposalStatus.Failed ? "solid" : "ghost"}
@@ -202,6 +204,7 @@ export default function DepositedProposals() {
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
+                  setPage(1);
                   setStatus(ProposalStatus.Voting);
                 }}
                 variant={status === ProposalStatus.Voting ? "solid" : "ghost"}
@@ -213,6 +216,7 @@ export default function DepositedProposals() {
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
+                  setPage(1);
                   setStatus(ProposalStatus.Deposit);
                 }}
                 variant={status === ProposalStatus.Deposit ? "solid" : "ghost"}
@@ -224,6 +228,7 @@ export default function DepositedProposals() {
                 colorScheme="primary"
                 size="sm"
                 onClick={() => {
+                  setPage(1);
                   setStatus(ProposalStatus.Rejected);
                 }}
                 variant={status === ProposalStatus.Rejected ? "solid" : "ghost"}

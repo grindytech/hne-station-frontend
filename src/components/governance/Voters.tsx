@@ -112,6 +112,7 @@ export function Voters({ proposalId }: { proposalId: string }) {
               colorScheme="primary"
               size="sm"
               onClick={() => {
+                setPage(1);
                 setVoteType(VoteType.Pass);
               }}
               variant={voteType === VoteType.Pass ? "solid" : "ghost"}
@@ -123,6 +124,7 @@ export function Voters({ proposalId }: { proposalId: string }) {
               colorScheme="primary"
               size="sm"
               onClick={() => {
+                setPage(1);
                 setVoteType(VoteType.Fail);
               }}
               variant={voteType === VoteType.Fail ? "solid" : "ghost"}
@@ -133,6 +135,7 @@ export function Voters({ proposalId }: { proposalId: string }) {
               colorScheme="primary"
               size="sm"
               onClick={() => {
+                setPage(1);
                 setVoteType(VoteType.Veto);
               }}
               variant={voteType === VoteType.Veto ? "solid" : "ghost"}
