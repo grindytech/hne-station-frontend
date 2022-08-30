@@ -16,7 +16,7 @@ interface IProps {
 }
 
 const ClaimableAmount: React.FC<IProps> = ({isLoading, claimableAmount}) => {
-  const { isConnected } = useWallet();
+  const { ethereum } = useWallet();
 
   return (
     <VStack flex={1} alignItems="flex-start">
@@ -24,7 +24,7 @@ const ClaimableAmount: React.FC<IProps> = ({isLoading, claimableAmount}) => {
         Claimable Amount
       </Text>
       <Skeleton isLoaded={!isLoading}>
-        {isConnected() ? (
+        {!! ethereum ? (
           <HStack w="100%" justifyContent="space-between">
             <VStack alignItems="flex-start">
               <HStack>

@@ -32,7 +32,7 @@ interface Props {
 }
 
 const StakeInputPopup: React.FC<Props> = ({ isOpen, onClose, onSuccess, claimableAmount }) => {
-  const { isConnected, account } = useWallet();
+  const { ethereum, account } = useWallet();
   const toast = useCustomToast();
   const [value, setValue] = useState<number | string>("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -53,7 +53,7 @@ const StakeInputPopup: React.FC<Props> = ({ isOpen, onClose, onSuccess, claimabl
   });
 
   const onClick = () => {
-    if (Number(value) > 0 && isConnected()) {
+    if (Number(value) > 0 && !! ethereum) {
       mutate({  address: account || "" });
     }
   };

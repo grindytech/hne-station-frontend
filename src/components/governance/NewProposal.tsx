@@ -33,7 +33,7 @@ import { gaEvent } from "utils/gAnalytics";
 import { numeralFormat } from "utils/utils";
 
 export default function NewProposal() {
-  const { isConnected, account } = useWallet();
+  const { ethereum, account } = useWallet();
   const [title, setTitle] = useState<string>();
   const [description, setDescription] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,7 +43,7 @@ export default function NewProposal() {
     ["getHEAccountBalance", account],
     () => getHEAccountBalance("HE", account || ""),
     {
-      enabled: isConnected(),
+      enabled: !! ethereum,
     }
   );
 
@@ -196,7 +196,7 @@ export default function NewProposal() {
                 </Skeleton>
               </HStack>
             </FormControl>
-            {!isConnected() ? (
+            {!!! ethereum ? (
               <ConnectWalletButton w="full" />
             ) : initialError ? (
               <Button w="full" disabled colorScheme="primary">

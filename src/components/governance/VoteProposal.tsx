@@ -34,7 +34,7 @@ import { convertToContractValue, formatDate, numeralFormat } from "utils/utils";
 import { ProposalInfo } from "./DepositProposal";
 
 function VoteForm({ proposalId }: { proposalId: string }) {
-  const { account, isConnected } = useWallet();
+  const { account, ethereum } = useWallet();
   const [amount, setAmount] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const toast = useCustomToast();
@@ -46,7 +46,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
     isLoading: isLoadingUserStakeInfo,
     refetch: refetchUserStakeInfo,
   } = useQuery(["getUserInfo", account], () => getUserInfo(0, account || ""), {
-    enabled: isConnected(),
+    enabled: !! ethereum,
   });
   const { data: proposal, isFetching: proposalRefetching } = useQuery(
     ["getProposal", proposalId],
@@ -219,7 +219,7 @@ function VoteForm({ proposalId }: { proposalId: string }) {
             </Skeleton>
           </HStack>
 
-          {!isConnected() ? (
+          {!!! ethereum ? (
             <ConnectWalletButton w="full" />
           ) : (
             <Button

@@ -27,7 +27,7 @@ interface Props {
 }
 
 const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose }) => {
-  const wallet = useWallet();
+  const wallet = useWallet<any>();
   function switchEthereumChain(chainId: string) {
     return wallet.ethereum.request({
       method: "wallet_switchEthereumChain",

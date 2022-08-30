@@ -471,7 +471,7 @@ export default function Swap() {
               </HStack>
             </VStack>
             <VStack width="full">
-              {wallet.isConnected() ? (
+              {wallet.ethereum ? (
                 !Number(amount1) ? (
                   <Button disabled colorScheme="primary" width="full">
                     Enter an amount

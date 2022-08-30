@@ -9,55 +9,20 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import { ReactComponent as Metamask } from "assets/metamask.svg";
 import { ReactComponent as Walletconnect } from "assets/walletconnect.svg";
 import RequireWalletPopup from "components/requireWalletPopup/RequireWalletPopup";
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 import { useWallet } from "use-wallet";
 
 const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
   const wallet = useWallet();
   const { ...rest } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpenRequireWallet,
-    onOpen: onOpenRequireWallet,
-    onClose: onCloseRequireWallet,
-  } = useDisclosure();
-  // useEffect(() => {
-  //   console.log(JSON.stringify(wallet.error));
-  //   if (
-  //     wallet.error &&
-  //     (wallet.error.name === "NoEthereumProviderError" ||
-  //       wallet.error.message === "No Ethereum provider was found on window.ethereum.")
-  //   ) {
-  //     onOpenRequireWallet();
-  //     onClose();
-  //   }
-  // }, [onClose, onOpenRequireWallet, wallet.error]);
+  const { isOpen: isOpenRequireWallet, onOpen: onOpenRequireWallet, onClose: onCloseRequireWallet } = useDisclosure();
 
-  const connect = useCallback(
-    async (walletType: string) => {
-      try {
-        if (walletType) await wallet.connect(walletType);
-        // @ts-ignore
-        else await wallet.connect();
-        onClose();
-        console.log(JSON.stringify(wallet.error));
-        if (
-          wallet.error &&
-          (wallet.error.name === "NoEthereumProviderError" ||
-            wallet.error.message === "No Ethereum provider was found on window.ethereum.")
-        ) {
-          onOpenRequireWallet();
-          onClose();
-        }
-      } catch (error) {}
-    },
-    [onClose, onOpenRequireWallet, wallet]
-  );
   return (
     <>
       <Button onClick={onOpen} colorScheme="primary" variant="outline" {...rest}>
@@ -73,8 +38,9 @@ const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
               <Button
                 colorScheme="primary"
                 variant="outline"
-                onClick={async () => {
-                  await connect("");
+                onClick={() => {
+                  //@ts-ignore
+                  wallet.connect().then(onClose);
                 }}
                 w="full"
                 leftIcon={
@@ -88,8 +54,8 @@ const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
               <Button
                 colorScheme="primary"
                 variant="outline"
-                onClick={async () => {
-                  await connect("walletconnect");
+                onClick={() => {
+                  wallet.connect("walletconnect").then(onClose);
                 }}
                 w="full"
                 leftIcon={

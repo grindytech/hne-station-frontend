@@ -20,12 +20,12 @@ interface Props {
 }
 
 const History: React.FC<Props> = ({ isHideNumbers }) => {
-  const { isConnected, account } = useWallet();
+  const { ethereum, account } = useWallet();
   const { data: pendingWithdraws, isLoading } = useQuery(
     pendingWithdrawQueryKey,
     () => getUserPendingWithdraw(0, account || ""),
     {
-      enabled: isConnected(),
+      enabled: !! ethereum,
     }
   );
 
@@ -33,7 +33,7 @@ const History: React.FC<Props> = ({ isHideNumbers }) => {
     [pendingClaimQueryKey, account],
     () => getUserPendingClaim(0, account || ""),
     {
-      enabled: isConnected(),
+      enabled: !! ethereum,
     }
   );
 

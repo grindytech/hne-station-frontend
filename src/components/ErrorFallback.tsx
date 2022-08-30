@@ -17,25 +17,29 @@ export default function ErrorFallback({
   resetErrorBoundary: () => void;
 }) {
   function switchEthereumChain(chainId: string) {
-    return window.ethereum.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: chainId }],
-    });
+    if (window?.ethereum?.request)
+      return window.ethereum?.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: chainId }],
+      });
   }
   function addEthereumChain(params: any) {
-    return window.ethereum.request({
-      method: "wallet_addEthereumChain",
-      params: params,
-    });
+    if (window?.ethereum?.request)
+      return window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: params,
+      });
   }
   function switchNetwork() {
-    switchEthereumChain(configs.NETWORK.chainId)
-      .then(resetErrorBoundary)
-      .catch((err: any) => {
-        if (err.code === 4902) {
-          addEthereumChain([configs.NETWORK]).then(resetErrorBoundary);
-        }
-      });
+    return true;
+    // if (configs?.NETWORK?.chainId)
+    //   switchEthereumChain(configs.NETWORK.chainId)
+    //     .then(resetErrorBoundary)
+    //     .catch((err: any) => {
+    //       if (err.code === 4902) {
+    //         addEthereumChain([configs.NETWORK]).then(resetErrorBoundary);
+    //       }
+    //     });
   }
   return (
     <Container w="full" pt={5} maxW="xl">

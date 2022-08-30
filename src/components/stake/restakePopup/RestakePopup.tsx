@@ -33,7 +33,7 @@ interface Props {
 }
 
 const RestakePopup: React.FC<Props> = ({ isOpen, stakeableAmount, onClose, onSuccess }) => {
-  const { isConnected, account } = useWallet();
+  const { ethereum, account } = useWallet();
   const toast = useCustomToast();
   const [value, setValue] = useState<number | string>(0);
   const [errorMsg, setErrorMsg] = useState("");
@@ -59,7 +59,7 @@ const RestakePopup: React.FC<Props> = ({ isOpen, stakeableAmount, onClose, onSuc
   }, [queryClient]);
 
   const onClick = () => {
-    if (Number(value) > 0 && isConnected()) {
+    if (Number(value) > 0 && !! ethereum) {
       mutate({ poolId: 0, amount: Number(value), address: account || "" });
     }
   };

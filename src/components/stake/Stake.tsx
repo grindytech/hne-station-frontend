@@ -20,7 +20,7 @@ import StakeInputPopup from "components/stake/stakeInputPopup/StakeInputPopup";
 import { getHEAccountBalance } from "contracts/contracts";
 import { getStakingRewardAmount, getUserInfo } from "contracts/stake";
 
-import { formatNumber, shorten } from "utils/utils";
+import { formatNumber, numeralFormat, shorten } from "utils/utils";
 
 import CONFIGS from "configs";
 import useCustomToast from "hooks/useCustomToast";
@@ -41,7 +41,7 @@ import { heStatsService } from "services/heStats";
 export const getStakingRewardAmountQueryKey = "getStakingRewardAmount";
 
 const Stake: React.FC = () => {
-  const { isConnected, account } = useWallet();
+  const { ethereum, account } = useWallet();
 
   const toast = useCustomToast();
   const queryClient = useQueryClient();
@@ -74,7 +74,7 @@ const Stake: React.FC = () => {
     isLoading,
     refetch,
   } = useQuery(["getHEAccountBalance", account], () => getHEAccountBalance("HE", account || ""), {
-    enabled: isConnected(),
+    enabled: !! ethereum,
   });
 
   const {
@@ -82,14 +82,14 @@ const Stake: React.FC = () => {
     isLoading: isLoadingUserInfo,
     refetch: refetchUserInfo,
   } = useQuery(["getUserInfo", account], () => getUserInfo(0, account || ""), {
-    enabled: isConnected(),
+    enabled: !! ethereum,
   });
 
   const { data: rewardAmount, refetch: refetchRewardAmount } = useQuery(
     [getStakingRewardAmountQueryKey, account],
     () => getStakingRewardAmount(0, account || ""),
     {
-      enabled: isConnected(),
+      enabled: !! ethereum,
     }
   );
 
@@ -112,7 +112,7 @@ const Stake: React.FC = () => {
               <Text fontWeight="bold" fontSize="xl" color="primary.500">
                 My HE Staking
               </Text>
-              {isConnected() && (
+              {!!ethereum && (
                 <>
                   <Button
                     size="sm"
@@ -151,21 +151,19 @@ const Stake: React.FC = () => {
                 Total staked
               </Text>
               <Skeleton isLoaded={!isLoadingUserInfo}>
-                {isConnected() && userInfo ? (
+                {!!ethereum && userInfo ? (
                   <HStack alignItems="baseline">
                     <HStack>
                       <Icon w="24px" h="24px">
                         <HEIcon />
                       </Icon>
                       <Text fontWeight="bold" fontSize="2xl">
-                        {isHideNumbers ? "**" : formatNumber(userInfo.stakeAmount)}
+                        {isHideNumbers ? "**" : numeralFormat(userInfo.stakeAmount)}
                       </Text>
                     </HStack>
 
                     <Text fontSize="sm" color="gray.500">
-                      {isHideNumbers
-                        ? ""
-                        : `~$${formatNumber(userInfo.stakeAmount * heInfo.price)}`}
+                      {isHideNumbers ? "" : `~$${numeralFormat(userInfo.stakeAmount * heInfo.price)}`}
                     </Text>
                   </HStack>
                 ) : (
@@ -178,18 +176,18 @@ const Stake: React.FC = () => {
                 My balance
               </Text>
               <Skeleton isLoaded={!isLoading}>
-                {isConnected() ? (
+                {!!ethereum ? (
                   <HStack alignItems="baseline">
                     <HStack>
                       <Icon w="24px" h="24px">
                         <HEIcon />
                       </Icon>
                       <Text fontWeight="bold" fontSize="2xl">
-                        {isHideNumbers ? "**" : formatNumber(accountBalance)}
+                        {isHideNumbers ? "**" : numeralFormat(accountBalance)}
                       </Text>
                     </HStack>
                     <Text fontSize="sm" color="gray.500">
-                      {isHideNumbers ? "" : `~$${formatNumber(accountBalance * heInfo.price)}`}
+                      {isHideNumbers ? "" : `~$${numeralFormat(accountBalance * heInfo.price)}`}
                     </Text>
                   </HStack>
                 ) : (
@@ -199,7 +197,7 @@ const Stake: React.FC = () => {
             </VStack>
           </Stack>
 
-          {isConnected() ? (
+          {!!ethereum ? (
             <VStack alignItems="stretch">
               <Button
                 colorScheme="primary"
@@ -227,7 +225,7 @@ const Stake: React.FC = () => {
           )}
         </Card>
 
-        {isConnected() && rewardAmount && (
+        {!!ethereum && rewardAmount && (
           <Card>
             <CardHeader mb={[3, 4]}>
               <Text fontWeight="bold" fontSize="xl" color="primary.500">
@@ -277,12 +275,7 @@ const Stake: React.FC = () => {
         />
       )}
       {isOpenClaim && rewardAmount && (
-        <ClaimPopup
-          isOpen={isOpenClaim}
-          claimableAmount={rewardAmount}
-          onClose={onCloseClaim}
-          onSuccess={onSuccess}
-        />
+        <ClaimPopup isOpen={isOpenClaim} claimableAmount={rewardAmount} onClose={onCloseClaim} onSuccess={onSuccess} />
       )}
       {isOpenRestake && rewardAmount && (
         <RestakePopup

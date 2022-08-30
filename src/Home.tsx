@@ -1,11 +1,4 @@
-import {
-  Box,
-  Container,
-  Drawer,
-  DrawerContent,
-  useColorModeValue,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Container, Drawer, DrawerContent, useColorModeValue, useDisclosure } from "@chakra-ui/react";
 import { DepositProposal } from "components/governance/DepositProposal";
 import NewProposal from "components/governance/NewProposal";
 import Proposal from "components/governance/Proposal";
@@ -28,7 +21,7 @@ import { AiOutlineHistory, AiOutlineSwap } from "react-icons/ai";
 import { FiCompass, FiGift, FiTrendingUp } from "react-icons/fi";
 import { RiGovernmentLine } from "react-icons/ri";
 import { Route, Routes } from "react-router-dom";
-import { useWallet } from "use-wallet";
+import { ChainUnsupportedError, useWallet } from "use-wallet";
 import Web3 from "web3";
 interface LinkItemProps {
   name: string;
@@ -47,35 +40,59 @@ const LinkItems: Array<LinkItemProps> = [
 
 export default function Station() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const wallet = useWallet();
+  const wallet = useWallet<any>();
 
-  const {
-    isOpen: isOpenSwitchNetwork,
-    onOpen: onOpenSwitchNetwork,
-    onClose: onCloseSwitchNetwork,
-  } = useDisclosure();
-  const switchChain = useCallback(() => {
-    if (wallet.chainId !== Web3.utils.hexToNumber(configs.NETWORK.chainId) && wallet.ethereum) {
-      onOpenSwitchNetwork();
-    }
-  }, [onOpenSwitchNetwork, wallet]);
-  useEffect(switchChain, [switchChain]);
+  const { isOpen: isOpenSwitchNetwork, onOpen: onOpenSwitchNetwork, onClose: onCloseSwitchNetwork } = useDisclosure();
+
   useEffect(() => {
+    if ((window?.ethereum as any)?.isConnected()) {
+      //@ts-ignore
+      wallet.connect();
+    }
+  }, []);
+
+  function switchEthereumChain(chainId: string) {
+    if (window?.ethereum?.request)
+      return window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: chainId }],
+      });
+  }
+  function addEthereumChain(params: any) {
+    if (window?.ethereum?.request)
+      return window?.ethereum?.request({
+        method: "wallet_addEthereumChain",
+        params: params,
+      });
+  }
+  const checkNetwork = useCallback(async () => {
+    if (wallet.error instanceof ChainUnsupportedError) {
+      switchEthereumChain(Web3.utils.numberToHex(configs.CHAIN_ID))
+        ?.then(() => {
+          //@ts-ignore
+          wallet.connect();
+        })
+        .catch((err) => {
+          if (err.code === 4902) {
+            addEthereumChain([configs.NETWORK])?.then(
+              //@ts-ignore
+              wallet.connect()
+            );
+          }
+        });
+    }
     if (wallet.ethereum) {
       web3.setProvider(wallet.ethereum);
     }
-    window.addEventListener("error", switchChain);
-    return () => {
-      window.removeEventListener("error", switchChain);
-    };
-  }, [switchChain, wallet]);
+  }, [wallet]);
+
+  useEffect(() => {
+    checkNetwork();
+  }, [checkNetwork]);
+
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-      <SidebarContent
-        LinkItems={LinkItems}
-        onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
-      />
+      <SidebarContent LinkItems={LinkItems} onClose={() => onClose} display={{ base: "none", md: "block" }} />
       <Drawer
         autoFocus={false}
         isOpen={isOpen}

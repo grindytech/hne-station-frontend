@@ -23,8 +23,8 @@ import { getDAOContract } from "contracts/contracts";
 export default function ProposalDetail() {
   const { proposalId } = useParams();
 
-  const { account, isConnected } = useWallet();
-  const { admin, adminLoading } = useIsAdmin({ enabled: isConnected(), key: String(account) });
+  const { account, ethereum } = useWallet();
+  const { admin, adminLoading } = useIsAdmin({ enabled: !! ethereum, key: String(account) });
 
   const { data: proposal, isFetching: proposalRefetching } = useQuery(
     ["getProposal", proposalId],

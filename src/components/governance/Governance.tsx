@@ -14,8 +14,8 @@ import { GrUserAdmin } from "react-icons/gr";
 export default function Governance() {
   const [status, setStatus] = useState(ProposalStatus.Voting);
   const { hash } = useLocation();
-  const { account, isConnected } = useWallet();
-  const { admin, adminLoading } = useIsAdmin({ enabled: isConnected(), key: String(account) });
+  const { account, ethereum } = useWallet();
+  const { admin, adminLoading } = useIsAdmin({ enabled: !! ethereum, key: String(account) });
   useEffect(() => {
     const section = String(hash).substring(1);
     if (section === "deposit") {

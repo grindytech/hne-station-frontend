@@ -19,13 +19,13 @@ export const pendingWithdrawQueryKey = "getUserPendingWithdraw";
 export const pendingClaimQueryKey = "getUserPendingClaim";
 
 const Withdrawal: React.FC<Props> = ({ isHideNumbers, onSuccess }) => {
-  const { isConnected, account } = useWallet();
+  const { ethereum, account } = useWallet();
   const {
     data: pendingWithdraws,
     isLoading,
     refetch: refetchPendingWithdraws,
   } = useQuery(pendingWithdrawQueryKey, () => getUserPendingWithdraw(0, account || ""), {
-    enabled: isConnected(),
+    enabled: !! ethereum,
   });
 
   const {
@@ -33,7 +33,7 @@ const Withdrawal: React.FC<Props> = ({ isHideNumbers, onSuccess }) => {
     isLoading: isLoadingClaims,
     refetch: refetchPendingClaims,
   } = useQuery([pendingClaimQueryKey, account], () => getUserPendingClaim(0, account || ""), {
-    enabled: isConnected(),
+    enabled: !! ethereum,
   });
 
   const isShow =

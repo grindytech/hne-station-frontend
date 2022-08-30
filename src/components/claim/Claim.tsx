@@ -45,7 +45,7 @@ import { heStatsService } from "services/heStats";
 // import SwitchVersion from "components/SwitchVersion";
 
 const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
-  const { isConnected, account } = useWallet();
+  const { ethereum, account } = useWallet();
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     const interval = setInterval(() => {
@@ -76,7 +76,7 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     isLoading: isLoadingUserInfo,
     refetch: refetchUserInfo,
   } = useQuery(["getUserTotalAmount", account], () => getUserTotalAmount(account || ""), {
-    enabled: isConnected(),
+    enabled: !! ethereum,
   });
 
   const {
@@ -87,7 +87,7 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     ["getUserTotalWithdrawnAmount", account],
     () => getUserWithdrawnAmount(account || ""),
     {
-      enabled: isConnected(),
+      enabled: !! ethereum,
     }
   );
 
@@ -96,14 +96,14 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     refetch: refetchClaimableAmount,
     isLoading: isLoadingClaimableAmount,
   } = useQuery([getClaimableAmountQueryKey, account], () => getClaimableAmount(account || ""), {
-    enabled: isConnected(),
+    enabled: !! ethereum,
   });
 
   const { data: startTime = 0, isLoading: isLoadingStartTime } = useQuery(
     "getStartTime",
     () => getStartTime(),
     {
-      enabled: isConnected(),
+      enabled: !! ethereum,
     }
   );
 
@@ -118,7 +118,7 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
   });
 
   const onClick = () => {
-    if (isConnected()) {
+    if (!! ethereum) {
       mutate({ address: account || "" });
     }
   };
@@ -152,7 +152,7 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
               Withdrawn amount
             </Text>
             <Skeleton isLoaded={!isLoadingUserWithdrawnAmount}>
-              {isConnected() && userWithdrawnAmount !== undefined ? (
+              {!! ethereum && userWithdrawnAmount !== undefined ? (
                 <HStack alignItems="baseline">
                   <Icon w="24px" h="24px" alignSelf={"center"}>
                     <HEIcon />
@@ -173,7 +173,7 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
           <ClaimableAmount isLoading={isLoadingClaimableAmount} claimableAmount={claimableAmount} />
         </Stack>
 
-        {isConnected() ? (
+        {!! ethereum ? (
           <HStack>
             <Button
               as={ Link}

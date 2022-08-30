@@ -42,7 +42,7 @@ interface SidebarContentProps {
 }
 
 export const SidebarContent = ({ onClick }: SidebarContentProps) => {
-  const { isConnected, account, reset } = useWallet();
+  const { ethereum, account, reset } = useWallet();
   const toast = useCustomToast();
   const { data: heBalance = 0, isRefetching: heBalanceFetching } = useQuery(
     ["getHEAccountBalance", account],
@@ -51,12 +51,12 @@ export const SidebarContent = ({ onClick }: SidebarContentProps) => {
       return parseInt(String(balance ?? 0));
     },
     {
-      enabled: isConnected(),
+      enabled: !! ethereum,
     }
   );
   return (
     <Stack justifyContent="center" alignItems="center" fontWeight="semibold">
-      {isConnected() && account ? (
+      {!! ethereum && account ? (
         <Menu>
           <ButtonGroup color="primary.500" isAttached>
             <Button size="sm">{numeralFormat(heBalance)} HE</Button>

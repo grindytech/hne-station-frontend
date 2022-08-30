@@ -39,7 +39,7 @@ import { gaEvent } from "utils/gAnalytics";
 import { colorsUtil, convertToContractValue, formatDate, numeralFormat } from "utils/utils";
 
 function DepositForm({ proposalId }: { proposalId: string }) {
-  const { account, isConnected } = useWallet();
+  const { account, ethereum } = useWallet();
   const [amount, setAmount] = useState<string>();
   const [approving, setApproving] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -56,7 +56,7 @@ function DepositForm({ proposalId }: { proposalId: string }) {
       return parseInt(String(balance ?? 0));
     },
     {
-      enabled: isConnected(),
+      enabled: !! ethereum,
     }
   );
   // const { data: minimumDeposit, isFetching: minDepositFetching } = useQuery(
@@ -200,7 +200,7 @@ function DepositForm({ proposalId }: { proposalId: string }) {
             </Skeleton>
           </HStack>
 
-          {!isConnected() ? (
+          {!!! ethereum ? (
             <ConnectWalletButton w="full" />
           ) : approved ? (
             <Button

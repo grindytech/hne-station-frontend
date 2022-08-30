@@ -33,7 +33,7 @@ interface Props {
 }
 
 const ClaimPopup: React.FC<Props> = ({ isOpen, claimableAmount, onClose, onSuccess }) => {
-  const { isConnected, account } = useWallet();
+  const { ethereum, account } = useWallet();
   const toast = useCustomToast();
   const [value, setValue] = useState<number | string>("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -59,7 +59,7 @@ const ClaimPopup: React.FC<Props> = ({ isOpen, claimableAmount, onClose, onSucce
   // }, [queryClient]);
 
   // const onClick = () => {
-  //   if (Number(value) > 0 && isConnected()) {
+  //   if (Number(value) > 0 && !! ethereum) {
   //     mutate({ poolId: 0, amount: Number(value), address: account || "" });
   //   }
   // };

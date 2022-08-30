@@ -8,6 +8,7 @@ export interface Configs {
   HE_STAKE_CONTRACT: string;
   COMMUNITY_AIRDROP_CONTRACT: string;
   PROVIDER: string;
+  CHAIN_ID: number;
   NETWORK: any;
   BUSD_CONTRACT: string;
   WBNB_CONTRACT: string;
