@@ -2,7 +2,7 @@ import { Box, HStack, Icon, Skeleton, Stack, Tag, Text, Tooltip, VStack } from "
 import Card from "components/card/Card";
 import { MultiProgress } from "components/progressMultiBar/MultiProgress";
 import { ProgressBar } from "components/progressMultiBar/ProgressBar";
-import { getDailyReward, getPoolInfo } from "contracts/stake";
+import { getDailyReward, getDailyRewardTime, getPoolInfo } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
 import { useQuery } from "react-query";
 import { heStatsService } from "services/heStats";
@@ -21,7 +21,7 @@ export default function HeStats() {
   );
   const { data: dailyReward = 0, isLoading: isLoadingDailyReward } = useQuery(
     ["getDailyReward", account],
-    () => getDailyReward(),
+    () => getDailyRewardTime(),
     {}
   );
   const estimatedRewards = poolInfo

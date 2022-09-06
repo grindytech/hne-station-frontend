@@ -31,11 +31,11 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   // { key: "/", name: "Home", icon: FiHome },
   { key: "/stake", name: "Stake", icon: FiTrendingUp },
-  { key: "/governance", name: "Governance", icon: RiGovernmentLine },
-  { key: "/histories", name: "Histories", icon: AiOutlineHistory },
-  { key: "/private-claim", name: "Strategic Partnerships", icon: FiCompass },
-  { key: "/airdrop", name: "Airdrop", icon: FiGift },
-  { key: "/swap", name: "Swap", icon: AiOutlineSwap },
+  // { key: "/governance", name: "Governance", icon: RiGovernmentLine },
+  // { key: "/histories", name: "Histories", icon: AiOutlineHistory },
+  // { key: "/private-claim", name: "Strategic Partnerships", icon: FiCompass },
+  // { key: "/airdrop", name: "Airdrop", icon: FiGift },
+  // { key: "/swap", name: "Swap", icon: AiOutlineSwap },
 ];
 
 export default function Station() {

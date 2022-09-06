@@ -61,6 +61,13 @@ export const getDailyReward = async (): Promise<number> => {
   return dailyReward;
 };
 
+export const getDailyRewardTime = async (): Promise<number> => {
+  const data = await stakeContract().methods.HePerBlockTime().call();
+  const dailyReward = (safeAmount({ str: data }) * TOTAL_SECONDS_IN_DAY);
+
+  return dailyReward;
+};
+
 export const stakeHE = async ({
   poolId,
   amount,
@@ -204,8 +211,8 @@ export const restake = async ({
 };
 
 export const getStakingRewardAmount = async (poolId: number, address: string): Promise<number> => {
-  const data = await stakeContract().methods.pendingToken(poolId, address).call();
-
+  const time = parseInt(String(Date.now() / 1e3));
+  const data = await stakeContract().methods.pendingToken(poolId, address, time).call();
   return safeAmount({ str: data });
 };
 

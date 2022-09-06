@@ -14,7 +14,7 @@ import HEStats from "components/stake/heStats/HEStats";
 import History from "components/stake/history/History";
 import PoolInfo from "components/stake/pool/PoolInfo";
 import Stake from "components/stake/Stake";
-import { getDailyReward, getPoolInfo } from "contracts/stake";
+import { getDailyReward, getDailyRewardTime, getPoolInfo } from "contracts/stake";
 import { useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import { useQuery } from "react-query";
@@ -44,7 +44,7 @@ const Home = () => {
 
   const { data: dailyReward = 0, isLoading: isLoadingDailyReward } = useQuery(
     ["getDailyReward", wallet.account],
-    () => getDailyReward(),
+    () => getDailyRewardTime(),
     {}
   );
 
