@@ -89,7 +89,7 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     {
       enabled: !! ethereum,
     }
-  );main
+  );
 
   const {
     data: userWithdrawnAmount,
