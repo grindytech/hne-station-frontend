@@ -1,4 +1,14 @@
-import { Box, HStack, Icon, Skeleton, Stack, Tag, Text, Tooltip, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Icon,
+  Skeleton,
+  Stack,
+  Tag,
+  Text,
+  Tooltip,
+  VStack,
+} from "@chakra-ui/react";
 import Card from "components/card/Card";
 import { MultiProgress } from "components/progressMultiBar/MultiProgress";
 import { ProgressBar } from "components/progressMultiBar/ProgressBar";
@@ -28,16 +38,13 @@ export default function HeStats() {
     ? ((dailyReward * 365) / (poolInfo?.balancePool || 1)) * 100
     : 0;
 
-  const { data: heExternalStats, isLoading: isLoadingHEExternalStats } = useQuery(
-    "getHEExternalStats",
-    async () => await heStatsService.heStats(),
-    {
+  const { data: heExternalStats, isLoading: isLoadingHEExternalStats } =
+    useQuery("getHEExternalStats", async () => await heStatsService.heStats(), {
       onError: (error) => {
         toast.error("Cannot connect to server!");
       },
-    }
-  );
-  const { data: heInfo = {}, isLoading: isLoadingHEPrice } = useQuery(
+    });
+  const { data: heInfo = { price: 0 }, isLoading: isLoadingHEPrice } = useQuery(
     "getHEPrice",
     async () => await heStatsService.hePrice(),
     {
@@ -91,7 +98,9 @@ export default function HeStats() {
                 <Text>Burned</Text>
               </HStack>
             </Tooltip>
-            <Tooltip label={String(numeralFormat(Number(poolInfo?.balancePool)))}>
+            <Tooltip
+              label={String(numeralFormat(Number(poolInfo?.balancePool)))}
+            >
               <HStack>
                 <Icon color="green.400" as={BsCircleFill} />
                 <Text>Stake</Text>
@@ -118,8 +127,16 @@ export default function HeStats() {
           width="full"
           height="5px"
         >
-          <MultiProgress overflow="hidden" borderRadius={15} width="full" height="full">
-            <ProgressBar color="red.400" value={(Number(heBurned) / totalSupply) * 100} />
+          <MultiProgress
+            overflow="hidden"
+            borderRadius={15}
+            width="full"
+            height="full"
+          >
+            <ProgressBar
+              color="red.400"
+              value={(Number(heBurned) / totalSupply) * 100}
+            />
             <ProgressBar
               color="green.400"
               value={(Number(poolInfo?.balancePool) / totalSupply) * 100}
@@ -127,7 +144,9 @@ export default function HeStats() {
             <ProgressBar
               color="blue.400"
               value={
-                ((Number(circulating_supply) - Number(poolInfo?.balancePool)) / totalSupply) * 100
+                ((Number(circulating_supply) - Number(poolInfo?.balancePool)) /
+                  totalSupply) *
+                100
               }
             />
             <ProgressBar
@@ -135,7 +154,9 @@ export default function HeStats() {
               value={
                 100 -
                 (Number(poolInfo?.balancePool) / totalSupply) * 100 -
-                ((Number(circulating_supply) - Number(poolInfo?.balancePool)) / totalSupply) * 100 -
+                ((Number(circulating_supply) - Number(poolInfo?.balancePool)) /
+                  totalSupply) *
+                  100 -
                 (Number(heBurned) / totalSupply) * 100
               }
             />
@@ -149,7 +170,10 @@ export default function HeStats() {
           </Text>
           <Skeleton isLoaded={!isLoadingPoolInfo}>
             <Text color="primary.600" fontSize="xl" fontWeight="bold">
-              {poolInfo?.balancePool ? formatNumber(poolInfo?.balancePool, 1) : "--"} HE
+              {poolInfo?.balancePool
+                ? formatNumber(poolInfo?.balancePool, 1)
+                : "--"}{" "}
+              HE
             </Text>
           </Skeleton>
 

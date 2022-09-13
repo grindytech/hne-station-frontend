@@ -59,9 +59,13 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
   const toast = useCustomToast();
   const queryClient = useQueryClient();
 
-  const { isOpen: isOpenClaim, onClose: onCloseClaim, onOpen: onOpenClaim } = useDisclosure();
+  const {
+    isOpen: isOpenClaim,
+    onClose: onCloseClaim,
+    onOpen: onOpenClaim,
+  } = useDisclosure();
 
-  const { data: heInfo = {}, refetch: refetchHEPrice } = useQuery(
+  const { data: heInfo = { price: 0 }, refetch: refetchHEPrice } = useQuery(
     "getHEPrice",
     async () => await heStatsService.hePrice(),
     {
@@ -75,9 +79,13 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     data: userInfo,
     isLoading: isLoadingUserInfo,
     refetch: refetchUserInfo,
-  } = useQuery(["getUserTotalAmount", account], () => getUserTotalAmount(account || ""), {
-    enabled: isConnected(),
-  });
+  } = useQuery(
+    ["getUserTotalAmount", account],
+    () => getUserTotalAmount(account || ""),
+    {
+      enabled: isConnected(),
+    }
+  );
 
   const {
     data: userWithdrawnAmount,
@@ -95,9 +103,13 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     data: claimableAmount = 0,
     refetch: refetchClaimableAmount,
     isLoading: isLoadingClaimableAmount,
-  } = useQuery([getClaimableAmountQueryKey, account], () => getClaimableAmount(account || ""), {
-    enabled: isConnected(),
-  });
+  } = useQuery(
+    [getClaimableAmountQueryKey, account],
+    () => getClaimableAmount(account || ""),
+    {
+      enabled: isConnected(),
+    }
+  );
 
   const { data: startTime = 0, isLoading: isLoadingStartTime } = useQuery(
     "getStartTime",
@@ -134,7 +146,13 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     <VStack flex={1}>
       <Card flex={{ lg: 1 }}>
         <VStack mb={4} alignItems="flex-start">
-          <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
             <Text fontWeight="bold" fontSize="xl" color="primary.500">
               My HE Claiming
             </Text>
@@ -170,17 +188,15 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
               )}
             </Skeleton>
           </VStack>
-          <ClaimableAmount isLoading={isLoadingClaimableAmount} claimableAmount={claimableAmount} />
+          <ClaimableAmount
+            isLoading={isLoadingClaimableAmount}
+            claimableAmount={claimableAmount}
+          />
         </Stack>
 
         {isConnected() ? (
           <HStack>
-            <Button
-              as={ Link}
-              flex={1}
-              colorScheme="primary"
-              to="/stake"
-            >
+            <Button as={Link} flex={1} colorScheme="primary" to="/stake">
               Join Stake
             </Button>
             <Button
@@ -188,10 +204,16 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
               colorScheme="primary"
               variant="outline"
               onClick={onClick}
-              disabled={claimableAmount <= 0 || !!(startTime && now < startTime)}
+              disabled={
+                claimableAmount <= 0 || !!(startTime && now < startTime)
+              }
               isLoading={isClaiming}
             >
-              {startTime && now < startTime ? <Countdown date={startTime} daysInHours /> : "Claim"}
+              {startTime && now < startTime ? (
+                <Countdown date={startTime} daysInHours />
+              ) : (
+                "Claim"
+              )}
             </Button>
           </HStack>
         ) : (
@@ -199,7 +221,11 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
         )}
       </Card>
       <Card p={0}>
-        <Image src={MilestoneBanner} alt="milestone banner" borderRadius="10px" />
+        <Image
+          src={MilestoneBanner}
+          alt="milestone banner"
+          borderRadius="10px"
+        />
       </Card>
     </VStack>
   );
