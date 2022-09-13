@@ -63,9 +63,13 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
   const toast = useCustomToast();
   const queryClient = useQueryClient();
 
-  const { isOpen: isOpenClaim, onClose: onCloseClaim, onOpen: onOpenClaim } = useDisclosure();
+  const {
+    isOpen: isOpenClaim,
+    onClose: onCloseClaim,
+    onOpen: onOpenClaim,
+  } = useDisclosure();
 
-  const { data: heInfo = {}, refetch: refetchHEPrice } = useQuery(
+  const { data: heInfo = { price: 0 }, refetch: refetchHEPrice } = useQuery(
     "getHEPrice",
     async () => await heStatsService.hePrice(),
     {
@@ -79,9 +83,13 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     data: userInfo,
     isLoading: isLoadingUserInfo,
     refetch: refetchUserInfo,
-  } = useQuery(["getUserTotalAmount2", account], () => getUserTotalAmount(account || ""), {
-    enabled: isConnected(),
-  });
+  } = useQuery(
+    ["getUserTotalAmount2", account],
+    () => getUserTotalAmount(account || ""),
+    {
+      enabled: isConnected(),
+    }
+  );
 
   const {
     data: userWithdrawnAmount,
@@ -99,16 +107,24 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     data: claimableAmount = 0,
     refetch: refetchClaimableAmount,
     isLoading: isLoadingClaimableAmount,
-  } = useQuery(["getClaimOption1", account], () => getClaimableAmount(account || ""), {
-    enabled: isConnected(),
-  });
+  } = useQuery(
+    ["getClaimOption1", account],
+    () => getClaimableAmount(account || ""),
+    {
+      enabled: isConnected(),
+    }
+  );
   const {
     data: claimableAmount2 = 0,
     refetch: refetchClaimableAmount2,
     isLoading: isLoadingClaimableAmount2,
-  } = useQuery(["getClaimOption2", account], () => getClaimableOption2Amount(account || ""), {
-    enabled: isConnected(),
-  });
+  } = useQuery(
+    ["getClaimOption2", account],
+    () => getClaimableOption2Amount(account || ""),
+    {
+      enabled: isConnected(),
+    }
+  );
 
   const { data: startTime = 0, isLoading: isLoadingStartTime } = useQuery(
     "getStartTime",
@@ -127,15 +143,20 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
       if (error.code === 4001) toast.error("Please allow transaction!");
     },
   });
-  const { mutate: mutateOption2, isLoading: isOption2Claiming } = useMutation(claimOption2, {
-    onSuccess: () => {
-      toast.success(`Claim ${formatNumber(claimableAmount2)} HE successfully!`);
-      onSuccess();
-    },
-    onError: (error: ErrorContract) => {
-      if (error.code === 4001) toast.error("Please allow transaction!");
-    },
-  });
+  const { mutate: mutateOption2, isLoading: isOption2Claiming } = useMutation(
+    claimOption2,
+    {
+      onSuccess: () => {
+        toast.success(
+          `Claim ${formatNumber(claimableAmount2)} HE successfully!`
+        );
+        onSuccess();
+      },
+      onError: (error: ErrorContract) => {
+        if (error.code === 4001) toast.error("Please allow transaction!");
+      },
+    }
+  );
 
   const onClick = () => {
     if (isConnected()) {
@@ -159,7 +180,13 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
     <VStack flex={1}>
       <Card flex={{ lg: 1 }}>
         <VStack mb={4} alignItems="flex-start">
-          <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
             <Text fontWeight="bold" fontSize="xl" color="primary.500">
               My HE Claiming
             </Text>
@@ -198,7 +225,11 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
           <ClaimableAmount
             isLoading={isLoadingClaimableAmount || isLoadingClaimableAmount2}
             claimableAmount={
-              option === 1 ? claimableAmount : claimableAmount > 0 ? claimableAmount2 : 0
+              option === 1
+                ? claimableAmount
+                : claimableAmount > 0
+                ? claimableAmount2
+                : 0
             }
           />
         </Stack>
@@ -218,23 +249,33 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
                 <Stack spacing={5} direction="column">
                   <Radio size="md" colorScheme="primary" value={1}>
                     <Stack spacing={5} alignItems="center" direction="row">
-                      <Text color="gray.500" fontSize="sm" fontWeight="semibold">
+                      <Text
+                        color="gray.500"
+                        fontSize="sm"
+                        fontWeight="semibold"
+                      >
                         Option&nbsp;1:
                       </Text>
                       <Text color="gray.500" fontSize="sm">
-                        Old vesting mechanism, 5% per month - receive every month. The requirement
-                        under SAFT terms is that you support H&E promotion.
+                        Old vesting mechanism, 5% per month - receive every
+                        month. The requirement under SAFT terms is that you
+                        support H&E promotion.
                       </Text>
                     </Stack>
                   </Radio>
                   <Radio size="md" colorScheme="primary" value={2}>
                     <Stack spacing={5} alignItems="center" direction="row">
-                      <Text color="gray.500" fontSize="sm" fontWeight="semibold">
+                      <Text
+                        color="gray.500"
+                        fontSize="sm"
+                        fontWeight="semibold"
+                      >
                         Option&nbsp;2:
                       </Text>
                       <Text color="gray.500" fontSize="sm">
-                        New Vesting mechanism, pay all tokens at once, but you only get 50% of total
-                        tokens, and the remaining 50% of tokens are burned.
+                        New Vesting mechanism, pay all tokens at once, but you
+                        only get 50% of total tokens, and the remaining 50% of
+                        tokens are burned.
                       </Text>
                     </Stack>
                   </Radio>
@@ -260,7 +301,11 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
               }
               isLoading={isClaiming || isOption2Claiming}
             >
-              {startTime && now < startTime ? <Countdown date={startTime} daysInHours /> : "Claim"}
+              {startTime && now < startTime ? (
+                <Countdown date={startTime} daysInHours />
+              ) : (
+                "Claim"
+              )}
             </Button>
           </HStack>
         ) : (
@@ -268,7 +313,11 @@ const ClaimV2: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
         )}
       </Card>
       <Card p={0}>
-        <Image src={MilestoneBanner} alt="milestone banner" borderRadius="10px" />
+        <Image
+          src={MilestoneBanner}
+          alt="milestone banner"
+          borderRadius="10px"
+        />
       </Card>
     </VStack>
   );

@@ -25,6 +25,10 @@ const envConfigs =
     ? TestnetConfigs
     : MainnetConfigs;
 
-const configs = { ...envConfigs, DASHBOARD_API_URL: "https://service.he.onl" };
+const configs = {
+  ...envConfigs,
+  DASHBOARD_API_URL: "https://service.he.onl",
+  MP_API: "https://mpapi.heroesempires.com",
+};
 
 export default configs;
