@@ -59,7 +59,7 @@ const Stake: React.FC = () => {
   const showNumbers = () => setIsHideNumbers(false);
   const hideNumbers = () => setIsHideNumbers(true);
 
-  const { data: heInfo = {}, refetch: refetchHEPrice } = useQuery(
+  const { data: heInfo = { price: 0 }, refetch: refetchHEPrice } = useQuery(
     "getHEPrice",
     async () => await heStatsService.hePrice(),
     {

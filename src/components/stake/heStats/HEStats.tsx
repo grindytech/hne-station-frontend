@@ -18,7 +18,7 @@ interface Props {
 const HEStats: React.FC<Props> = ({ dailyReward }) => {
   const toast = useCustomToast();
 
-  const { data: heInfo = {}, isLoading: isLoadingHEPrice } = useQuery(
+  const { data: heInfo = { price: 0 }, isLoading: isLoadingHEPrice } = useQuery(
     "getHEPrice",
     async () => await heStatsService.hePrice(),
     {

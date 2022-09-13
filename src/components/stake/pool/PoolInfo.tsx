@@ -18,7 +18,7 @@ interface Props {
 const PoolInfo: React.FC<Props> = ({ isLoadingPoolBalance, poolBalance }) => {
   const toast = useCustomToast();
 
-  const { data: heInfo = {}, isLoading: isLoadingHEPrice } = useQuery(
+  const { data: heInfo = { price: 0 }, isLoading: isLoadingHEPrice } = useQuery(
     "getHEPrice",
     async () => await heStatsService.hePrice(),
     {
