@@ -244,9 +244,9 @@ const Stake: React.FC = () => {
 
               {rewardAmount && (
                 <Stack direction="column">
-                  <Button size="sm" colorScheme="primary" onClick={onOpenRestake}>
+                  {/* <Button size="sm" colorScheme="primary" onClick={onOpenRestake}>
                     Restake
-                  </Button>
+                  </Button> */}
                   <Button size="sm" colorScheme="primary" variant="ghost" onClick={onOpenClaim}>
                     Submit Claim
                   </Button>
@@ -277,14 +277,14 @@ const Stake: React.FC = () => {
       {isOpenClaim && rewardAmount && (
         <ClaimPopup isOpen={isOpenClaim} claimableAmount={rewardAmount} onClose={onCloseClaim} onSuccess={onSuccess} />
       )}
-      {isOpenRestake && rewardAmount && (
+      {/* {isOpenRestake && rewardAmount && (
         <RestakePopup
           isOpen={isOpenRestake}
           stakeableAmount={rewardAmount}
           onClose={onCloseRestake}
           onSuccess={onSuccess}
         />
-      )}
+      )} */}
     </>
   );
 };

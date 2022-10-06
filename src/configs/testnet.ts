@@ -3,11 +3,11 @@ import Web3 from "web3";
 
 const configs: Configs = {
   HE_CLAIM_PRIVATE_CONTRACT: "",
-  HE_CONTRACT: "0x8cA7b9e435F41eDC48e12D5d7F0F1Ba44F0e35Ab",
+  HE_CONTRACT: "0xE3942dDba8d8ff2c8b07875C483Dc6D3225d347b",
   PROVIDER: "https://fuji-rpc.doschain.com/",
   CHAIN_ID: 2508,
   HE_CLAIM_PRIVATE_CONTRACT_V2: "",
-  HE_STAKE_CONTRACT: "0xfe712b70A0c1Dc7764306d00cFdFdF6f5056de61",
+  HE_STAKE_CONTRACT: "0xDf0D61C55a2Dab966C4129370e96eB12425eF443",
   NETWORK: {
     chainId: Web3.utils.numberToHex(2508),
     rpcUrls: ["https://fuji-rpc.doschain.com/"],
