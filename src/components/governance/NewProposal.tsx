@@ -101,13 +101,17 @@ export default function NewProposal() {
     refetch: refetchApproved,
   } = useQuery(
     ["approved", account, initial],
-    () => erc20Approved(Number(initial), "HE", configs.GOVERNANCE_CONTRACT_V2, String(account)),
+    () => erc20Approved(Number(initial), "HE", configs.GOV.GOVERNANCE_CONTRACT_V2, String(account)),
     { enabled: !!account }
   );
   const approve = async () => {
     try {
       setApproving(true);
-      await erc20Approve("HE", configs.GOVERNANCE_CONTRACT_V2, String(account));
+      await erc20Approve(
+        "HE",
+        configs.GOV.GOVERNANCE_CONTRACT_V2,
+        String(account)
+      );
       await refetchApproved();
       toast.success("Approve successfully");
     } catch (error) {
@@ -138,12 +142,17 @@ export default function NewProposal() {
                 </Link>
               </AlertDescription>
             </Alert>
-            <FormControl isInvalid={title !== undefined && !!titleError} colorScheme="primary">
+            <FormControl
+              isInvalid={title !== undefined && !!titleError}
+              colorScheme="primary"
+            >
               <HStack w="full" justifyContent="space-between">
                 <FormLabel color="primary.500" htmlFor="title">
                   Title
                 </FormLabel>
-                <FormHelperText textAlign="right">{title ? title.length : 0}/150</FormHelperText>
+                <FormHelperText textAlign="right">
+                  {title ? title.length : 0}/150
+                </FormHelperText>
               </HStack>
               <Input
                 value={title}
@@ -156,7 +165,9 @@ export default function NewProposal() {
 
               <FormErrorMessage>{titleError}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={description !== undefined && !!descriptionError}>
+            <FormControl
+              isInvalid={description !== undefined && !!descriptionError}
+            >
               <HStack w="full" justifyContent="space-between">
                 <FormLabel color="primary.500" htmlFor="description">
                   Description
@@ -176,13 +187,18 @@ export default function NewProposal() {
 
               <FormErrorMessage>{descriptionError}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={initial !== undefined && !!initialError} colorScheme="primary">
+            <FormControl
+              isInvalid={initial !== undefined && !!initialError}
+              colorScheme="primary"
+            >
               <HStack justifyContent="space-between" alignItems="center">
                 <FormLabel margin={0} color="primary.500">
                   <HStack alignItems="center">
                     <Text>Initial deposit </Text>
                     <Tooltip
-                      label={`You need ${numeralFormat(Number(initial))} HE to initial a proposal`}
+                      label={`You need ${numeralFormat(Number(initial))} ${
+                        configs.TOKEN_SYMBOL
+                      } to initial a proposal`}
                       fontSize="sm"
                     >
                       <InfoOutlineIcon />
@@ -196,7 +212,7 @@ export default function NewProposal() {
                 </Skeleton>
               </HStack>
             </FormControl>
-            {!!! ethereum ? (
+            {!!!ethereum ? (
               <ConnectWalletButton w="full" />
             ) : initialError ? (
               <Button w="full" disabled colorScheme="primary">
@@ -207,7 +223,12 @@ export default function NewProposal() {
                 onClick={createProposalHandle}
                 w="full"
                 isLoading={loading}
-                disabled={!!titleError || !!descriptionError || !!initialError || loading}
+                disabled={
+                  !!titleError ||
+                  !!descriptionError ||
+                  !!initialError ||
+                  loading
+                }
                 colorScheme="primary"
               >
                 {"New proposal"}

@@ -17,8 +17,9 @@ import governanceV2 from "./governanceV2.json";
 
 import configs from "configs";
 
-export const web3 = new Web3(new Web3.providers.HttpProvider(CONFIGS.PROVIDER));
-export const httpWeb3 = new Web3(new Web3.providers.HttpProvider(CONFIGS.PROVIDER));
+const PROVIDER = CONFIGS.DEFAULT_NETWORK().rpcUrls[0];
+export const web3 = new Web3(new Web3.providers.HttpProvider(PROVIDER));
+export const httpWeb3 = new Web3(new Web3.providers.HttpProvider(PROVIDER));
 
 interface SafeAmountParams {
   str: string;
@@ -30,24 +31,40 @@ export const heContract = () => {
   return new web3.eth.Contract(erc20 as AbiItem[], CONFIGS.HE_CONTRACT);
 };
 export const claimPrivateContract = () => {
-  return new web3.eth.Contract(claimPrivate as AbiItem[], CONFIGS.HE_CLAIM_PRIVATE_CONTRACT);
+  return new web3.eth.Contract(
+    claimPrivate as AbiItem[],
+    CONFIGS.HE_CLAIM_PRIVATE_CONTRACT
+  );
 };
 export const claimPrivateContractV2 = () => {
-  return new web3.eth.Contract(claimPrivateV2 as AbiItem[], CONFIGS.HE_CLAIM_PRIVATE_CONTRACT_V2);
+  return new web3.eth.Contract(
+    claimPrivateV2 as AbiItem[],
+    CONFIGS.HE_CLAIM_PRIVATE_CONTRACT_V2
+  );
 };
 export const erc20Contract = (address: string) => {
   return new web3.eth.Contract(erc20 as AbiItem[], address);
 };
 export const factoryV2Contract = () => {
-  return new web3.eth.Contract(factoryV2 as AbiItem[], configs.FACTORY_V2_CONTRACT);
+  return new web3.eth.Contract(
+    factoryV2 as AbiItem[],
+    configs.SWAP.FACTORY_V2_CONTRACT
+  );
 };
 export const routerV2Contract = () => {
-  return new web3.eth.Contract(routerV2 as AbiItem[], configs.ROUTER_V2_CONTRACT);
+  return new web3.eth.Contract(
+    routerV2 as AbiItem[],
+    configs.SWAP.ROUTER_V2_CONTRACT
+  );
 };
 export const lpPoolContract = (address: string) => {
   return new web3.eth.Contract(lpPool as AbiItem[], address);
 };
-export const safeAmount = ({ str, decimal = 18, significant = 6 }: SafeAmountParams) => {
+export const safeAmount = ({
+  str,
+  decimal = 18,
+  significant = 6,
+}: SafeAmountParams) => {
   //* cut string to 6
   significant = significant || 6;
   //* cut string to
@@ -67,7 +84,11 @@ export const getHEAccountBalance = async (token: string, account: string) => {
   let balance = await erc20Contract(address).methods.balanceOf(account).call();
   return safeAmount({ str: balance, decimal });
 };
-export const getErc20Balance = async (address: string, decimal: number, account: string) => {
+export const getErc20Balance = async (
+  address: string,
+  decimal: number,
+  account: string
+) => {
   let balance = await erc20Contract(address).methods.balanceOf(account).call();
   return safeAmount({ str: balance, decimal });
 };
@@ -78,21 +99,34 @@ export const getETHBalance = async (address: string) => {
 };
 
 export const communityAirdropContract = () => {
-  return new web3.eth.Contract(communityAirdrop as AbiItem[], CONFIGS.COMMUNITY_AIRDROP_CONTRACT);
+  return new web3.eth.Contract(
+    communityAirdrop as AbiItem[],
+    CONFIGS.COMMUNITY_AIRDROP_CONTRACT
+  );
 };
 
 export const governanceContract = () => {
-  return new web3.eth.Contract(governance as AbiItem[], CONFIGS.GOVERNANCE_CONTRACT);
+  return new web3.eth.Contract(
+    governance as AbiItem[],
+    CONFIGS.GOV.GOVERNANCE_CONTRACT
+  );
 };
 
 export const governanceContractV2 = () => {
-  return new web3.eth.Contract(governanceV2 as AbiItem[], CONFIGS.GOVERNANCE_CONTRACT_V2);
+  return new web3.eth.Contract(
+    governanceV2 as AbiItem[],
+    CONFIGS.GOV.GOVERNANCE_CONTRACT_V2
+  );
 };
 
 export const getDAOContract = (id: number) => {
-  return id >= CONFIGS.BEGIN_V2_ID ? governanceContractV2() : governanceContract();
+  return id >= CONFIGS.GOV.BEGIN_V2_ID
+    ? governanceContractV2()
+    : governanceContract();
 };
 
 export const getDAOContractAddress = (id: number) => {
-  return id >= CONFIGS.BEGIN_V2_ID ? CONFIGS.GOVERNANCE_CONTRACT_V2 : CONFIGS.GOVERNANCE_CONTRACT;
+  return id >= CONFIGS.GOV.BEGIN_V2_ID
+    ? CONFIGS.GOV.GOVERNANCE_CONTRACT_V2
+    : CONFIGS.GOV.GOVERNANCE_CONTRACT;
 };

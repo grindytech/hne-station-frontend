@@ -20,7 +20,7 @@ import { FiArrowUpRight, FiDelete } from "react-icons/fi";
 
 export type Transaction = {
   txHash: string;
-  type: "swap" | "approve";
+  type: "swap" | "approve" | "bridge";
   status: "pending" | "success" | "fail" | "rejected";
   token1: string;
   token2: string;
@@ -38,7 +38,12 @@ export default function TxHistories({
 
   return (
     <>
-      <Link onClick={onOpen} color={"gray.500"} variant="link" _focus={{ border: "none" }}>
+      <Link
+        onClick={onOpen}
+        color={"gray.500"}
+        variant="link"
+        _focus={{ border: "none" }}
+      >
         <AiOutlineHistory display="inline-block" />
       </Link>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -55,17 +60,30 @@ export default function TxHistories({
                   <Text color="gray" fontSize="sm" fontWeight="semibold">
                     {histories.length} transactions
                   </Text>
-                  <Button size="sm" rightIcon={<FiDelete />} onClick={onClear} variant="outline">
+                  <Button
+                    size="sm"
+                    rightIcon={<FiDelete />}
+                    onClick={onClear}
+                    variant="outline"
+                  >
                     Clear all
                   </Button>
                 </HStack>
                 <VStack w="full" padding={5}>
                   {[...histories].reverse().map((h, i) => (
-                    <HStack key={h.txHash ?? i} w="full" justifyContent="space-between">
+                    <HStack
+                      key={h.txHash ?? i}
+                      w="full"
+                      justifyContent="space-between"
+                    >
                       <Link
                         target={h.txHash ? "_blank" : ""}
                         href={
-                          h.txHash ? `${configs.NETWORK.blockExplorerUrls}/tx/${h.txHash}` : "#"
+                          h.txHash
+                            ? `${
+                                configs.DEFAULT_NETWORK().blockExplorerUrls[0]
+                              }/tx/${h.txHash}`
+                            : "#"
                         }
                         display={"flex"}
                       >

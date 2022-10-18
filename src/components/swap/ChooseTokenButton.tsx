@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonProps,
   HStack,
   Icon,
   Menu,
@@ -14,71 +15,103 @@ import { ReactComponent as BNBCoin } from "assets/bnb_coin.svg";
 import { ReactComponent as BUSDCoin } from "assets/busd_coin.svg";
 import { ReactComponent as HECoin } from "assets/he_coin.svg";
 import { TOKEN_INFO } from "contracts/swap";
+import React, { useMemo } from "react";
 import { FiChevronDown } from "react-icons/fi";
 
-const listTokens = [
-  { token: "HE", icon: <HECoin />, name: TOKEN_INFO["HE"].name },
-  { token: "BUSD", icon: <BUSDCoin />, name: TOKEN_INFO["BUSD"].name },
-  { token: "BNB", icon: <BNBCoin />, name: TOKEN_INFO["BNB"].name },
+export type Token = {
+  key: string;
+  icon: React.ReactElement;
+  name: string;
+};
+
+const listTokensDefault: Token[] = [
+  { key: "HE", icon: <HECoin />, name: TOKEN_INFO["HE"].name },
+  { key: "BUSD", icon: <BUSDCoin />, name: TOKEN_INFO["BUSD"].name },
+  { key: "BNB", icon: <BNBCoin />, name: TOKEN_INFO["BNB"].name },
 ];
 
 type Props = {
   token: string;
   onChange: (token: string) => void;
+  buttonProps?: ButtonProps;
+  tokens?: Token[];
+  label?: string;
 };
 
-export default function ChooseTokenButton({ token, onChange }: Props) {
+export default function ChooseTokenButton({
+  token,
+  onChange,
+  buttonProps,
+  tokens,
+  label,
+}: Props) {
+  const listTokens = tokens || listTokensDefault;
+  const tokenInfo = useMemo(
+    () => listTokens.find((info) => info.key === token),
+    [listTokens, token]
+  );
   return (
-    <Stack>
-      <Stack position="relative">
-        <Menu>
-          <MenuButton
-            leftIcon={
+    <Menu>
+      <MenuButton
+        padding={5}
+        width="full"
+        variant="outline"
+        _focus={{ outline: "none" }}
+        as={Button}
+        {...buttonProps}
+      >
+        {label && (
+          <Text color="gray.600" fontWeight="normal" fontSize="xs" mb={1}>
+            {label}
+          </Text>
+        )}
+        <Button
+          width="full"
+          variant="ghost"
+          justifyContent="space-between"
+          alignItems="center"
+          leftIcon={
+            tokenInfo?.icon && (
               <Icon w={5} h={5}>
-                {token === "HE" && <HECoin />}
-                {token === "BUSD" && <BUSDCoin />}
-                {token === "BNB" && <BNBCoin />}
+                {tokenInfo?.icon}
               </Icon>
-            }
-            rightIcon={<FiChevronDown color="gray" />}
-            // onClick={isOpen ? onClose : onOpen}
-            variant="outline"
-            padding={5}
-            _focus={{ outline: "none" }}
-            as={Button}
-          >
+            )
+          }
+          rightIcon={<FiChevronDown color="gray" />}
+        >
+          <Text width="full" textAlign="left">
             {token}
-          </MenuButton>
-          <MenuList>
-            {listTokens.map(({ token: tk, icon, name }) => (
-              <MenuItem key={tk}>
-                <Button
-                  _focus={{ border: "none" }}
-                  disabled={tk === token}
-                  variant="base"
-                  onClick={() => {
-                    if (tk !== token) {
-                      onChange(tk);
-                    }
-                  }}
-                >
-                  <HStack spacing={5}>
-                    <Icon w={8} height={8}>
-                      {icon}
-                    </Icon>
-                    <VStack alignItems={"start"}>
-                      <Text>{tk}</Text>
-                      <Text color="gray.500" fontSize="xs">
-                        {name}
-                      </Text>
-                    </VStack>
-                  </HStack>
-                </Button>
-              </MenuItem>
-            ))}
-          </MenuList>
-        </Menu>
-      </Stack>
-    </Stack>
+          </Text>
+        </Button>
+      </MenuButton>
+      <MenuList>
+        {listTokens.map(({ key: tk, icon, name }) => (
+          <MenuItem key={tk}>
+            <Button
+              _focus={{ border: "none" }}
+              disabled={tk === token}
+              variant="base"
+              onClick={() => {
+                if (tk !== token) {
+                  onChange(tk);
+                }
+              }}
+            >
+              <HStack spacing={5}>
+                <Icon w={8} height={8}>
+                  {icon}
+                </Icon>
+                <VStack alignItems={"start"}>
+                  <Text>{tk}</Text>
+                  <Text color="gray.500" fontSize="xs">
+                    {name}
+                  </Text>
+                </VStack>
+              </HStack>
+            </Button>
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
   );
 }

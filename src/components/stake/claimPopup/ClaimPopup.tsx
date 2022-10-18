@@ -26,6 +26,7 @@ import NumberInput from "components/numberInput/NumberInput";
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
 import { useWallet } from "use-wallet";
 import { getStakingRewardAmountQueryKey } from "components/stake/Stake";
+import configs from "configs";
 
 interface Props {
   isOpen: boolean;
@@ -45,7 +46,11 @@ const ClaimPopup: React.FC<Props> = ({ isOpen, claimableAmount, onClose, onSucce
 
   const { mutate, isLoading } = useMutation(pendingClaimHE, {
     onSuccess: () => {
-      toast.success(`Submit claim ${formatNumber(Number(value))} HE successfully!`);
+      toast.success(
+        `Submit claim ${formatNumber(Number(value))} ${
+          configs.TOKEN_SYMBOL
+        } successfully!`
+      );
       setValue(0);
       if (errorMsg) {
         setErrorMsg("");
@@ -75,43 +80,64 @@ const ClaimPopup: React.FC<Props> = ({ isOpen, claimableAmount, onClose, onSucce
 
   return (
     <>
-    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
-      <ModalOverlay />
-      <ModalContent mx={3} textAlign="center">
-        <ModalHeader>Submit Claim</ModalHeader>
-        <ModalCloseButton disabled={isLoading} />
-        <ModalBody py="5">
-          <FormControl isInvalid={!!errorMsg}>
-            <HStack color="gray.500" fontSize="sm" justifyContent="space-between" mb="3">
-              <Text>Amount</Text>
-              <HStack>
-                <Icon w="1em" h="1em">
-                  <HEIcon />
-                </Icon>
-                <Text>{formatNumber(claimableAmount)}</Text>
-              </HStack>
-            </HStack>
-            <NumberInput value={value} onChange={(value) => setValue(value)} max={claimableAmount} />
-            <FormErrorMessage mt="0">{errorMsg}</FormErrorMessage>
-          </FormControl>
-        </ModalBody>
-        <ModalFooter justifyContent="center">
-          <Button colorScheme="primary" onClick={onClick} isLoading={isLoading}>
-            Submit Claim
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-    <Modal isOpen={isOpenInfo} onClose={onCloseAll} closeOnOverlayClick={false}>
+      <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
         <ModalOverlay />
-        <ModalContent>
-        <ModalHeader>Submit Claim</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text>Please wait 3 days before claiming HE. After that period, you can withdraw HE to your wallet.</Text>
+        <ModalContent mx={3} textAlign="center">
+          <ModalHeader>Submit Claim</ModalHeader>
+          <ModalCloseButton disabled={isLoading} />
+          <ModalBody py="5">
+            <FormControl isInvalid={!!errorMsg}>
+              <HStack
+                color="gray.500"
+                fontSize="sm"
+                justifyContent="space-between"
+                mb="3"
+              >
+                <Text>Amount</Text>
+                <HStack>
+                  <Icon w="1em" h="1em">
+                    <HEIcon />
+                  </Icon>
+                  <Text>{formatNumber(claimableAmount)}</Text>
+                </HStack>
+              </HStack>
+              <NumberInput
+                value={value}
+                onChange={(value) => setValue(value)}
+                max={claimableAmount}
+              />
+              <FormErrorMessage mt="0">{errorMsg}</FormErrorMessage>
+            </FormControl>
           </ModalBody>
           <ModalFooter justifyContent="center">
-            <Button colorScheme='teal' mr={3} onClick={onCloseAll}>
+            <Button
+              colorScheme="primary"
+              onClick={onClick}
+              isLoading={isLoading}
+            >
+              Submit Claim
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={isOpenInfo}
+        onClose={onCloseAll}
+        closeOnOverlayClick={false}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Submit Claim</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>
+              Please wait 3 days before claiming {configs.TOKEN_SYMBOL}. After
+              that period, you can withdraw {configs.TOKEN_SYMBOL} to your
+              wallet.
+            </Text>
+          </ModalBody>
+          <ModalFooter justifyContent="center">
+            <Button colorScheme="teal" mr={3} onClick={onCloseAll}>
               Close
             </Button>
           </ModalFooter>

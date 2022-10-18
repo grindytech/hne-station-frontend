@@ -34,7 +34,11 @@ export default function Depositors({ proposalId }: { proposalId?: string }) {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const d = await governanceService.getDepositors({ proposalId, page, size: 5 });
+      const d = await governanceService.getDepositors({
+        proposalId,
+        page,
+        size: 5,
+      });
       setData(d);
     } catch (error) {
       console.error(error);
@@ -77,7 +81,9 @@ export default function Depositors({ proposalId }: { proposalId?: string }) {
                           <Td>
                             <Link
                               target="_blank"
-                              href={`${configs.BSC_SCAN}/address/${item.userAddress}`}
+                              href={`${
+                                configs.DEFAULT_NETWORK().blockExplorerUrls[0]
+                              }/address/${item.userAddress}`}
                             >
                               {shorten(item.userAddress)}
                               <Icon as={FiArrowUpRight} />
@@ -94,7 +100,9 @@ export default function Depositors({ proposalId }: { proposalId?: string }) {
                   <Paginator
                     onChange={(p) => setPage(p)}
                     page={page}
-                    totalPage={Math.ceil(Number(data?.total) / Number(data?.size))}
+                    totalPage={Math.ceil(
+                      Number(data?.total) / Number(data?.size)
+                    )}
                   />
                 </HStack>
               </VStack>

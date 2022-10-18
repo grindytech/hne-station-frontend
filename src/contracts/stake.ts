@@ -55,14 +55,14 @@ export const getPoolInfo = async (poolId: number): Promise<PoolInfo> => {
 };
 
 export const getDailyReward = async (): Promise<number> => {
-  const data = await stakeContract().methods.HePerBlock().call();
+  const data = await stakeContract().methods.WDOSPerBlockTime().call();
   const dailyReward = (safeAmount({ str: data }) * TOTAL_SECONDS_IN_DAY) / 3;
 
   return dailyReward;
 };
 
 export const getDailyRewardTime = async (): Promise<number> => {
-  const data = await stakeContract().methods.HePerBlockTime().call();
+  const data = await stakeContract().methods.WDOSPerBlockTime().call();
   const dailyReward = (safeAmount({ str: data }) * TOTAL_SECONDS_IN_DAY);
 
   return dailyReward;

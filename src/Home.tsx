@@ -1,4 +1,11 @@
-import { Box, Container, Drawer, DrawerContent, useColorModeValue, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Drawer,
+  DrawerContent,
+  useColorModeValue,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { DepositProposal } from "components/governance/DepositProposal";
 import NewProposal from "components/governance/NewProposal";
 import Proposal from "components/governance/Proposal";
@@ -9,6 +16,7 @@ import WrongNetworkPopup from "components/wrongNetwork/WrongNetworkPopup";
 import configs from "configs";
 import { web3 } from "contracts/contracts";
 import Airdrop from "pages/Airdrop";
+import BridgePage from "pages/BridgePage";
 import Dashboard from "pages/Dashboard";
 import GovernancePage from "pages/Governance";
 import PrivateClaim from "pages/PrivateClaim";
@@ -35,15 +43,19 @@ const LinkItems: Array<LinkItemProps> = [
   // { key: "/histories", name: "Histories", icon: AiOutlineHistory },
   // { key: "/private-claim", name: "Strategic Partnerships", icon: FiCompass },
   // { key: "/airdrop", name: "Airdrop", icon: FiGift },
-  // { key: "/swap", name: "Swap", icon: AiOutlineSwap },
+  { key: "/swap", name: "Swap", icon: AiOutlineSwap },
+  { key: "/bridge", name: "Bridge", icon: AiOutlineSwap },
 ];
 
 export default function Station() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const wallet = useWallet<any>();
-
-  const { isOpen: isOpenSwitchNetwork, onOpen: onOpenSwitchNetwork, onClose: onCloseSwitchNetwork } = useDisclosure();
-
+  const {
+    isOpen: isOpenSwitchNetwork,
+    onOpen: onOpenSwitchNetwork,
+    onClose: onCloseSwitchNetwork,
+  } = useDisclosure();
+  const network = configs.DEFAULT_NETWORK();
   useEffect(() => {
     if ((window?.ethereum as any)?.isConnected()) {
       //@ts-ignore
@@ -67,14 +79,14 @@ export default function Station() {
   }
   const checkNetwork = useCallback(async () => {
     if (wallet.error instanceof ChainUnsupportedError) {
-      switchEthereumChain(Web3.utils.numberToHex(configs.CHAIN_ID))
+      switchEthereumChain(Web3.utils.numberToHex(network.chainIdNumber))
         ?.then(() => {
           //@ts-ignore
           wallet.connect();
         })
         .catch((err) => {
           if (err.code === 4902) {
-            addEthereumChain([configs.NETWORK])?.then(
+            addEthereumChain([network])?.then(
               //@ts-ignore
               wallet.connect()
             );
@@ -92,7 +104,11 @@ export default function Station() {
 
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-      <SidebarContent LinkItems={LinkItems} onClose={() => onClose} display={{ base: "none", md: "block" }} />
+      <SidebarContent
+        LinkItems={LinkItems}
+        onClose={() => onClose}
+        display={{ base: "none", md: "block" }}
+      />
       <Drawer
         autoFocus={false}
         isOpen={isOpen}
@@ -111,19 +127,29 @@ export default function Station() {
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         <Container maxW="container.lg" mb={3}>
-          <WrongNetworkPopup isOpen={isOpenSwitchNetwork} onClose={onCloseSwitchNetwork} />
+          <WrongNetworkPopup
+            isOpen={isOpenSwitchNetwork}
+            onClose={onCloseSwitchNetwork}
+          />
           <Routes>
             <Route path="/stake" element={<Stake />} />
             <Route path="/private-claim" element={<PrivateClaim />} />
             <Route path="/airdrop" element={<Airdrop />} />
             <Route path="/swap" element={<SwapPage />} />
+            <Route path="/bridge" element={<BridgePage />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/governance" element={<GovernancePage />} />
             <Route path="/histories" element={<UserHistories />} />
             <Route path="/proposal/new" element={<NewProposal />} />
             <Route path="/proposal/:proposalId" element={<Proposal />} />
-            <Route path="/proposal/:proposalId/deposit" element={<DepositProposal />} />
-            <Route path="/proposal/:proposalId/vote" element={<VoteProposal />} />
+            <Route
+              path="/proposal/:proposalId/deposit"
+              element={<DepositProposal />}
+            />
+            <Route
+              path="/proposal/:proposalId/vote"
+              element={<VoteProposal />}
+            />
           </Routes>
         </Container>
       </Box>

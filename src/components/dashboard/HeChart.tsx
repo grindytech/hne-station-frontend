@@ -1,5 +1,6 @@
 import { Box, Button, ButtonGroup, HStack, Select, Skeleton, Text, VStack } from "@chakra-ui/react";
 import Card from "components/card/Card";
+import configs from "configs";
 import { format } from "date-fns";
 import useCustomToast from "hooks/useCustomToast";
 import numeral from "numeral";
@@ -42,7 +43,9 @@ export default function HeChart() {
       <VStack w="full" spacing={5}>
         <HStack w="full" justifyContent="space-between" alignItems="center">
           <Text fontSize="lg" fontWeight="semibold" color="primary.500">
-            {dataType === "volume" ? "Transaction volume" : "HE price"}
+            {dataType === "volume"
+              ? "Transaction volume"
+              : `${configs.TOKEN_SYMBOL} price`}
           </Text>
           <Select
             onChange={(e) => setDateType(e.target.value)}
@@ -58,7 +61,10 @@ export default function HeChart() {
         <Box w="full" minHeight={400}>
           {chartData && (
             <ResponsiveContainer width="100%" height={400}>
-              <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <AreaChart
+                data={chartData}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+              >
                 <defs>
                   <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#7CC29A" stopOpacity={0.2} />
@@ -70,7 +76,10 @@ export default function HeChart() {
                   scale="time"
                   dataKey="0"
                   tickFormatter={(date: any) =>
-                    format(new Date(date), days === "1" ? "HH:00 MMM dd" : "MMM dd")
+                    format(
+                      new Date(date),
+                      days === "1" ? "HH:00 MMM dd" : "MMM dd"
+                    )
                   }
                   type="number"
                   tickLine={false}
@@ -80,12 +89,21 @@ export default function HeChart() {
                   axisLine={false}
                   tickLine={false}
                 />
-                <CartesianGrid vertical={false} strokeDasharray="0" strokeOpacity={0.4} />
+                <CartesianGrid
+                  vertical={false}
+                  strokeDasharray="0"
+                  strokeOpacity={0.4}
+                />
                 <Tooltip
                   separator=""
-                  formatter={(d: any) => numeralFormat(d, dataType === "volume" ? 0 : 6)}
+                  formatter={(d: any) =>
+                    numeralFormat(d, dataType === "volume" ? 0 : 6)
+                  }
                   labelFormatter={(date: any) =>
-                    format(new Date(date), days === "1" ? "HH:00 MM/dd/yyyy" : "MM/dd/yyyy")
+                    format(
+                      new Date(date),
+                      days === "1" ? "HH:00 MM/dd/yyyy" : "MM/dd/yyyy"
+                    )
                   }
                 />
                 <Area

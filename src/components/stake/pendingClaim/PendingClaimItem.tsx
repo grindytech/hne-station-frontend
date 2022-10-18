@@ -10,6 +10,7 @@ import { useWallet } from "use-wallet";
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
 import { TimeIcon } from "@chakra-ui/icons";
 import { CLAIMED_STATUS, DATE_TIME_FORMAT } from "constant";
+import configs from "configs";
 
 interface Props extends ClaimInfo {
   claimId: number;
@@ -37,7 +38,7 @@ const PendingClaimItem: React.FC<Props> = ({
 
   const { mutate, isLoading: isLoadingClaim } = useMutation(claimHE, {
     onSuccess: () => {
-      toast.success(`Claim ${amount} HE successfully!`);
+      toast.success(`Claim ${amount} ${configs.TOKEN_SYMBOL} successfully!`);
       onSuccess();
     }
     // onError: (error: ErrorContract) => {

@@ -31,7 +31,7 @@ export const formatNumber = (num: number, digits?: number) => {
     minimumFractionDigits: 0,
     maximumFractionDigits: 20,
   });
-  return trauncateFractionAndFormat(formatter.formatToParts(num), digits || 3);
+  return trauncateFractionAndFormat(formatter.formatToParts(num), digits || 6);
 };
 export const convertToContractValue = ({ amount, decimal = 18 }: ContractValueParams) => {
   const strVal = "" + amount;

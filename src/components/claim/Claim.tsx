@@ -42,6 +42,7 @@ import { ErrorContract } from "types";
 import Countdown from "react-countdown";
 import { Link } from "react-router-dom";
 import { heStatsService } from "services/heStats";
+import configs from "configs";
 // import SwitchVersion from "components/SwitchVersion";
 
 const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
@@ -109,7 +110,11 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
 
   const { mutate, isLoading: isClaiming } = useMutation(claimHE, {
     onSuccess: () => {
-      toast.success(`Claim ${formatNumber(claimableAmount)} HE successfully!`);
+      toast.success(
+        `Claim ${formatNumber(claimableAmount)} ${
+          configs.TOKEN_SYMBOL
+        } successfully!`
+      );
       onSuccess();
     },
     onError: (error: ErrorContract) => {
@@ -136,7 +141,7 @@ const Claim: React.FC<{ switchVersion: any }> = ({ switchVersion }) => {
         <VStack mb={4} alignItems="flex-start">
           <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
             <Text fontWeight="bold" fontSize="xl" color="primary.500">
-              My HE Claiming
+              My {configs.TOKEN_SYMBOL} Claiming
             </Text>
             {React.cloneElement(switchVersion)}
           </Box>

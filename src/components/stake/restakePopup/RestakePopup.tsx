@@ -24,6 +24,7 @@ import NumberInput from "components/numberInput/NumberInput";
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
 import { useWallet } from "use-wallet";
 import { getStakingRewardAmountQueryKey } from "components/stake/Stake";
+import configs from "configs";
 
 interface Props {
   isOpen: boolean;
@@ -41,7 +42,11 @@ const RestakePopup: React.FC<Props> = ({ isOpen, stakeableAmount, onClose, onSuc
 
   const { mutate, isLoading } = useMutation(restake, {
     onSuccess: () => {
-      toast.success(`Restake ${formatNumber(Number(value))} HE successfully!`);
+      toast.success(
+        `Restake ${formatNumber(Number(value))} ${
+          configs.TOKEN_SYMBOL
+        } successfully!`
+      );
       setValue(0);
       if (errorMsg) {
         setErrorMsg("");

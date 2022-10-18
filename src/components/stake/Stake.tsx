@@ -37,6 +37,7 @@ import ConnectWalletButton from "components/connectWalletButton/ConnectWalletBut
 import Withdrawal from "components/stake/withdrawal/Withdrawal";
 import History from "components/stake/history/History";
 import { heStatsService } from "services/heStats";
+import configs from "configs";
 
 export const getStakingRewardAmountQueryKey = "getStakingRewardAmount";
 
@@ -110,7 +111,7 @@ const Stake: React.FC = () => {
           <VStack mb={8} alignItems="flex-start">
             <HStack w="100%" justifyContent="space-between">
               <Text fontWeight="bold" fontSize="xl" color="primary.500">
-                My HE Staking
+                My {configs.TOKEN_SYMBOL} Staking
               </Text>
               {!!ethereum && (
                 <>
@@ -121,7 +122,10 @@ const Stake: React.FC = () => {
                     variant="ghost"
                     rightIcon={
                       <Icon>
-                        <path fill="currentColor" d={isHideNumbers ? mdiEyeOff : mdiEye} />
+                        <path
+                          fill="currentColor"
+                          d={isHideNumbers ? mdiEyeOff : mdiEye}
+                        />
                       </Icon>
                     }
                   >
@@ -158,12 +162,18 @@ const Stake: React.FC = () => {
                         <HEIcon />
                       </Icon>
                       <Text fontWeight="bold" fontSize="2xl">
-                        {isHideNumbers ? "**" : numeralFormat(userInfo.stakeAmount)}
+                        {isHideNumbers
+                          ? "**"
+                          : numeralFormat(userInfo.stakeAmount)}
                       </Text>
                     </HStack>
 
                     <Text fontSize="sm" color="gray.500">
-                      {isHideNumbers ? "" : `~$${numeralFormat(userInfo.stakeAmount * heInfo.price)}`}
+                      {isHideNumbers
+                        ? ""
+                        : `~$${numeralFormat(
+                            userInfo.stakeAmount * heInfo.price
+                          )}`}
                     </Text>
                   </HStack>
                 ) : (
@@ -187,7 +197,9 @@ const Stake: React.FC = () => {
                       </Text>
                     </HStack>
                     <Text fontSize="sm" color="gray.500">
-                      {isHideNumbers ? "" : `~$${numeralFormat(accountBalance * heInfo.price)}`}
+                      {isHideNumbers
+                        ? ""
+                        : `~$${numeralFormat(accountBalance * heInfo.price)}`}
                     </Text>
                   </HStack>
                 ) : (
@@ -238,7 +250,9 @@ const Stake: React.FC = () => {
                   <Icon w="1em" h="1em">
                     <HEIcon />
                   </Icon>
-                  <Text fontWeight="bold">{isHideNumbers ? "**" : formatNumber(rewardAmount)}</Text>
+                  <Text fontWeight="bold">
+                    {isHideNumbers ? "**" : formatNumber(rewardAmount)}
+                  </Text>
                 </HStack>
               </VStack>
 
@@ -247,7 +261,12 @@ const Stake: React.FC = () => {
                   {/* <Button size="sm" colorScheme="primary" onClick={onOpenRestake}>
                     Restake
                   </Button> */}
-                  <Button size="sm" colorScheme="primary" variant="ghost" onClick={onOpenClaim}>
+                  <Button
+                    size="sm"
+                    colorScheme="primary"
+                    variant="ghost"
+                    onClick={onOpenClaim}
+                  >
                     Submit Claim
                   </Button>
                 </Stack>
@@ -275,7 +294,12 @@ const Stake: React.FC = () => {
         />
       )}
       {isOpenClaim && rewardAmount && (
-        <ClaimPopup isOpen={isOpenClaim} claimableAmount={rewardAmount} onClose={onCloseClaim} onSuccess={onSuccess} />
+        <ClaimPopup
+          isOpen={isOpenClaim}
+          claimableAmount={rewardAmount}
+          onClose={onCloseClaim}
+          onSuccess={onSuccess}
+        />
       )}
       {/* {isOpenRestake && rewardAmount && (
         <RestakePopup

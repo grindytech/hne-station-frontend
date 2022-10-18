@@ -28,6 +28,7 @@ interface Props {
 
 const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose }) => {
   const wallet = useWallet<any>();
+  const network = configs.DEFAULT_NETWORK();
   function switchEthereumChain(chainId: string) {
     return wallet.ethereum.request({
       method: "wallet_switchEthereumChain",
@@ -41,14 +42,14 @@ const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose }) => {
     });
   }
   function changeNetwork() {
-    switchEthereumChain(String(configs.NETWORK.chainId))
+    switchEthereumChain(String(network.chainId))
       .then(() => {
         // @ts-ignore
         wallet.connect();
       })
       .catch((err: any) => {
         if (err.code === 4902) {
-          addEthereumChain([configs.NETWORK]).then(() => {
+          addEthereumChain([network]).then(() => {
             // @ts-ignore
             wallet.connect();
           });
@@ -56,31 +57,39 @@ const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose }) => {
       });
   }
   useEffect(() => {
-    if (wallet.ethereum && wallet.chainId === Web3.utils.hexToNumber(configs.NETWORK.chainId)) {
+    if (
+      wallet.ethereum &&
+      wallet.chainId === Web3.utils.hexToNumber(network.chainId)
+    ) {
       onClose();
     }
   }, [onClose, wallet]);
   return (
     <>
-      {wallet.ethereum && wallet.chainId !== Web3.utils.hexToNumber(configs.NETWORK.chainId) && (
-        <Alert status="warning">
-          <AlertIcon />
-          <AlertTitle>Wrong network!</AlertTitle>
-          <AlertDescription>
-            Please connect to{" "}
-            <Button variant="link" colorScheme="primary" onClick={changeNetwork}>
-              {configs.NETWORK.chainName}
-            </Button>
-          </AlertDescription>
-        </Alert>
-      )}
+      {wallet.ethereum &&
+        wallet.chainId !== Web3.utils.hexToNumber(network.chainId) && (
+          <Alert status="warning">
+            <AlertIcon />
+            <AlertTitle>Wrong network!</AlertTitle>
+            <AlertDescription>
+              Please connect to{" "}
+              <Button
+                variant="link"
+                colorScheme="primary"
+                onClick={changeNetwork}
+              >
+                {network.chainName}
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent textAlign="center">
           <ModalHeader>Wrong network</ModalHeader>
-          <ModalCloseButton _focus={{}}/>
+          <ModalCloseButton _focus={{}} />
           <ModalBody py="5">
-            <Text>Please switch to {configs.NETWORK.chainName}</Text>
+            <Text>Please switch to {network.chainName}</Text>
           </ModalBody>
           <ModalFooter justifyContent="center">
             <Button
@@ -88,7 +97,7 @@ const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose }) => {
               colorScheme="teal"
               leftIcon={<img width={32} height={32} src={BSC} alt="BSC logo" />}
             >
-              {configs.NETWORK.chainName}
+              {network.chainName}
             </Button>
           </ModalFooter>
         </ModalContent>

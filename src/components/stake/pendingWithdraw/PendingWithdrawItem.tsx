@@ -11,6 +11,7 @@ import { ReactComponent as HEIcon } from "assets/he_coin.svg";
 import { ErrorContract } from "types";
 import { useWallet } from "use-wallet";
 import { CLAIMED_STATUS, DATE_TIME_FORMAT } from "constant";
+import configs from "configs";
 
 interface Props extends WithdrawInfo {
   withdrawId: number;
@@ -40,7 +41,7 @@ const PendingWithdrawItem: React.FC<Props> = ({
 
   const { mutate, isLoading: isLoadingWithdraw } = useMutation(withdrawHE, {
     onSuccess: () => {
-      toast.success(`Withdraw ${amount} HE successfully!`);
+      toast.success(`Withdraw ${amount} ${configs.TOKEN_SYMBOL} successfully!`);
       onSuccess();
     },
     onError: (error: ErrorContract) => {

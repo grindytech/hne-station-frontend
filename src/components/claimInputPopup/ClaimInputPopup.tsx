@@ -23,6 +23,7 @@ import { formatNumber } from "utils/utils";
 import NumberInput from "components/numberInput/NumberInput";
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
 import { useWallet } from "use-wallet";
+import configs from "configs";
 
 interface Props {
   isOpen: boolean;
@@ -39,7 +40,11 @@ const StakeInputPopup: React.FC<Props> = ({ isOpen, onClose, onSuccess, claimabl
 
   const { mutate, isLoading } = useMutation(claimHE, {
     onSuccess: () => {
-      toast.success(`Claim ${formatNumber(Number(value))} HE successfully!`);
+      toast.success(
+        `Claim ${formatNumber(Number(value))} ${
+          configs.TOKEN_SYMBOL
+        } successfully!`
+      );
       setValue("");
       if (errorMsg) {
         setErrorMsg("");

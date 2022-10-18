@@ -28,10 +28,10 @@ export const App = () => {
         <UseWalletProvider
           connectors={{
             walletconnect: {
-              rpcUrl: CONFIGS.PROVIDER,
+              rpcUrl: CONFIGS.DEFAULT_NETWORK().rpcUrls[0],
             },
           }}
-          chainId={CONFIGS.CHAIN_ID}
+          chainId={CONFIGS.DEFAULT_NETWORK().chainIdNumber}
         >
           <BrowserRouter>
             <Station />

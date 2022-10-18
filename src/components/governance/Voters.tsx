@@ -39,7 +39,10 @@ export function Voters({ proposalId }: { proposalId: string }) {
   const { data: proposal } = useQuery(
     ["getProposal1", proposalId],
     async () => {
-      return await getProposal(getDAOContract(Number(proposalId)), String(proposalId));
+      return await getProposal(
+        getDAOContract(Number(proposalId)),
+        String(proposalId)
+      );
     },
     { enabled: !!proposalId }
   );
@@ -53,7 +56,12 @@ export function Voters({ proposalId }: { proposalId: string }) {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const d = await governanceService.getVoters({ proposalId, type: voteType, page, size: 5 });
+      const d = await governanceService.getVoters({
+        proposalId,
+        type: voteType,
+        page,
+        size: 5,
+      });
       setData(d);
     } catch (error) {
       console.error(error);
@@ -65,7 +73,11 @@ export function Voters({ proposalId }: { proposalId: string }) {
   const { data: countYes } = useQuery(
     ["countYes", proposalId],
     async () => {
-      const d = await governanceService.getVoters({ proposalId, type: VoteType.Pass, size: 0 });
+      const d = await governanceService.getVoters({
+        proposalId,
+        type: VoteType.Pass,
+        size: 0,
+      });
       return d.total;
     },
     {
@@ -75,7 +87,11 @@ export function Voters({ proposalId }: { proposalId: string }) {
   const { data: countNo } = useQuery(
     ["countNo", proposalId],
     async () => {
-      const d = await governanceService.getVoters({ proposalId, type: VoteType.Fail, size: 0 });
+      const d = await governanceService.getVoters({
+        proposalId,
+        type: VoteType.Fail,
+        size: 0,
+      });
       return d.total;
     },
     {
@@ -85,7 +101,11 @@ export function Voters({ proposalId }: { proposalId: string }) {
   const { data: countVeto } = useQuery(
     ["countVeto", proposalId],
     async () => {
-      const d = await governanceService.getVoters({ proposalId, type: VoteType.Veto, size: 0 });
+      const d = await governanceService.getVoters({
+        proposalId,
+        type: VoteType.Veto,
+        size: 0,
+      });
       return d.total;
     },
     {
@@ -163,13 +183,17 @@ export function Voters({ proposalId }: { proposalId: string }) {
                         <Td>
                           <Link
                             target="_blank"
-                            href={`${configs.BSC_SCAN}/address/${item.userAddress}`}
+                            href={`${
+                              configs.DEFAULT_NETWORK().blockExplorerUrls[0]
+                            }/address/${item.userAddress}`}
                           >
                             {shorten(item.userAddress)}
                             <Icon as={FiArrowUpRight} />
                           </Link>
                         </Td>
-                        <Td>{numeralFormat((item.amount / totalVotes()) * 100)}%</Td>
+                        <Td>
+                          {numeralFormat((item.amount / totalVotes()) * 100)}%
+                        </Td>
                       </Tr>
                     ))}
                   </Tbody>
@@ -180,7 +204,9 @@ export function Voters({ proposalId }: { proposalId: string }) {
                 <Paginator
                   onChange={(p) => setPage(p)}
                   page={page}
-                  totalPage={Math.ceil(Number(data?.total) / Number(data?.size))}
+                  totalPage={Math.ceil(
+                    Number(data?.total) / Number(data?.size)
+                  )}
                 />
               </HStack>
             </VStack>

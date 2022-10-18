@@ -35,11 +35,22 @@ import { VoteType } from "services/types/VoteType";
 import { useWallet } from "use-wallet";
 import { colorsUtil, formatDate, numeralFormat, shorten } from "utils/utils";
 
-function HistoryRow({ item, type }: { item: Deposit | Vote; type: "vote" | "deposit" }) {
+function HistoryRow({
+  item,
+  type,
+}: {
+  item: Deposit | Vote;
+  type: "vote" | "deposit";
+}) {
   return (
     <Tr w="full">
       <Td>
-        <Link target="_blank" href={`${configs.BSC_SCAN}/tx/${item.txHash}`}>
+        <Link
+          target="_blank"
+          href={`${configs.DEFAULT_NETWORK().blockExplorerUrls[0]}/tx/${
+            item.txHash
+          }`}
+        >
           {shorten(item.txHash)}
           <Icon as={FiArrowUpRight} />
         </Link>
@@ -166,8 +177,12 @@ export default function Histories() {
                     <Tr>
                       <Th color="primary.500">Tx hash</Th>
                       <Th color="primary.500">Proposal</Th>
-                      <Th color="primary.500">{type === "vote" ? "Power voting" : "Amount(HE)"}</Th>
-                      {type === "vote" && <Th color="primary.500">Vote option</Th>}
+                      <Th color="primary.500">
+                        {type === "vote" ? "Power voting" : "Amount(HE)"}
+                      </Th>
+                      {type === "vote" && (
+                        <Th color="primary.500">Vote option</Th>
+                      )}
                       <Th color="primary.500">Time</Th>
                     </Tr>
                   </Thead>
@@ -182,7 +197,9 @@ export default function Histories() {
                 <Paginator
                   onChange={(p) => setPage(p)}
                   page={page}
-                  totalPage={Math.ceil(Number(data?.total) / Number(data?.size))}
+                  totalPage={Math.ceil(
+                    Number(data?.total) / Number(data?.size)
+                  )}
                 />
               </HStack>
             </VStack>

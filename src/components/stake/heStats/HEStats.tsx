@@ -9,6 +9,7 @@ import CONFIGS from "configs";
 import { formatNumber } from "utils/utils";
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
 import { heStatsService } from "services/heStats";
+import configs from "configs";
 
 interface Props {
   isLoadingDailyReward: boolean;
@@ -46,13 +47,13 @@ const HEStats: React.FC<Props> = ({ dailyReward }) => {
     <Card>
       <CardHeader mb={[3, 4]}>
         <Text fontWeight="bold" fontSize="xl" color="primary.500">
-          HE Stats
+          {configs.TOKEN_SYMBOL} Stats
         </Text>
       </CardHeader>
       <Wrap w="100%">
         <VStack flex={1} alignItems="flex-start">
           <Text fontWeight="semibold" color="gray.500" fontSize="sm">
-            HE Price
+            {configs.TOKEN_SYMBOL} Price
           </Text>
           <Skeleton isLoaded={!isLoadingHEPrice}>
             <Text fontWeight="bold" w="100%">
@@ -61,7 +62,12 @@ const HEStats: React.FC<Props> = ({ dailyReward }) => {
           </Skeleton>
         </VStack>
         <VStack flex={1} alignItems="flex-start">
-          <Text fontWeight="semibold" color="gray.500" fontSize="sm" whiteSpace="nowrap">
+          <Text
+            fontWeight="semibold"
+            color="gray.500"
+            fontSize="sm"
+            whiteSpace="nowrap"
+          >
             Daily rewards
           </Text>
           <HStack>

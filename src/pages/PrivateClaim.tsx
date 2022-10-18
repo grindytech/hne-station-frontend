@@ -15,6 +15,7 @@ import CardHeader from "components/card/CardHeader";
 import Claim from "components/claim/Claim";
 import ClaimV2 from "components/claim/ClaimV2";
 import SwitchVersion from "components/SwitchVersion";
+import configs from "configs";
 import React, { useState } from "react";
 
 const PrivateClaim = () => {
@@ -25,7 +26,12 @@ const PrivateClaim = () => {
         Strategic Partnerships
       </Heading>
       <Stack
-        direction={["column-reverse", "column-reverse", "column-reverse", "row"]}
+        direction={[
+          "column-reverse",
+          "column-reverse",
+          "column-reverse",
+          "row",
+        ]}
         spacing={["0.5rem", 5]}
         pt={5}
         alignItems="stretch"
@@ -61,24 +67,27 @@ const PrivateClaim = () => {
                   <Text fontWeight="bold" as="span">
                     I.
                   </Text>{" "}
-                  Completely changed the game's model, from Play-2-Earn to Skill-2-Earn. We are
-                  completely focused on the game experience/graphics, in addition to taking care of
-                  the real players, through PvP battles and Clan battles against each other.
+                  Completely changed the game's model, from Play-2-Earn to
+                  Skill-2-Earn. We are completely focused on the game
+                  experience/graphics, in addition to taking care of the real
+                  players, through PvP battles and Clan battles against each
+                  other.
                 </Text>
                 <Text as="div" w="100%">
                   <Text fontWeight="bold" as="span">
                     II.
                   </Text>{" "}
-                  A free-to-play version for new players to try out before shifting on to the
-                  official version.
+                  A free-to-play version for new players to try out before
+                  shifting on to the official version.
                 </Text>
                 <Text as="div" w="100%">
                   <Text fontWeight="bold" as="span">
                     III.
                   </Text>{" "}
-                  Launching the official mobile version on the App Store and the Google Play in
-                  order to transfer the number of gamers from traditional games to GameFi (from I Am
-                  Hero to Heroes & Empires).
+                  Launching the official mobile version on the App Store and the
+                  Google Play in order to transfer the number of gamers from
+                  traditional games to GameFi (from I Am Hero to Heroes &
+                  Empires).
                 </Text>
                 <Text as="div" w="100%">
                   <Text fontWeight="bold" as="span">
@@ -90,20 +99,24 @@ const PrivateClaim = () => {
                   <Text fontWeight="bold" as="span">
                     V.
                   </Text>{" "}
-                  Combine two available games that use the same HE Token and NFTs: Archer Hunter and
-                  Auto Chess Legends NFTs.
+                  Combine two available games that use the same{" "}
+                  {configs.TOKEN_SYMBOL} Token and NFTs: Archer Hunter and Auto
+                  Chess Legends NFTs.
                 </Text>
                 <Text as="div" w="100%">
                   <Text fontWeight="bold" as="span">
                     VI.
                   </Text>{" "}
-                  Create your own H&E Ecosystem Chain. The project has been on the list of Accepted
-                  Grant Applications, and a demo version was released in May (Gafi Network - The
-                  Network of Game Finance)
+                  Create your own H&E Ecosystem Chain. The project has been on
+                  the list of Accepted Grant Applications, and a demo version
+                  was released in May (Gafi Network - The Network of Game
+                  Finance)
                 </Text>
                 <Text>
                   If you have any questions, please email:{" "}
-                  <Link href="mailto:contact@heroesempires.com">contact@heroesempires.com</Link>
+                  <Link href="mailto:contact@heroesempires.com">
+                    contact@heroesempires.com
+                  </Link>
                 </Text>
               </VStack>
             </Wrap>
