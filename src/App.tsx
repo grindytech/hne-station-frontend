@@ -1,5 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import CONFIGS from "configs";
+import { useWalletConnectors } from "connectWallet/connectors";
+import useWalletConnectContext from "hooks/useWalletConnectContext";
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";
@@ -19,19 +20,17 @@ const queryClient = new QueryClient({
 });
 
 export const App = () => {
+  const { currentChain } = useWalletConnectContext();
   React.useEffect(() => {
     init();
   }, []);
+  
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
         <UseWalletProvider
-          connectors={{
-            walletconnect: {
-              rpcUrl: CONFIGS.DEFAULT_NETWORK().rpcUrls[0],
-            },
-          }}
-          chainId={CONFIGS.DEFAULT_NETWORK().chainIdNumber}
+          connectors={useWalletConnectors}
+          autoConnect
         >
           <BrowserRouter>
             <Station />

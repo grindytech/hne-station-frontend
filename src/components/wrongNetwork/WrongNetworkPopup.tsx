@@ -1,34 +1,32 @@
-import React, { useEffect } from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalContent,
-  ModalBody,
-  ModalCloseButton,
-  ModalFooter,
-  Button,
-  Icon,
-  Text,
   Alert,
+  AlertDescription,
   AlertIcon,
   AlertTitle,
-  AlertDescription,
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
 } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 
-import { ReactComponent as Metamask } from "assets/metamask.svg";
 import BSC from "assets/bsc.png";
+import { Network } from "configs";
 import { useWallet } from "use-wallet";
-import configs from "configs";
 import Web3 from "web3";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  network: Network;
 }
 
-const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose }) => {
-  const wallet = useWallet<any>();
-  const network = configs.DEFAULT_NETWORK();
+const WrongNetworkPopup: React.FC<Props> = ({ isOpen, onClose, network }) => {
+  const wallet = useWallet();
   function switchEthereumChain(chainId: string) {
     return wallet.ethereum.request({
       method: "wallet_switchEthereumChain",

@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Divider,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -10,7 +9,6 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Image,
-  Link,
   Menu,
   MenuButton,
   MenuItem,
@@ -22,12 +20,13 @@ import {
 
 import HELogo from "assets/heroes_empires_fa.png";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
+import { chainName } from "connectWallet/connectors";
 import { getHEAccountBalance } from "contracts/contracts";
 import useCustomToast from "hooks/useCustomToast";
+import useWallet from "hooks/useWallet";
 import { FiChevronDown } from "react-icons/fi";
 import { useQuery } from "react-query";
-import { useWallet } from "use-wallet";
-import { numeralFormat, shorten } from "utils/utils";
+import { shorten } from "utils/utils";
 
 export type SidebarVariant = "drawer" | "sidebar";
 
@@ -42,7 +41,7 @@ interface SidebarContentProps {
 }
 
 export const SidebarContent = ({ onClick }: SidebarContentProps) => {
-  const { ethereum, account, reset } = useWallet();
+  const { connected, account, reset, networkName } = useWallet();
   const toast = useCustomToast();
   const { data: heBalance = 0, isRefetching: heBalanceFetching } = useQuery(
     ["getHEAccountBalance", account],
@@ -51,44 +50,48 @@ export const SidebarContent = ({ onClick }: SidebarContentProps) => {
       return parseInt(String(balance ?? 0));
     },
     {
-      enabled: !! ethereum,
+      enabled: !!account,
     }
   );
   return (
     <Stack justifyContent="center" alignItems="center" fontWeight="semibold">
-      {!! ethereum && account ? (
-        <Menu>
-          <ButtonGroup color="primary.500" isAttached>
-            <Button size="sm">{numeralFormat(heBalance)} HE</Button>
-            <MenuButton as={Button} rightIcon={<FiChevronDown />} size="sm">
-              {shorten(account, 7, 5)}
-            </MenuButton>
-          </ButtonGroup>
-          <MenuList p={1} color="primary.500">
-            <MenuItem
-              flexDirection="column"
-              alignItems="flex-start"
-              onClick={() => {
-                navigator.clipboard.writeText(account);
-                toast.success("Copied!");
-              }}
-            >
-              <Text as="div">Your wallet:</Text>
-              <Tag size="sm">{account}</Tag>
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                localStorage.removeItem("walletconnect");
-                reset();
-              }}
-            >
-              Disconnect
-            </MenuItem>
-          </MenuList>
-        </Menu>
-      ) : (
-        <ConnectWalletButton />
-      )}
+      <>
+        {" "}
+        nn: {networkName}
+        {connected && account ? (
+          <Menu>
+            <ButtonGroup color="primary.500" isAttached>
+              <Button size="sm">{networkName}</Button>
+              <MenuButton as={Button} rightIcon={<FiChevronDown />} size="sm">
+                {shorten(account, 7, 5)}
+              </MenuButton>
+            </ButtonGroup>
+            <MenuList p={1} color="primary.500">
+              <MenuItem
+                flexDirection="column"
+                alignItems="flex-start"
+                onClick={() => {
+                  navigator.clipboard.writeText(account);
+                  toast.success("Copied!");
+                }}
+              >
+                <Text as="div">Your wallet:</Text>
+                <Tag size="sm">{account}</Tag>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  localStorage.removeItem("walletconnect");
+                  reset();
+                }}
+              >
+                Disconnect
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        ) : (
+          <ConnectWalletButton />
+        )}
+      </>
     </Stack>
   );
 };

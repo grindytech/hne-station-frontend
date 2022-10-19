@@ -1,3 +1,4 @@
+import { BridgeToken } from "contracts/bridge";
 import MainnetConfigs from "./mainnet";
 import TestnetConfigs from "./testnet";
 
@@ -12,15 +13,13 @@ export type Network = {
     symbol: string;
     decimals: number;
   };
+  wrapToken: {
+    contract: string;
+    name: string;
+    symbol: string;
+  };
 };
 
-export type BridgeToken = {
-  name: string;
-  key: string;
-  id: string;
-  contract: string;
-  native?: boolean
-};
 export interface Configs {
   HE_CLAIM_PRIVATE_CONTRACT: string;
   HE_CLAIM_PRIVATE_CONTRACT_V2: string;
@@ -45,10 +44,15 @@ export interface Configs {
     BEGIN_V2_ID: number;
   };
   BRIDGE: {
-    FACTORY_CONTRACT: string;
-    PAIR_CONTRACT: string;
-    ROUTER_CONTRACT: string;
-    TOKENS: { [n: string]: BridgeToken[] };
+    [n: string]: {
+      CONTRACTS: {
+        ROUTER_CONTRACT: string;
+        PANCAKE_FACTORY_CONTRACT: string;
+        PANCAKE_ROUTER_CONTRACT: string;
+        BRIDGE_TOKEN: string;
+      };
+      TOKENS: { [n: string]: BridgeToken };
+    };
   };
 }
 

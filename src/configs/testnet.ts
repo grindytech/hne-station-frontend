@@ -22,6 +22,11 @@ const configs: Configs = {
         symbol: "BNB",
         decimals: 18,
       },
+      wrapToken: {
+        contract: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+        name: "WBNB",
+        symbol: "WBNB",
+      },
     },
     DOS: {
       chainIdNumber: 2508,
@@ -33,6 +38,28 @@ const configs: Configs = {
         name: "DOS",
         symbol: "DOS",
         decimals: 18,
+      },
+      wrapToken: {
+        contract: "",
+        name: "",
+        symbol: "",
+      },
+    },
+    AVAX: {
+      chainIdNumber: 43113,
+      chainId: Web3.utils.numberToHex(43113),
+      rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"],
+      chainName: "Avalanche Testnet",
+      blockExplorerUrls: ["https://testnet.snowtrace.io"],
+      nativeCurrency: {
+        name: "AVAX",
+        symbol: "AVAX",
+        decimals: 18,
+      },
+      wrapToken: {
+        contract: "",
+        name: "",
+        symbol: "",
       },
     },
   },
@@ -48,56 +75,68 @@ const configs: Configs = {
     ROUTER_V2_CONTRACT: "",
   },
   BRIDGE: {
-    FACTORY_CONTRACT: "",
-    PAIR_CONTRACT: "",
-    ROUTER_CONTRACT: "",
-    TOKENS: {
-      BSC: [
-        {
+    BSC: {
+      CONTRACTS: {
+        PANCAKE_FACTORY_CONTRACT: "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc",
+        PANCAKE_ROUTER_CONTRACT: "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3",
+        ROUTER_CONTRACT: "0xcB01670d5881aF6cD42aA7CAc02c996168631e1b",
+        BRIDGE_TOKEN: "0x810c3aeec5Faeb9Ef9f05526Ec8e47fe3c93f1b2",//BUSD
+      },
+      TOKENS: {
+        HE: {
           key: "HE",
           name: "Heroes & empires",
           id: "HE",
           contract: "0xf4a904478dB17d9145877bCF95F47C92FeC5eA8d",
         },
-        {
+        BUSD: {
           key: "BUSD",
           name: "BUSD",
           id: "BUSD",
           contract: "0x810c3aeec5Faeb9Ef9f05526Ec8e47fe3c93f1b2",
         },
-        {
+        USDT: {
           key: "USDT",
           name: "USDT",
           id: "USDT",
           contract: "0x111133b311Fc230278eF44caf4EF90A6c76bc0a5",
         },
-        {
-          key: "WBNB",
-          name: "Wrap BNB",
-          id: "WBNB",
-          contract: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+        BNB: {
+          key: "BNB",
+          name: "BNB",
+          id: "BNB",
+          contract: "",
+          native: true,
         },
-      ],
-      DOS: [
-        {
+      },
+    },
+    AVAX: {
+      CONTRACTS: {
+        PANCAKE_FACTORY_CONTRACT: "",
+        PANCAKE_ROUTER_CONTRACT: "",
+        ROUTER_CONTRACT: "",
+        BRIDGE_TOKEN: "",
+      },
+      TOKENS: {
+        SKY: {
           key: "SKY",
           name: "SKY",
           id: "HE",
           contract: "0x4D8c1AEa665624ee71c8d25e85bf738e4135ebE0",
         },
-        {
+        USDT: {
           key: "USDT",
           name: "USDT",
           id: "USDT",
           contract: "",
         },
-        {
+        WBNB: {
           key: "WBNB",
           name: "Wrap BNB",
-          id: "WBNB",
+          id: "BNB",
           contract: "0x5b74D1A144c2262c0f11cEe511faaF829232a58E",
         },
-      ],
+      },
     },
   },
 };

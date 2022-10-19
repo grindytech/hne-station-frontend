@@ -21,11 +21,6 @@ const configs: Configs = {
     GOVERNANCE_CONTRACT_V2: "",
     BEGIN_V2_ID: 0,
   },
-  BRIDGE: {
-    FACTORY_CONTRACT: "",
-    PAIR_CONTRACT: "",
-    ROUTER_CONTRACT: "",
-    TOKENS: {},
-  },
+  BRIDGE: {},
 };
 export default configs;

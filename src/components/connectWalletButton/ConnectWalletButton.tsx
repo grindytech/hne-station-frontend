@@ -9,23 +9,31 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { ReactComponent as Metamask } from "assets/metamask.svg";
 import { ReactComponent as Walletconnect } from "assets/walletconnect.svg";
 import RequireWalletPopup from "components/requireWalletPopup/RequireWalletPopup";
+import useWallet, { Wallet } from "hooks/useWallet";
 import React from "react";
-import { useWallet } from "use-wallet";
 
 const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
-  const wallet = useWallet();
+  const { connect } = useWallet();
   const { ...rest } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isOpenRequireWallet, onOpen: onOpenRequireWallet, onClose: onCloseRequireWallet } = useDisclosure();
-
+  const {
+    isOpen: isOpenRequireWallet,
+    onOpen: onOpenRequireWallet,
+    onClose: onCloseRequireWallet,
+  } = useDisclosure();
   return (
     <>
-      <Button onClick={onOpen} colorScheme="primary" variant="outline" {...rest}>
+      <Button
+        onClick={onOpen}
+        colorScheme="primary"
+        variant="outline"
+        {...rest}
+      >
         Connect to wallet
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
@@ -40,7 +48,7 @@ const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
                 variant="outline"
                 onClick={() => {
                   //@ts-ignore
-                  wallet.connect().then(onClose);
+                  connect(Wallet.METAMASK).then(onClose);
                 }}
                 w="full"
                 leftIcon={
@@ -55,7 +63,7 @@ const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
                 colorScheme="primary"
                 variant="outline"
                 onClick={() => {
-                  wallet.connect("walletconnect").then(onClose);
+                  connect(Wallet.WALLET_CONNECT).then(onClose);
                 }}
                 w="full"
                 leftIcon={
@@ -70,7 +78,10 @@ const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      <RequireWalletPopup isOpen={isOpenRequireWallet} onClose={onCloseRequireWallet} />
+      <RequireWalletPopup
+        isOpen={isOpenRequireWallet}
+        onClose={onCloseRequireWallet}
+      />
     </>
   );
 };

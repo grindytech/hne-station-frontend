@@ -14,50 +14,72 @@ import CardBody from "components/card/CardBody";
 import CardHeader from "components/card/CardHeader";
 import ChooseTokenButton, { Token } from "components/swap/ChooseTokenButton";
 import configs from "configs";
-import { getErc20Balance } from "contracts/bridge";
-import { useCallback, useEffect, useState } from "react";
+import {
+  erc20Approved,
+  getDestinationAmount,
+  getErc20Balance,
+  getNativeBalance,
+} from "contracts/bridge";
+import { Chain } from "contracts/contracts";
+import useSwitchNetwork from "hooks/useSwitchNetwork";
+import _ from "lodash";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FiRefreshCw } from "react-icons/fi";
 import { HiSwitchVertical } from "react-icons/hi";
 import { useQuery } from "react-query";
 import { useWallet } from "use-wallet";
 import { getSgvIcon, ICONS } from "utils/icons";
-import { numeralFormat } from "utils/utils";
+import {
+  formatNumber,
+  numberOnly,
+  numeralFormat,
+  numeralFormat1,
+} from "utils/utils";
 
 const NETWORKS: Token[] = [
   { key: "BSC", icon: getSgvIcon(ICONS.BNB), name: "BSC" },
-  { key: "DOS", icon: getSgvIcon(ICONS.DOS), name: "DOS" },
+  { key: "AVAX", icon: getSgvIcon(ICONS.DOS), name: "AVAX" },
 ];
 const TOKENS_SUPPORT: { [k: string]: (Token & { contract: string })[] } = {};
 for (const network of NETWORKS) {
-  TOKENS_SUPPORT[network.key] = configs.BRIDGE.TOKENS[network.key].map(
-    (token) => ({
+  const networkTokens = configs.BRIDGE[network.key].TOKENS;
+  TOKENS_SUPPORT[network.key] = Object.keys(networkTokens).map((k) => {
+    const token = networkTokens[k];
+    return {
       key: token.key,
       icon: getSgvIcon(token.key),
       name: "0",
       contract: token.contract,
-    })
-  );
+    };
+  });
 }
 
 export default function Bridge() {
   const numberPoint = 6;
-  const [originChain, setOriginChain] = useState(NETWORKS[0]);
-  const [destinationChain, setDestinationChain] = useState(NETWORKS[1]);
+  const [originChain, setOriginChain] = useState("BSC");
+  const [destinationChain, setDestinationChain] = useState("AVAX");
   const [originToken, setOriginToken] = useState("HE");
   const [destinationToken, setDestinationToken] = useState("SKY");
+  const [amount, setAmount] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [approving, setApproving] = useState(false);
+  const [receiveAmount, setReceiveAmount] = useState(0);
+  const [receiveLoading, setReceiveLoading] = useState(false);
   const { account } = useWallet();
+  const { isWrongNetwork, changeNetwork } = useSwitchNetwork();
+  const [needCheckNetwork, setNeedCheckNetwork] = useState(false);
   const { data: balance } = useQuery(
-    ["balanceOf", originToken, account, originChain.key],
+    ["balanceOf", originToken, account, originChain],
     async () => {
-      const erc20 = configs.BRIDGE.TOKENS[originChain.key].find(
-        (token) => token.key === originToken
-      );
-      if (!erc20 || !account) return 0;
-      const balance = await getErc20Balance(
-        account,
-        erc20?.contract,
-        originChain.key
-      );
+      const token = configs.BRIDGE[originChain].TOKENS[originToken];
+      let balance = 0;
+      if (!token || !account) return 0;
+      if (token.native) {
+        balance = await getNativeBalance(account, originChain);
+      } else {
+        balance = await getErc20Balance(account, token.contract, originChain);
+      }
       return balance;
     }
   );
@@ -67,14 +89,118 @@ export default function Bridge() {
       for (const token of TOKENS_SUPPORT[chain]) {
         const balance = await getErc20Balance(account, token.contract, chain);
         token.name = String(balance);
-        debugger
+        debugger;
       }
     },
     [account]
   );
+  const validate = useCallback(async () => {
+    let error = "";
+    if (!amount || Number(amount) > Number(balance) || Number(amount) < 0) {
+      error = "Insufficient balance";
+    }
+    if (originChain !== Chain.BSC) {
+      const token1 = configs.BRIDGE[originChain].TOKENS[originToken];
+      const token2 = configs.BRIDGE[destinationChain].TOKENS[destinationToken];
+      if (token1.id !== token2.id) {
+        error = "Pair is not support";
+      }
+    }
+    setErrorMessage(error);
+  }, [
+    amount,
+    balance,
+    originChain,
+    originToken,
+    destinationChain,
+    destinationToken,
+  ]);
+  const originChainOnchange = (chain: string) => {
+    if (destinationChain === chain) {
+      setDestinationChain(originChain);
+      setOriginToken(destinationToken);
+      setDestinationToken(originToken);
+    }
+    setOriginChain(chain);
+  };
+  const destinationChainOnchange = (chain: string) => {
+    if (originChain === chain) {
+      setOriginChain(destinationChain);
+      setOriginToken(destinationToken);
+      setDestinationToken(originToken);
+    }
+    setDestinationChain(chain);
+  };
+  const { data: approved } = useQuery(
+    ["approved", account, originChain, originToken],
+    async () => {
+      if (!account) return true;
+      const token = configs.BRIDGE[originChain].TOKENS[originToken];
+      const routerContract =
+        configs.BRIDGE[originChain].CONTRACTS.ROUTER_CONTRACT;
+      const isApproved = await erc20Approved(
+        Number(amount),
+        routerContract,
+        token.contract,
+        account,
+        originChain
+      );
+      return isApproved;
+    }
+  );
+  const receiveAmountCalculate = useCallback(
+    _.debounce(async () => {
+      let receive = Number(amount);
+      if (originChain === Chain.BSC) {
+        try {
+          const desToken =
+            configs.BRIDGE[destinationChain].TOKENS[destinationToken];
+          const token1 = configs.BRIDGE[originChain].TOKENS[originToken];
+          const originChainTokens = configs.BRIDGE[originChain].TOKENS;
+          const token2 = Object.keys(originChainTokens)
+            .map((tk) => originChainTokens[tk])
+            .find((tk) => tk.id === desToken.id);
+          if (!token1 || !token2) {
+            setReceiveAmount(0);
+            return;
+          }
+          if (token1.id === token2.id) {
+            setReceiveAmount(Number(amount));
+            return;
+          }
+          setReceiveLoading(true);
+          receive = await getDestinationAmount(
+            Number(amount),
+            token1,
+            token2,
+            originChain
+          );
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setReceiveLoading(false);
+        }
+      }
+      setReceiveAmount(receive);
+    }, 300),
+    [amount, originToken, originChain, destinationChain, destinationToken]
+  );
   useEffect(() => {
-    refreshChainBalance("BSC");
-  }, [refreshChainBalance]);
+    receiveAmountCalculate();
+  }, [receiveAmountCalculate]);
+
+  useEffect(() => {
+    validate();
+  }, [validate]);
+
+  const transferBtnOnclickHandle = async () => {
+    if (isWrongNetwork(originChain)) {
+      changeNetwork(originChain);
+      return;
+    }
+    if (!approved) {
+    }
+  };
   return (
     <VStack spacing={5}>
       <Card flex={{ lg: 1 }} maxW={600}>
@@ -126,7 +252,7 @@ export default function Bridge() {
                       token={originToken}
                       key={originToken}
                       label="Token"
-                      tokens={TOKENS_SUPPORT[originChain.key]}
+                      tokens={TOKENS_SUPPORT[originChain]}
                     />
                     <ChooseTokenButton
                       buttonProps={{
@@ -136,10 +262,12 @@ export default function Bridge() {
                         textAlign: "left",
                         borderRadius: 15,
                       }}
-                      onChange={(token) => {}}
-                      token={originChain.key}
-                      key={originChain.key}
-                      tokens={[originChain]}
+                      onChange={(chain) => {
+                        originChainOnchange(chain);
+                      }}
+                      token={originChain}
+                      key={originChain}
+                      tokens={NETWORKS}
                       label="Network"
                     />
                   </ButtonGroup>
@@ -147,7 +275,9 @@ export default function Bridge() {
               </VStack>
               <HStack>
                 <Button
-                  onClick={() => {}}
+                  onClick={() => {
+                    originChainOnchange(destinationChain);
+                  }}
                   variant="link"
                   _focus={{ border: "none" }}
                 >
@@ -186,7 +316,7 @@ export default function Bridge() {
                       }}
                       token={destinationToken}
                       key={destinationToken}
-                      tokens={TOKENS_SUPPORT[destinationChain.key]}
+                      tokens={TOKENS_SUPPORT[destinationChain]}
                       label="Token"
                     />
                     <ChooseTokenButton
@@ -197,11 +327,13 @@ export default function Bridge() {
                         textAlign: "left",
                         borderRadius: 15,
                       }}
-                      onChange={(token) => {}}
-                      token={destinationChain.key}
-                      key={destinationChain.key}
+                      onChange={(chain) => {
+                        destinationChainOnchange(chain);
+                      }}
+                      token={destinationChain}
+                      key={destinationChain}
                       label="Network"
-                      tokens={[destinationChain]}
+                      tokens={NETWORKS}
                     />
                   </ButtonGroup>
                 </HStack>
@@ -227,7 +359,7 @@ export default function Bridge() {
                   textAlign="right"
                   fontSize="sm"
                 >
-                  Balance:&nbsp;{balance || 0}
+                  Balance:&nbsp;{numeralFormat(balance || 0)}
                 </FormLabel>
               </HStack>
 
@@ -247,12 +379,25 @@ export default function Bridge() {
                     variant="unstyled"
                     placeholder="0.0"
                     size="lg"
-                    onKeyPress={(e) => {}}
-                    value={0}
-                    onChange={(e) => {}}
+                    onKeyPress={(e) => {
+                      if (numberOnly(e.key, amount)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    value={amount}
+                    onChange={(e) => {
+                      setAmount(e.target.value);
+                    }}
                     onKeyUp={(e) => {}}
                   ></Input>
-                  <Button size="sm" variant="solid" colorScheme="blackAlpha">
+                  <Button
+                    onClick={() => {
+                      setAmount(String(numeralFormat1(Number(balance))));
+                    }}
+                    size="sm"
+                    variant="solid"
+                    colorScheme="blackAlpha"
+                  >
                     Max
                   </Button>
                 </HStack>
@@ -261,22 +406,18 @@ export default function Bridge() {
             <VStack width="full">
               <HStack px={2} justifyContent="space-between" width="full">
                 <Text color="primary.500" fontSize="sm" fontWeight="semibold">
-                  Price
+                  You will receive
                 </Text>
                 <HStack spacing={0}>
                   <Text color="gray" fontSize="sm">
-                    <Skeleton>
-                      <>{numeralFormat(1000, numberPoint)} HE per BUSD</>
+                    <Skeleton isLoaded={!receiveLoading}>
+                      <>
+                        {numeralFormat(Number(receiveAmount) || 0, numberPoint)}
+                        &nbsp;
+                        {destinationToken}
+                      </>
                     </Skeleton>
                   </Text>
-                  <Button
-                    onClick={() => {}}
-                    variant="link"
-                    _focus={{ border: "none" }}
-                    size="sm"
-                  >
-                    <FiRefreshCw />
-                  </Button>
                 </HStack>
               </HStack>
               {/* <HStack px={2} justifyContent="space-between" width="full">
@@ -329,8 +470,20 @@ export default function Bridge() {
                 />
               )} */}
 
-              <Button colorScheme="primary" width="full">
-                Swap
+              <Button
+                disabled={!!errorMessage || approving || isLoading}
+                colorScheme="primary"
+                width="full"
+                isLoading={approving || isLoading}
+                onClick={transferBtnOnclickHandle}
+              >
+                {!!errorMessage
+                  ? errorMessage
+                  : isWrongNetwork(originChain)
+                  ? `Switch to ${configs.NETWORKS[originChain].chainName}`
+                  : approved
+                  ? "Transfer"
+                  : "Approve"}
               </Button>
             </VStack>
           </VStack>

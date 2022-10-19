@@ -17,9 +17,22 @@ import governanceV2 from "./governanceV2.json";
 
 import configs from "configs";
 
+export enum Chain {
+  BSC = "BSC",
+  AVAX = "AVAX",
+  DOS = "DOS",
+}
+
 const PROVIDER = CONFIGS.DEFAULT_NETWORK().rpcUrls[0];
+const NETWORKS = configs.NETWORKS;
 export const web3 = new Web3(new Web3.providers.HttpProvider(PROVIDER));
-export const httpWeb3 = new Web3(new Web3.providers.HttpProvider(PROVIDER));
+export const web3Inject = web3;
+export const WEB3_HTTP_PROVIDERS: { [n: string]: Web3 } = {};
+for (const k of Object.keys(NETWORKS)) {
+  const network = NETWORKS[k];
+  const provider = new Web3.providers.HttpProvider(network.rpcUrls[0]);
+  WEB3_HTTP_PROVIDERS[k] = new Web3(provider);
+}
 
 interface SafeAmountParams {
   str: string;
