@@ -12,7 +12,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "react-query";
 
@@ -22,9 +22,9 @@ import useCustomToast from "hooks/useCustomToast";
 import { formatNumber } from "utils/utils";
 import NumberInput from "components/numberInput/NumberInput";
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
-import { useWallet } from "use-wallet";
 import { getStakingRewardAmountQueryKey } from "components/stake/Stake";
 import configs from "configs";
+import { useConnectWallet } from "hooks/useWallet";
 
 interface Props {
   isOpen: boolean;
@@ -33,8 +33,13 @@ interface Props {
   onSuccess: () => void;
 }
 
-const RestakePopup: React.FC<Props> = ({ isOpen, stakeableAmount, onClose, onSuccess }) => {
-  const { ethereum, account } = useWallet();
+const RestakePopup: React.FC<Props> = ({
+  isOpen,
+  stakeableAmount,
+  onClose,
+  onSuccess,
+}) => {
+  const { ethereum, account } = useConnectWallet();
   const toast = useCustomToast();
   const [value, setValue] = useState<number | string>(0);
   const [errorMsg, setErrorMsg] = useState("");
@@ -56,7 +61,7 @@ const RestakePopup: React.FC<Props> = ({ isOpen, stakeableAmount, onClose, onSuc
     },
     onError: (error: ErrorContract) => {
       if (error.code === 4001) setErrorMsg("Please allow transaction!");
-    }
+    },
   });
 
   useEffect(() => {
@@ -64,7 +69,7 @@ const RestakePopup: React.FC<Props> = ({ isOpen, stakeableAmount, onClose, onSuc
   }, [queryClient]);
 
   const onClick = () => {
-    if (Number(value) > 0 && !! ethereum) {
+    if (Number(value) > 0 && !!ethereum) {
       mutate({ poolId: 0, amount: Number(value), address: account || "" });
     }
   };
@@ -77,7 +82,12 @@ const RestakePopup: React.FC<Props> = ({ isOpen, stakeableAmount, onClose, onSuc
         <ModalCloseButton disabled={isLoading} />
         <ModalBody py="5">
           <FormControl isInvalid={!!errorMsg}>
-            <HStack color="gray.500" fontSize="sm" justifyContent="space-between" mb="3">
+            <HStack
+              color="gray.500"
+              fontSize="sm"
+              justifyContent="space-between"
+              mb="3"
+            >
               <Text>Amount</Text>
               <HStack>
                 <Text>{formatNumber(stakeableAmount)}</Text>
@@ -86,7 +96,11 @@ const RestakePopup: React.FC<Props> = ({ isOpen, stakeableAmount, onClose, onSuc
                 </Icon>
               </HStack>
             </HStack>
-            <NumberInput value={value} onChange={(value) => setValue(value)} max={stakeableAmount} />
+            <NumberInput
+              value={value}
+              onChange={(value) => setValue(value)}
+              max={stakeableAmount}
+            />
             <FormErrorMessage mt="0">{errorMsg}</FormErrorMessage>
           </FormControl>
         </ModalBody>

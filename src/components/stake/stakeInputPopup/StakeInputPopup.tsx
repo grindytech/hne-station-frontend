@@ -1,29 +1,29 @@
-import React, { useState } from "react";
 import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  HStack,
+  Icon,
   Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalContent,
   ModalBody,
   ModalCloseButton,
+  ModalContent,
   ModalFooter,
-  Button,
+  ModalHeader,
+  ModalOverlay,
   Text,
-  FormErrorMessage,
-  FormControl,
-  HStack,
-  Icon
 } from "@chakra-ui/react";
+import React, { useState } from "react";
 import { useMutation } from "react-query";
 
+import { ReactComponent as HEIcon } from "assets/he_coin.svg";
+import NumberInput from "components/numberInput/NumberInput";
+import configs from "configs";
 import { stakeHE } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
+import { useConnectWallet } from "hooks/useWallet";
 import { ErrorContract } from "types";
 import { formatNumber } from "utils/utils";
-import NumberInput from "components/numberInput/NumberInput";
-import { ReactComponent as HEIcon } from "assets/he_coin.svg";
-import { useWallet } from "use-wallet";
-import configs from "configs";
 
 interface Props {
   isOpen: boolean;
@@ -32,8 +32,13 @@ interface Props {
   stakeableAmount: number;
 }
 
-const StakeInputPopup: React.FC<Props> = ({ isOpen, onClose, onSuccess, stakeableAmount }) => {
-  const { ethereum, account } = useWallet();
+const StakeInputPopup: React.FC<Props> = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  stakeableAmount,
+}) => {
+  const { ethereum, account } = useConnectWallet();
   const toast = useCustomToast();
   const [value, setValue] = useState<number | string>("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -54,11 +59,11 @@ const StakeInputPopup: React.FC<Props> = ({ isOpen, onClose, onSuccess, stakeabl
     },
     onError: (error: ErrorContract) => {
       if (error.code === 4001) setErrorMsg("Please allow transaction!");
-    }
+    },
   });
 
   const onClick = () => {
-    if (Number(value) > 0 && !! ethereum) {
+    if (Number(value) > 0 && !!ethereum) {
       mutate({ poolId: 0, amount: Number(value), address: account || "" });
     }
   };
@@ -71,7 +76,12 @@ const StakeInputPopup: React.FC<Props> = ({ isOpen, onClose, onSuccess, stakeabl
         <ModalCloseButton disabled={isLoading} />
         <ModalBody py="5">
           <FormControl isInvalid={!!errorMsg}>
-            <HStack color="gray.500" fontSize="sm" justifyContent="space-between" mb="3">
+            <HStack
+              color="gray.500"
+              fontSize="sm"
+              justifyContent="space-between"
+              mb="3"
+            >
               <Text>Amount</Text>
               <HStack>
                 <Text>{formatNumber(stakeableAmount)}</Text>
@@ -80,7 +90,11 @@ const StakeInputPopup: React.FC<Props> = ({ isOpen, onClose, onSuccess, stakeabl
                 </Icon>
               </HStack>
             </HStack>
-            <NumberInput value={value} onChange={(value) => setValue(value)} max={stakeableAmount} />
+            <NumberInput
+              value={value}
+              onChange={(value) => setValue(value)}
+              max={stakeableAmount}
+            />
 
             <FormErrorMessage mt="0">{errorMsg}</FormErrorMessage>
           </FormControl>

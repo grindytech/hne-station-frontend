@@ -20,12 +20,10 @@ import {
 
 import HELogo from "assets/heroes_empires_fa.png";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
-import { chainName } from "connectWallet/connectors";
-import { getHEAccountBalance } from "contracts/contracts";
 import useCustomToast from "hooks/useCustomToast";
-import useWallet from "hooks/useWallet";
+import { useConnectWallet } from "hooks/useWallet";
+import { useEffect } from "react";
 import { FiChevronDown } from "react-icons/fi";
-import { useQuery } from "react-query";
 import { shorten } from "utils/utils";
 
 export type SidebarVariant = "drawer" | "sidebar";
@@ -41,57 +39,44 @@ interface SidebarContentProps {
 }
 
 export const SidebarContent = ({ onClick }: SidebarContentProps) => {
-  const { connected, account, reset, networkName } = useWallet();
+  const { account, reset, networkName } = useConnectWallet();
   const toast = useCustomToast();
-  const { data: heBalance = 0, isRefetching: heBalanceFetching } = useQuery(
-    ["getHEAccountBalance", account],
-    async () => {
-      const balance = await getHEAccountBalance("HE", account || "");
-      return parseInt(String(balance ?? 0));
-    },
-    {
-      enabled: !!account,
-    }
-  );
+
   return (
     <Stack justifyContent="center" alignItems="center" fontWeight="semibold">
-      <>
-        {" "}
-        nn: {networkName}
-        {connected && account ? (
-          <Menu>
-            <ButtonGroup color="primary.500" isAttached>
-              <Button size="sm">{networkName}</Button>
-              <MenuButton as={Button} rightIcon={<FiChevronDown />} size="sm">
-                {shorten(account, 7, 5)}
-              </MenuButton>
-            </ButtonGroup>
-            <MenuList p={1} color="primary.500">
-              <MenuItem
-                flexDirection="column"
-                alignItems="flex-start"
-                onClick={() => {
-                  navigator.clipboard.writeText(account);
-                  toast.success("Copied!");
-                }}
-              >
-                <Text as="div">Your wallet:</Text>
-                <Tag size="sm">{account}</Tag>
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  localStorage.removeItem("walletconnect");
-                  reset();
-                }}
-              >
-                Disconnect
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        ) : (
-          <ConnectWalletButton />
-        )}
-      </>
+      {account ? (
+        <Menu>
+          <ButtonGroup color="primary.500" isAttached>
+            <Button size="sm">{networkName}</Button>
+            <MenuButton as={Button} rightIcon={<FiChevronDown />} size="sm">
+              {shorten(account, 7, 5)}
+            </MenuButton>
+          </ButtonGroup>
+          <MenuList p={1} color="primary.500">
+            <MenuItem
+              flexDirection="column"
+              alignItems="flex-start"
+              onClick={() => {
+                navigator.clipboard.writeText(account);
+                toast.success("Copied!");
+              }}
+            >
+              <Text as="div">Your wallet:</Text>
+              <Tag size="sm">{account}</Tag>
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                localStorage.removeItem("walletconnect");
+                reset();
+              }}
+            >
+              Disconnect
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      ) : (
+        <ConnectWalletButton />
+      )}
     </Stack>
   );
 };

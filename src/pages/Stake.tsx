@@ -1,11 +1,13 @@
 import {
-  Button, Heading,
+  Button,
+  Heading,
   HStack,
   Icon,
   Link,
   Skeleton,
   Stack,
-  Text, VStack
+  Text,
+  VStack,
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardHeader from "components/card/CardHeader";
@@ -14,11 +16,11 @@ import HEStats from "components/stake/heStats/HEStats";
 import History from "components/stake/history/History";
 import PoolInfo from "components/stake/pool/PoolInfo";
 import Stake from "components/stake/Stake";
-import { getDailyReward, getDailyRewardTime, getPoolInfo } from "contracts/stake";
+import { getDailyRewardTime, getPoolInfo } from "contracts/stake";
+import { useConnectWallet } from "hooks/useWallet";
 import { useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import { useQuery } from "react-query";
-import { useWallet } from "use-wallet";
 import { formatNumber } from "utils/utils";
 
 interface VariantConfig {
@@ -38,7 +40,7 @@ const mdVariant: VariantConfig = {
 export const poolInfoQueryKey = "getPoolInfo";
 
 const Home = () => {
-  const wallet = useWallet();
+  const wallet = useConnectWallet();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isHideNumbers, setIsHideNumbers] = useState(false);
 
@@ -60,7 +62,11 @@ const Home = () => {
 
   return (
     <>
-      <Stack justifyContent="space-between" direction={{ md: "row", base: "column" }} mt={[10, 5]}>
+      <Stack
+        justifyContent="space-between"
+        direction={{ md: "row", base: "column" }}
+        mt={[10, 5]}
+      >
         <Heading as="h3" color="primary.500">
           Staking Dashboard
         </Heading>
@@ -108,7 +114,10 @@ const Home = () => {
                 <VStack flex={1} alignItems="flex-start">
                   <Skeleton isLoaded={!isLoadingDailyReward}>
                     <Text fontWeight="bold" fontSize="2xl">
-                      {estimatedRewards ? formatNumber(estimatedRewards, 1) : "--"} %
+                      {estimatedRewards
+                        ? formatNumber(estimatedRewards, 1)
+                        : "--"}{" "}
+                      %
                     </Text>
                   </Skeleton>
                   <Text fontWeight="bold" color="primary.500">
@@ -118,7 +127,10 @@ const Home = () => {
               </HStack>
             </Card>
           </Stack>
-          <HEStats isLoadingDailyReward={isLoadingDailyReward} dailyReward={dailyReward} />
+          <HEStats
+            isLoadingDailyReward={isLoadingDailyReward}
+            dailyReward={dailyReward}
+          />
           <History isHideNumbers={isHideNumbers} />
         </Stack>
       </Stack>

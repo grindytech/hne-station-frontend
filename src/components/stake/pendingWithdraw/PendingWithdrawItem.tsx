@@ -1,17 +1,17 @@
+import { format, formatDistanceToNow } from "date-fns";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
-import { format, formatDistanceToNow } from "date-fns";
 
+import { TimeIcon } from "@chakra-ui/icons";
+import { Box, Button, HStack, Icon, Text } from "@chakra-ui/react";
+import { ReactComponent as HEIcon } from "assets/he_coin.svg";
+import configs from "configs";
+import { CLAIMED_STATUS, DATE_TIME_FORMAT } from "constant";
 import { getTimeLockWithdraw, withdrawHE, WithdrawInfo } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
-import { HStack, Button, Text, Icon, Box } from "@chakra-ui/react";
-import { TimeIcon } from "@chakra-ui/icons";
-import { formatNumber } from "utils/utils";
-import { ReactComponent as HEIcon } from "assets/he_coin.svg";
+import { useConnectWallet } from "hooks/useWallet";
 import { ErrorContract } from "types";
-import { useWallet } from "use-wallet";
-import { CLAIMED_STATUS, DATE_TIME_FORMAT } from "constant";
-import configs from "configs";
+import { formatNumber } from "utils/utils";
 
 interface Props extends WithdrawInfo {
   withdrawId: number;
@@ -26,17 +26,20 @@ const PendingWithdrawItem: React.FC<Props> = ({
   blockTime,
   withdrawTime,
   amount,
-  onSuccess
+  onSuccess,
 }) => {
   const toast = useCustomToast();
-  const { account } = useWallet();
+  const { account } = useConnectWallet();
 
-  const { data: timeLockWithdraw = 0 } = useQuery(["timeLockWithdraw", account], getTimeLockWithdraw);
+  const { data: timeLockWithdraw = 0 } = useQuery(
+    ["timeLockWithdraw", account],
+    getTimeLockWithdraw
+  );
 
   const withdrawableTime = blockTime + timeLockWithdraw * 1000;
   const isDisableWithdraw = withdrawableTime > new Date().getTime();
   const withdrawTimeString = formatDistanceToNow(withdrawableTime, {
-    addSuffix: true
+    addSuffix: true,
   });
 
   const { mutate, isLoading: isLoadingWithdraw } = useMutation(withdrawHE, {
@@ -46,7 +49,7 @@ const PendingWithdrawItem: React.FC<Props> = ({
     },
     onError: (error: ErrorContract) => {
       if (error.code === 4001) toast.error("Please allow transaction!");
-    }
+    },
   });
 
   const onClick = () => {
@@ -60,7 +63,9 @@ const PendingWithdrawItem: React.FC<Props> = ({
           <Icon w="1em" h="1em">
             <HEIcon />
           </Icon>
-          <Text fontWeight="bold">{isHideNumbers ? "**" : formatNumber(amount)}</Text>
+          <Text fontWeight="bold">
+            {isHideNumbers ? "**" : formatNumber(amount)}
+          </Text>
         </HStack>
         {status === CLAIMED_STATUS ? (
           <>{format(withdrawTime, DATE_TIME_FORMAT)}</>

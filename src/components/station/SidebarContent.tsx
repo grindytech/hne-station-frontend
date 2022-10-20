@@ -84,10 +84,13 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
                 </HStack>
               </Link>
             </Box>
-            <CloseButton onClick={onClose} display={{ base: "block", md: "none" }} />
+            <CloseButton
+              onClick={onClose}
+              display={{ base: "block", md: "none" }}
+            />
           </HStack>
           {LinkItems.map((link) => (
-            <Box w="full" onClick={onClose}>
+            <Box key={link.key} w="full" onClick={onClose}>
               <NavItem
                 to={link.key}
                 key={link.key}
@@ -114,23 +117,40 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
             &nbsp;Docs
           </ChakraLink>
           <Divider color="gray.50" />
-          <ButtonGroup w="full" justifyContent="space-between" pb={5} color="gray.100">
+          <ButtonGroup
+            w="full"
+            justifyContent="space-between"
+            pb={5}
+            color="gray.100"
+          >
             <ChakraLink href="https://blog.heroesempires.com/" target="_blank">
               <Icon as={FaNewspaper} />
             </ChakraLink>
-            <ChakraLink href="https://discord.com/invite/HeroesEmpires" target="_blank">
+            <ChakraLink
+              href="https://discord.com/invite/HeroesEmpires"
+              target="_blank"
+            >
               <Icon as={FaDiscord} />
             </ChakraLink>
             <ChakraLink href="https://t.me/HeroesEmpires" target="_blank">
               <Icon as={FaTelegram} />
             </ChakraLink>
-            <ChakraLink href="https://twitter.com/HeroesEmpires" target="_blank">
+            <ChakraLink
+              href="https://twitter.com/HeroesEmpires"
+              target="_blank"
+            >
               <Icon as={FaTwitter} />
             </ChakraLink>
-            <ChakraLink href="https://www.facebook.com/HeroesEmpires" target="_blank">
+            <ChakraLink
+              href="https://www.facebook.com/HeroesEmpires"
+              target="_blank"
+            >
               <Icon as={FaFacebook} />
             </ChakraLink>
-            <ChakraLink href="https://www.youtube.com/HeroesEmpires" target="_blank">
+            <ChakraLink
+              href="https://www.youtube.com/HeroesEmpires"
+              target="_blank"
+            >
               <Icon as={FaYoutube} />
             </ChakraLink>
           </ButtonGroup>

@@ -1,4 +1,12 @@
-import { Box, HStack, Icon, Tag, Text, Tooltip, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Icon,
+  Tag,
+  Text,
+  Tooltip,
+  VStack,
+} from "@chakra-ui/react";
 import React, { useMemo } from "react";
 
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
@@ -10,9 +18,9 @@ import {
 } from "components/stake/withdrawal/Withdrawal";
 import { getUserPendingClaim, getUserPendingWithdraw } from "contracts/stake";
 import { formatDistanceToNow } from "date-fns/esm";
+import { useConnectWallet } from "hooks/useWallet";
 import { isEmpty } from "lodash";
 import { useQuery } from "react-query";
-import { useWallet } from "use-wallet";
 import { formatDate, formatNumber } from "utils/utils";
 
 interface Props {
@@ -20,12 +28,12 @@ interface Props {
 }
 
 const History: React.FC<Props> = ({ isHideNumbers }) => {
-  const { ethereum, account } = useWallet();
+  const { ethereum, account } = useConnectWallet();
   const { data: pendingWithdraws, isLoading } = useQuery(
     pendingWithdrawQueryKey,
     () => getUserPendingWithdraw(0, account || ""),
     {
-      enabled: !! ethereum,
+      enabled: !!ethereum,
     }
   );
 
@@ -33,7 +41,7 @@ const History: React.FC<Props> = ({ isHideNumbers }) => {
     [pendingClaimQueryKey, account],
     () => getUserPendingClaim(0, account || ""),
     {
-      enabled: !! ethereum,
+      enabled: !!ethereum,
     }
   );
 
@@ -41,7 +49,11 @@ const History: React.FC<Props> = ({ isHideNumbers }) => {
     () =>
       pendingWithdraws
         ?.filter(({ status }) => status === 1)
-        .map((data) => ({ ...data, withdrawTime: data.withdrawTime, type: 0 })) || [],
+        .map((data) => ({
+          ...data,
+          withdrawTime: data.withdrawTime,
+          type: 0,
+        })) || [],
     [pendingWithdraws]
   );
 
@@ -49,7 +61,8 @@ const History: React.FC<Props> = ({ isHideNumbers }) => {
     () =>
       pendingClaims
         ?.filter(({ status }) => status === 1)
-        .map((data) => ({ ...data, withdrawTime: data.claimTime, type: 1 })) || [],
+        .map((data) => ({ ...data, withdrawTime: data.claimTime, type: 1 })) ||
+      [],
     [pendingClaims]
   );
 
@@ -79,7 +92,9 @@ const History: React.FC<Props> = ({ isHideNumbers }) => {
               <Icon w="1em" h="1em">
                 <HEIcon />
               </Icon>
-              <Text fontWeight="bold">{isHideNumbers ? "**" : formatNumber(amount)}</Text>
+              <Text fontWeight="bold">
+                {isHideNumbers ? "**" : formatNumber(amount)}
+              </Text>
             </HStack>
             <Box>
               <Tag colorScheme="primary" flex={1} borderRadius="full">

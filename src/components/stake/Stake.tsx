@@ -1,17 +1,16 @@
-import React, { useState } from "react";
 import {
-  HStack,
-  VStack,
-  Text,
   Button,
-  Skeleton,
+  HStack,
   Icon,
+  Skeleton,
   Stack,
+  Text,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
 import { mdiEye, mdiEyeOff } from "@mdi/js";
+import React, { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
-import { useWallet } from "use-wallet";
 
 import Card from "components/card/Card";
 import CardHeader from "components/card/CardHeader";
@@ -22,39 +21,48 @@ import { getStakingRewardAmount, getUserInfo } from "contracts/stake";
 
 import { formatNumber, numeralFormat, shorten } from "utils/utils";
 
-import CONFIGS from "configs";
-import useCustomToast from "hooks/useCustomToast";
-import WithdrawPopup from "components/stake/withdrawPopup/WithdrawPopup";
+import { ReactComponent as HEIcon } from "assets/he_coin.svg";
+import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
 import ClaimPopup from "components/stake/claimPopup/ClaimPopup";
-import RestakePopup from "components/stake/restakePopup/RestakePopup";
-import {
+import Withdrawal, {
   pendingClaimQueryKey,
   pendingWithdrawQueryKey,
 } from "components/stake/withdrawal/Withdrawal";
-import { poolInfoQueryKey } from "pages/Stake";
-import { ReactComponent as HEIcon } from "assets/he_coin.svg";
-import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
-import Withdrawal from "components/stake/withdrawal/Withdrawal";
-import History from "components/stake/history/History";
-import { heStatsService } from "services/heStats";
+import WithdrawPopup from "components/stake/withdrawPopup/WithdrawPopup";
 import configs from "configs";
+import useCustomToast from "hooks/useCustomToast";
+import { useConnectWallet } from "hooks/useWallet";
+import { poolInfoQueryKey } from "pages/Stake";
+import { heStatsService } from "services/heStats";
 
 export const getStakingRewardAmountQueryKey = "getStakingRewardAmount";
 
 const Stake: React.FC = () => {
-  const { ethereum, account } = useWallet();
+  const { ethereum, account } = useConnectWallet();
 
   const toast = useCustomToast();
   const queryClient = useQueryClient();
 
-  const { isOpen: isOpenStake, onClose: onCloseStake, onOpen: onOpenStake } = useDisclosure();
+  const {
+    isOpen: isOpenStake,
+    onClose: onCloseStake,
+    onOpen: onOpenStake,
+  } = useDisclosure();
   const {
     isOpen: isOpenWithdraw,
     onClose: onCloseWithdraw,
     onOpen: onOpenWithdraw,
   } = useDisclosure();
-  const { isOpen: isOpenClaim, onClose: onCloseClaim, onOpen: onOpenClaim } = useDisclosure();
-  const { isOpen: isOpenRestake, onClose: onCloseRestake, onOpen: onOpenRestake } = useDisclosure();
+  const {
+    isOpen: isOpenClaim,
+    onClose: onCloseClaim,
+    onOpen: onOpenClaim,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenRestake,
+    onClose: onCloseRestake,
+    onOpen: onOpenRestake,
+  } = useDisclosure();
   const [isHideNumbers, setIsHideNumbers] = useState(false);
 
   const showNumbers = () => setIsHideNumbers(false);
@@ -74,23 +82,27 @@ const Stake: React.FC = () => {
     data: accountBalance = 0,
     isLoading,
     refetch,
-  } = useQuery(["getHEAccountBalance", account], () => getHEAccountBalance("HE", account || ""), {
-    enabled: !! ethereum,
-  });
+  } = useQuery(
+    ["getHEAccountBalance", account],
+    () => getHEAccountBalance("HE", account || ""),
+    {
+      enabled: !!ethereum,
+    }
+  );
 
   const {
     data: userInfo,
     isLoading: isLoadingUserInfo,
     refetch: refetchUserInfo,
   } = useQuery(["getUserInfo", account], () => getUserInfo(0, account || ""), {
-    enabled: !! ethereum,
+    enabled: !!ethereum,
   });
 
   const { data: rewardAmount, refetch: refetchRewardAmount } = useQuery(
     [getStakingRewardAmountQueryKey, account],
     () => getStakingRewardAmount(0, account || ""),
     {
-      enabled: !! ethereum,
+      enabled: !!ethereum,
     }
   );
 

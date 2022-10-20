@@ -2,17 +2,17 @@ import { Box, HStack, Icon, Skeleton, Stack, Tag, Text, Tooltip, VStack } from "
 import Card from "components/card/Card";
 import { MultiProgress } from "components/progressMultiBar/MultiProgress";
 import { ProgressBar } from "components/progressMultiBar/ProgressBar";
-import { getDailyReward, getDailyRewardTime, getPoolInfo } from "contracts/stake";
+import { getDailyRewardTime, getPoolInfo } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
-import { useQuery } from "react-query";
-import { heStatsService } from "services/heStats";
-import { governanceService } from "services/governance";
-import { useWallet } from "use-wallet";
-import { formatNumber, numeralFormat } from "utils/utils";
+import { useConnectWallet } from "hooks/useWallet";
 import { BsCircleFill } from "react-icons/bs";
+import { useQuery } from "react-query";
+import { governanceService } from "services/governance";
+import { heStatsService } from "services/heStats";
+import { formatNumber, numeralFormat } from "utils/utils";
 
 export default function HeStats() {
-  const { account } = useWallet();
+  const { account } = useConnectWallet();
   const toast = useCustomToast();
   const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery(
     ["getPollInfo", account],

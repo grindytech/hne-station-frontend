@@ -1,14 +1,14 @@
-import React from "react";
 import { Text, VStack } from "@chakra-ui/react";
+import React from "react";
 
 import Card from "components/card/Card";
 import CardHeader from "components/card/CardHeader";
-import PendingWithdraw from "components/stake/pendingWithdraw/PendingWithdraw";
 import PendingClaim from "components/stake/pendingClaim/PendingClaim";
-import { useWallet } from "use-wallet";
+import PendingWithdraw from "components/stake/pendingWithdraw/PendingWithdraw";
 import { getUserPendingClaim, getUserPendingWithdraw } from "contracts/stake";
-import { useQuery } from "react-query";
+import { useConnectWallet } from "hooks/useWallet";
 import { isEmpty } from "lodash";
+import { useQuery } from "react-query";
 
 interface Props {
   isHideNumbers: boolean;
@@ -19,22 +19,30 @@ export const pendingWithdrawQueryKey = "getUserPendingWithdraw";
 export const pendingClaimQueryKey = "getUserPendingClaim";
 
 const Withdrawal: React.FC<Props> = ({ isHideNumbers, onSuccess }) => {
-  const { ethereum, account } = useWallet();
+  const { ethereum, account } = useConnectWallet();
   const {
     data: pendingWithdraws,
     isLoading,
     refetch: refetchPendingWithdraws,
-  } = useQuery(pendingWithdrawQueryKey, () => getUserPendingWithdraw(0, account || ""), {
-    enabled: !! ethereum,
-  });
+  } = useQuery(
+    pendingWithdrawQueryKey,
+    () => getUserPendingWithdraw(0, account || ""),
+    {
+      enabled: !!ethereum,
+    }
+  );
 
   const {
     data: pendingClaims,
     isLoading: isLoadingClaims,
     refetch: refetchPendingClaims,
-  } = useQuery([pendingClaimQueryKey, account], () => getUserPendingClaim(0, account || ""), {
-    enabled: !! ethereum,
-  });
+  } = useQuery(
+    [pendingClaimQueryKey, account],
+    () => getUserPendingClaim(0, account || ""),
+    {
+      enabled: !!ethereum,
+    }
+  );
 
   const isShow =
     !isEmpty(pendingWithdraws?.filter(({ status }) => status === 0)) ||

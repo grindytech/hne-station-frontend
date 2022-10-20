@@ -1,30 +1,30 @@
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
+  Button,
   FormControl,
   FormErrorMessage,
-  ModalFooter,
-  Button,
-  Text,
   HStack,
   Icon,
-  useDisclosure
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useMutation } from "react-query";
 
+import { ReactComponent as HEIcon } from "assets/he_coin.svg";
+import NumberInput from "components/numberInput/NumberInput";
+import configs from "configs";
 import { pendingWithdrawHE } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
+import { useConnectWallet } from "hooks/useWallet";
 import { ErrorContract } from "types";
 import { formatNumber } from "utils/utils";
-import NumberInput from "components/numberInput/NumberInput";
-import { ReactComponent as HEIcon } from "assets/he_coin.svg";
-import { useWallet } from "use-wallet";
-import configs from "configs";
 
 interface Props {
   isOpen: boolean;
@@ -33,12 +33,21 @@ interface Props {
   onSuccess: () => void;
 }
 
-const WithdrawPopup: React.FC<Props> = ({ isOpen, withdrawableAmount, onClose, onSuccess }) => {
-  const { ethereum, account } = useWallet();
+const WithdrawPopup: React.FC<Props> = ({
+  isOpen,
+  withdrawableAmount,
+  onClose,
+  onSuccess,
+}) => {
+  const { ethereum, account } = useConnectWallet();
   const toast = useCustomToast();
   const [value, setValue] = useState<number | string>("");
   const [errorMsg, setErrorMsg] = useState("");
-  const {isOpen: isOpenInfo, onOpen: onOpenInfo, onClose: onCloseInfo } = useDisclosure();
+  const {
+    isOpen: isOpenInfo,
+    onOpen: onOpenInfo,
+    onClose: onCloseInfo,
+  } = useDisclosure();
 
   const { mutate, isLoading } = useMutation(pendingWithdrawHE, {
     onSuccess: () => {
@@ -56,11 +65,11 @@ const WithdrawPopup: React.FC<Props> = ({ isOpen, withdrawableAmount, onClose, o
     },
     onError: (error: ErrorContract) => {
       if (error.code === 4001) setErrorMsg("Please allow transaction!");
-    }
+    },
   });
 
   const onClick = () => {
-    if (Number(value) > 0 && !! ethereum) {
+    if (Number(value) > 0 && !!ethereum) {
       mutate({ poolId: 0, amount: Number(value), address: account || "" });
     }
   };
@@ -68,7 +77,7 @@ const WithdrawPopup: React.FC<Props> = ({ isOpen, withdrawableAmount, onClose, o
   const onCloseAll = () => {
     onCloseInfo();
     onClose();
-  }
+  };
 
   return (
     <>

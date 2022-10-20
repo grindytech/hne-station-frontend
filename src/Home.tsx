@@ -4,22 +4,14 @@ import {
   Drawer,
   DrawerContent,
   useColorModeValue,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
-import { DepositProposal } from "components/governance/DepositProposal";
-import NewProposal from "components/governance/NewProposal";
-import Proposal from "components/governance/Proposal";
-import { VoteProposal } from "components/governance/VoteProposal";
 import MobileNav from "components/station/MobileNav";
 import SidebarContent from "components/station/SidebarContent";
-import Airdrop from "pages/Airdrop";
 import BridgePage from "pages/BridgePage";
 import Dashboard from "pages/Dashboard";
-import GovernancePage from "pages/Governance";
-import PrivateClaim from "pages/PrivateClaim";
 import Stake from "pages/Stake";
 import SwapPage from "pages/SwapPage";
-import UserHistories from "pages/UserHistories";
 import { IconType } from "react-icons";
 import { AiOutlineSwap } from "react-icons/ai";
 import { FiTrendingUp } from "react-icons/fi";
@@ -30,13 +22,8 @@ interface LinkItemProps {
   key: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  // { key: "/", name: "Home", icon: FiHome },
   { key: "/stake", name: "Stake", icon: FiTrendingUp },
-  // { key: "/governance", name: "Governance", icon: RiGovernmentLine },
-  // { key: "/histories", name: "Histories", icon: AiOutlineHistory },
-  // { key: "/private-claim", name: "Strategic Partnerships", icon: FiCompass },
-  // { key: "/airdrop", name: "Airdrop", icon: FiGift },
-  { key: "/swap", name: "Swap", icon: AiOutlineSwap },
+  // { key: "/swap", name: "Swap", icon: AiOutlineSwap },
   { key: "/bridge", name: "Bridge", icon: AiOutlineSwap },
 ];
 
@@ -69,23 +56,9 @@ export default function Station() {
         <Container maxW="container.lg" mb={3}>
           <Routes>
             <Route path="/stake" element={<Stake />} />
-            <Route path="/private-claim" element={<PrivateClaim />} />
-            <Route path="/airdrop" element={<Airdrop />} />
             <Route path="/swap" element={<SwapPage />} />
             <Route path="/bridge" element={<BridgePage />} />
             <Route path="/" element={<Dashboard />} />
-            <Route path="/governance" element={<GovernancePage />} />
-            <Route path="/histories" element={<UserHistories />} />
-            <Route path="/proposal/new" element={<NewProposal />} />
-            <Route path="/proposal/:proposalId" element={<Proposal />} />
-            <Route
-              path="/proposal/:proposalId/deposit"
-              element={<DepositProposal />}
-            />
-            <Route
-              path="/proposal/:proposalId/vote"
-              element={<VoteProposal />}
-            />
           </Routes>
         </Container>
       </Box>

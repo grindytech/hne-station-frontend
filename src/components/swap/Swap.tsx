@@ -23,18 +23,18 @@ import {
   TOKEN_INFO,
 } from "contracts/swap";
 import useCustomToast from "hooks/useCustomToast";
+import { useConnectWallet } from "hooks/useWallet";
 import _ from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import { FiArrowDownCircle, FiRefreshCw, FiRotateCw } from "react-icons/fi";
 import { useQuery } from "react-query";
-import { useWallet } from "use-wallet";
 import { numberOnly, numeralFormat, numeralFormat1 } from "utils/utils";
 import ChooseTokenButton from "./ChooseTokenButton";
 import SettingButton from "./SettingButton";
 import TxHistories, { Transaction } from "./TxHistories";
 
 export default function Swap() {
-  const wallet = useWallet();
+  const wallet = useConnectWallet();
   const [token1, setToken1] = useState("BUSD");
   const [token2, setToken2] = useState("HE");
   const [amount1, setAmount1] = useState("");
@@ -258,7 +258,11 @@ export default function Swap() {
     };
     setHistories([...histories, h]);
     setApproving(true);
-    erc20Approve(token1, configs.SWAP.ROUTER_V2_CONTRACT, String(wallet.account))
+    erc20Approve(
+      token1,
+      configs.SWAP.ROUTER_V2_CONTRACT,
+      String(wallet.account)
+    )
       .on("transactionHash", (hash: string) => {
         h.txHash = hash;
       })

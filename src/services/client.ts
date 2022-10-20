@@ -41,7 +41,7 @@ const beforeRequest = (config: any) => {
 
 const client = axios.create({
   baseURL: API_URI,
-  paramsSerializer: (params) => stringify(params, { arrayFormat: "index" }),
+  // paramsSerializer: (params:any) => stringify(params, { arrayFormat: "index" }),
 });
 client.interceptors.request.use(beforeRequest);
 

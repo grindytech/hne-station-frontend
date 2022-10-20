@@ -1,41 +1,39 @@
 import configs from "configs";
-import { useState } from "react";
-import { useWallet } from "use-wallet";
-import useWalletConnectContext from "./useWalletConnectContext";
+import { useConnectWallet, Wallet } from "./useWallet";
 
 const useSwitchNetwork = () => {
-  const wallet = useWallet();
-  const { chainId } = wallet;
-  const { setCurrentChain } = useWalletConnectContext();
+  const { chainId, ethereum, connect, wallet } = useConnectWallet();
   function isWrongNetwork(network: string) {
     return configs.NETWORKS[network].chainIdNumber !== chainId;
   }
   function switchEthereumChain(chainId: string) {
-    return wallet.ethereum.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: chainId }],
-    });
+    return (
+      ethereum?.request &&
+      ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: chainId }],
+      })
+    );
   }
   function addEthereumChain(params: any) {
-    return wallet.ethereum.request({
-      method: "wallet_addEthereumChain",
-      params: params,
-    });
+    return (
+      ethereum?.request &&
+      ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: params,
+      })
+    );
   }
   function changeNetwork(chain: string) {
     const network = configs.NETWORKS[chain];
     return switchEthereumChain(String(network.chainId))
-      .then(() => {
-        setCurrentChain(network);
-        // @ts-ignore
-        wallet.connect();
+      ?.then(() => {
+        connect(wallet || Wallet.METAMASK);
       })
       .catch((err: any) => {
         if (err.code === 4902) {
-          addEthereumChain([network]).then(() => {
-            setCurrentChain(network);
-            // @ts-ignore
-            wallet.connect();
+          addEthereumChain([network])?.then(() => {
+            connect(wallet || Wallet.METAMASK);
           });
         }
       });

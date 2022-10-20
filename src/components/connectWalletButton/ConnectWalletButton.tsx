@@ -14,11 +14,11 @@ import {
 import { ReactComponent as Metamask } from "assets/metamask.svg";
 import { ReactComponent as Walletconnect } from "assets/walletconnect.svg";
 import RequireWalletPopup from "components/requireWalletPopup/RequireWalletPopup";
-import useWallet, { Wallet } from "hooks/useWallet";
+import { useConnectWallet, Wallet } from "hooks/useWallet";
 import React from "react";
 
 const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
-  const { connect } = useWallet();
+  const { connect } = useConnectWallet();
   const { ...rest } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -46,9 +46,9 @@ const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
               <Button
                 colorScheme="primary"
                 variant="outline"
-                onClick={() => {
-                  //@ts-ignore
-                  connect(Wallet.METAMASK).then(onClose);
+                onClick={async () => {
+                  await connect(Wallet.METAMASK);
+                  onClose();
                 }}
                 w="full"
                 leftIcon={
@@ -62,8 +62,9 @@ const ConnectWalletButton: React.FC<ButtonProps> = (props) => {
               <Button
                 colorScheme="primary"
                 variant="outline"
-                onClick={() => {
-                  connect(Wallet.WALLET_CONNECT).then(onClose);
+                onClick={async () => {
+                  await connect(Wallet.WALLET_CONNECT);
+                  onClose();
                 }}
                 w="full"
                 leftIcon={

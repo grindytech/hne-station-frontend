@@ -1,16 +1,16 @@
+import { Box, Button, HStack, Icon, Text } from "@chakra-ui/react";
+import { format, formatDistanceToNow } from "date-fns";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
-import { HStack, Button, Text, Icon, Box } from "@chakra-ui/react";
-import { formatDistanceToNow, format } from "date-fns";
 
+import { TimeIcon } from "@chakra-ui/icons";
+import { ReactComponent as HEIcon } from "assets/he_coin.svg";
+import configs from "configs";
+import { CLAIMED_STATUS, DATE_TIME_FORMAT } from "constant";
 import { claimHE, ClaimInfo, getTimeLockClaim } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
+import { useConnectWallet } from "hooks/useWallet";
 import { formatNumber } from "utils/utils";
-import { useWallet } from "use-wallet";
-import { ReactComponent as HEIcon } from "assets/he_coin.svg";
-import { TimeIcon } from "@chakra-ui/icons";
-import { CLAIMED_STATUS, DATE_TIME_FORMAT } from "constant";
-import configs from "configs";
 
 interface Props extends ClaimInfo {
   claimId: number;
@@ -27,7 +27,7 @@ const PendingClaimItem: React.FC<Props> = ({
   amount,
   onSuccess
 }) => {
-  const { account } = useWallet();
+  const { account } = useConnectWallet();
   const toast = useCustomToast();
 
   const { data: timeLockClaim = 0 } = useQuery(["timeLockClaim", account], getTimeLockClaim);

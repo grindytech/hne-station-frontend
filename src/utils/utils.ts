@@ -110,7 +110,6 @@ export const numeralFormat1 = (price: number, decimal = 2) => {
 };
 
 export function numberOnly(key: string, amount: string) {
-  console.log(key);
   return !(
     key.match(/[\d.]/g) ||
     (key === "." && amount.indexOf(".") >= 0) ||

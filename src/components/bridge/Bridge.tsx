@@ -22,19 +22,13 @@ import {
 } from "contracts/bridge";
 import { Chain } from "contracts/contracts";
 import useSwitchNetwork from "hooks/useSwitchNetwork";
+import { useConnectWallet } from "hooks/useWallet";
 import _ from "lodash";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { FiRefreshCw } from "react-icons/fi";
+import { useCallback, useEffect, useState } from "react";
 import { HiSwitchVertical } from "react-icons/hi";
 import { useQuery } from "react-query";
-import { useWallet } from "use-wallet";
 import { getSgvIcon, ICONS } from "utils/icons";
-import {
-  formatNumber,
-  numberOnly,
-  numeralFormat,
-  numeralFormat1,
-} from "utils/utils";
+import { numberOnly, numeralFormat, numeralFormat1 } from "utils/utils";
 
 const NETWORKS: Token[] = [
   { key: "BSC", icon: getSgvIcon(ICONS.BNB), name: "BSC" },
@@ -66,7 +60,7 @@ export default function Bridge() {
   const [approving, setApproving] = useState(false);
   const [receiveAmount, setReceiveAmount] = useState(0);
   const [receiveLoading, setReceiveLoading] = useState(false);
-  const { account } = useWallet();
+  const { account } = useConnectWallet();
   const { isWrongNetwork, changeNetwork } = useSwitchNetwork();
   const [needCheckNetwork, setNeedCheckNetwork] = useState(false);
   const { data: balance } = useQuery(
