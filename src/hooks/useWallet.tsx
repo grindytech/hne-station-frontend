@@ -1,4 +1,5 @@
 import { chainName } from "connectWallet/connectors";
+import { web3 } from "contracts/contracts";
 import React, {
   useCallback,
   useContext,
@@ -163,6 +164,10 @@ function useWallet() {
   useEffect(() => {
     autoConnect();
   }, [autoConnect]);
+
+  useEffect(() => {
+    if (ethereum) web3.setProvider(ethereum);
+  }, [ethereum]);
 
   return {
     connect,

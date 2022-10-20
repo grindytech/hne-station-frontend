@@ -12,15 +12,20 @@ import {
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
 import CardHeader from "components/card/CardHeader";
+import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
 import ChooseTokenButton, { Token } from "components/swap/ChooseTokenButton";
 import configs from "configs";
 import {
+  BridgeToken,
+  erc20Approve,
   erc20Approved,
   getDestinationAmount,
   getErc20Balance,
   getNativeBalance,
+  transfer,
 } from "contracts/bridge";
 import { Chain } from "contracts/contracts";
+import useCustomToast from "hooks/useCustomToast";
 import useSwitchNetwork from "hooks/useSwitchNetwork";
 import { useConnectWallet } from "hooks/useWallet";
 import _ from "lodash";
@@ -60,10 +65,16 @@ export default function Bridge() {
   const [approving, setApproving] = useState(false);
   const [receiveAmount, setReceiveAmount] = useState(0);
   const [receiveLoading, setReceiveLoading] = useState(false);
+  const [deadline, setDeadline] = useState(20 * 60);
+  const [slippage, setSlippage] = useState(1);
+  const [refreshChainBalanceTime, setRefreshChainBalanceTime] = useState(
+    Date.now()
+  );
+  const toast = useCustomToast();
+  const fee = 0.1;
   const { account } = useConnectWallet();
   const { isWrongNetwork, changeNetwork } = useSwitchNetwork();
-  const [needCheckNetwork, setNeedCheckNetwork] = useState(false);
-  const { data: balance } = useQuery(
+  const { data: balance, refetch: refetchBalance } = useQuery(
     ["balanceOf", originToken, account, originChain],
     async () => {
       const token = configs.BRIDGE[originChain].TOKENS[originToken];
@@ -77,17 +88,25 @@ export default function Bridge() {
       return balance;
     }
   );
-  const refreshChainBalance = useCallback(
-    async (chain: string) => {
-      if (!chain || !account) return;
+  const refreshChainBalance = useCallback(async () => {
+    const refresh = async (chain: string) => {
+      if (!chain) return;
       for (const token of TOKENS_SUPPORT[chain]) {
-        const balance = await getErc20Balance(account, token.contract, chain);
-        token.name = String(balance);
-        debugger;
+        let balance = 0;
+        if (account) {
+          if (token.contract) {
+            balance = await getErc20Balance(account, token.contract, chain);
+          } else {
+            balance = await getNativeBalance(account, chain);
+          }
+        }
+        token.name = String(numeralFormat(balance || 0));
       }
-    },
-    [account]
-  );
+    };
+    await refresh(originChain);
+    await refresh(destinationChain);
+    setRefreshChainBalanceTime(Date.now());
+  }, [account, destinationChain, originChain]);
   const validate = useCallback(async () => {
     let error = "";
     if (!amount || Number(amount) > Number(balance) || Number(amount) < 0) {
@@ -125,11 +144,12 @@ export default function Bridge() {
     }
     setDestinationChain(chain);
   };
-  const { data: approved } = useQuery(
+  const { data: approved, refetch: refetchApprove } = useQuery(
     ["approved", account, originChain, originToken],
     async () => {
       if (!account) return true;
       const token = configs.BRIDGE[originChain].TOKENS[originToken];
+      if (token.native) return true;
       const routerContract =
         configs.BRIDGE[originChain].CONTRACTS.ROUTER_CONTRACT;
       const isApproved = await erc20Approved(
@@ -187,14 +207,73 @@ export default function Bridge() {
     validate();
   }, [validate]);
 
-  const transferBtnOnclickHandle = async () => {
-    if (isWrongNetwork(originChain)) {
-      changeNetwork(originChain);
-      return;
-    }
-    if (!approved) {
+  const approve = async (
+    erc20Contract: string,
+    contract: string,
+    account: string
+  ) => {
+    try {
+      setApproving(true);
+      await erc20Approve(erc20Contract, contract, account);
+      await refetchApprove();
+      toast.success("Transaction successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Transaction failed!");
+    } finally {
+      setApproving(false);
     }
   };
+  const bridge = async (token1: BridgeToken, token2: BridgeToken) => {
+    if (!account) return;
+    try {
+      setIsLoading(true);
+      const minReceive = receiveAmount - (receiveAmount * slippage) / 100;
+      await transfer(
+        token1,
+        token2,
+        Number(amount),
+        minReceive,
+        account,
+        account,
+        deadline,
+        fee,
+        originChain
+      );
+      toast.success("Transaction successfully!");
+      setAmount("");
+      await refetchBalance();
+      await refreshChainBalance();
+    } catch (error) {
+      console.error(error);
+      toast.error("Transaction failed!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const transferBtnOnclickHandle = async () => {
+    if (isWrongNetwork(originChain)) {
+      await changeNetwork(originChain);
+      return;
+    }
+    const token1 = configs.BRIDGE[originChain].TOKENS[originToken];
+    const token2 = configs.BRIDGE[destinationChain].TOKENS[destinationToken];
+    if (!token1 || !token2 || !account) return;
+    const routerContractAddress =
+      configs.BRIDGE[originChain].CONTRACTS.ROUTER_CONTRACT;
+    if (!approved) {
+      await approve(token1.contract, routerContractAddress, account);
+    } else {
+      const originTokens = configs.BRIDGE[originChain].TOKENS;
+      const token2OriginChainMap = Object.keys(originTokens)
+        .map((k) => originTokens[k])
+        .find((token) => token.id === token2.id);
+      if (token2OriginChainMap) await bridge(token1, token2OriginChainMap);
+    }
+  };
+  useEffect(() => {
+    refreshChainBalance();
+  }, [refreshChainBalance]);
   return (
     <VStack spacing={5}>
       <Card flex={{ lg: 1 }} maxW={600}>
@@ -244,7 +323,7 @@ export default function Bridge() {
                         setOriginToken(token);
                       }}
                       token={originToken}
-                      key={originToken}
+                      key={`${originToken}-${refreshChainBalanceTime}`}
                       label="Token"
                       tokens={TOKENS_SUPPORT[originChain]}
                     />
@@ -309,7 +388,7 @@ export default function Bridge() {
                         setDestinationToken(token);
                       }}
                       token={destinationToken}
-                      key={destinationToken}
+                      key={`${destinationToken}-${refreshChainBalanceTime}`}
                       tokens={TOKENS_SUPPORT[destinationChain]}
                       label="Token"
                     />
@@ -426,59 +505,29 @@ export default function Bridge() {
               </HStack> */}
             </VStack>
             <VStack width="full">
-              {/* {wallet.ethereum ? (
-                !Number(amount1) ? (
-                  <Button disabled colorScheme="primary" width="full">
-                    Enter an amount
-                  </Button>
-                ) : Number(amount1) > Number(balance1) ? (
-                  <Button disabled colorScheme="primary" width="full">
-                    Insufficient {token1} balance
-                  </Button>
-                ) : !approved || approvedFetching ? (
-                  <Button
-                    onClick={onApprove}
-                    colorScheme="primary"
-                    width="full"
-                    isLoading={approving}
-                    disabled={approving || approvedFetching}
-                  >
-                    Approve {token1} token
-                  </Button>
-                ) : (
-                  <Button
-                    isLoading={swapping}
-                    onClick={swapOnclick}
-                    colorScheme="primary"
-                    width="full"
-                    disabled={loading || swapping}
-                  >
-                    Swap
-                  </Button>
-                )
+              {account ? (
+                <Button
+                  disabled={!!errorMessage || approving || isLoading}
+                  colorScheme="primary"
+                  width="full"
+                  isLoading={approving || isLoading}
+                  onClick={transferBtnOnclickHandle}
+                >
+                  {!!errorMessage
+                    ? errorMessage
+                    : isWrongNetwork(originChain)
+                    ? `Switch to ${configs.NETWORKS[originChain].chainName}`
+                    : approved
+                    ? "Transfer"
+                    : "Approve"}
+                </Button>
               ) : (
                 <ConnectWalletButton
                   width="full"
                   variant="solid"
                   colorScheme="primary"
                 />
-              )} */}
-
-              <Button
-                disabled={!!errorMessage || approving || isLoading}
-                colorScheme="primary"
-                width="full"
-                isLoading={approving || isLoading}
-                onClick={transferBtnOnclickHandle}
-              >
-                {!!errorMessage
-                  ? errorMessage
-                  : isWrongNetwork(originChain)
-                  ? `Switch to ${configs.NETWORKS[originChain].chainName}`
-                  : approved
-                  ? "Transfer"
-                  : "Approve"}
-              </Button>
+              )}
             </VStack>
           </VStack>
         </CardBody>

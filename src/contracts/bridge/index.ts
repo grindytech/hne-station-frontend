@@ -142,6 +142,7 @@ export const getPath = async (
     endPath = wrapToken.contract;
   }
   const pair = await getPair(firstPath, endPath, pancakeFactoryAddress, chain);
+  debugger
   if (pair === BURN_ADDRESS) {
     path = [firstPath, bridgeToken, endPath];
   } else {
@@ -191,6 +192,7 @@ export const routerSwapExactTokensForETH = async (
   from: string,
   amountIn: number,
   amountOutMin: number,
+  fee: number,
   path: string[],
   to: string,
   deadLine: number,
@@ -201,6 +203,7 @@ export const routerSwapExactTokensForETH = async (
   const amountInContract = convertToContractValue({ amount: amountIn });
   const amountOutMinContract = convertToContractValue({ amount: amountOutMin });
   const deadLineTimestamp = parseInt(String(Date.now() / 1e3)) + deadLine;
+  const feeContractValue = convertToContractValue({ amount: fee });
   return await contract.methods
     .routerSwapExactTokensForETH(
       amountInContract,
@@ -209,13 +212,14 @@ export const routerSwapExactTokensForETH = async (
       to,
       deadLineTimestamp
     )
-    .send({ from: from, value: amountInContract });
+    .send({ from: from, value: feeContractValue });
 };
 
 export const routerSwapExactTokensForTokens = async (
   from: string,
   amountIn: number,
   amountOutMin: number,
+  fee: number,
   path: string[],
   to: string,
   deadLine: number,
@@ -226,6 +230,7 @@ export const routerSwapExactTokensForTokens = async (
   const amountInContract = convertToContractValue({ amount: amountIn });
   const amountOutMinContract = convertToContractValue({ amount: amountOutMin });
   const deadLineTimestamp = parseInt(String(Date.now() / 1e3)) + deadLine;
+  const feeContractValue = convertToContractValue({ amount: fee });
   return await contract.methods
     .routerSwapExactTokensForTokens(
       amountInContract,
@@ -234,25 +239,45 @@ export const routerSwapExactTokensForTokens = async (
       to,
       deadLineTimestamp
     )
-    .send({ from: from, value: amountInContract });
+    .send({ from: from, value: feeContractValue });
+};
+
+export const swap = async (
+  from: string,
+  to: string,
+  token: string,
+  amount: number,
+  fee: number,
+  chain: string = DEFAULT_CHAIN
+) => {
+  const bridgeRouterAddress = configs.BRIDGE[chain].CONTRACTS.ROUTER_CONTRACT;
+  const contract = bridgeRouterContract(bridgeRouterAddress);
+  const amountContractValue = convertToContractValue({ amount: amount });
+  const feeContractValue = convertToContractValue({ amount: fee });
+  return await contract.methods
+    .swap(amountContractValue, token, to)
+    .send({ from: from, value: feeContractValue });
 };
 
 export const transfer = async (
   token1: BridgeToken,
   token2: BridgeToken,
-  bridgeToken: string,
   amountIn: number,
   amountOutMin: number,
   from: string,
   to: string,
   deadLine: number,
+  fee: number,
   chain: string = DEFAULT_CHAIN
 ) => {
+  if (token1.id === token2.id) {
+    return swap(from, to, token1.contract, amountIn, fee, chain);
+  }
   const path = await getPath(token1, token2, chain);
   if (token1.native) {
     return routerSwapExactETHForTokens(
       from,
-      amountIn,
+      amountIn + fee,
       amountOutMin,
       path,
       to,
@@ -265,6 +290,7 @@ export const transfer = async (
       from,
       amountIn,
       amountOutMin,
+      fee,
       path,
       to,
       deadLine,
@@ -275,6 +301,7 @@ export const transfer = async (
     from,
     amountIn,
     amountOutMin,
+    fee,
     path,
     to,
     deadLine,
