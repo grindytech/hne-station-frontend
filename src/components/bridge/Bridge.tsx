@@ -80,6 +80,7 @@ export default function Bridge() {
   const [deadline, setDeadline] = useState(20);
   const [slippage, setSlippage] = useState(1);
   const [histories, setHistories] = useState<Transaction[]>([]);
+  const [inputAmount, setInputAmount] = useState(amount);
   // const [gasCost, setGasCost] = useState(0);
   const [refreshChainBalanceTime, setRefreshChainBalanceTime] = useState(
     Date.now()
@@ -90,6 +91,9 @@ export default function Bridge() {
   const [receiver, setReceive] = useState(account);
 
   const { isWrongNetwork, changeNetwork } = useSwitchNetwork();
+  useEffect(() => {
+    setInputAmount(amount);
+  }, [amount]);
   const { data: balance, refetch: refetchBalance } = useQuery(
     ["balanceOf", originToken, account, originChain],
     async () => {
@@ -358,6 +362,7 @@ export default function Bridge() {
           if (confNumber === 0) {
             h.status = "success";
             toast.success("Transaction successfully!");
+            setAmount("");
             refetchBalance();
             refreshChainBalance();
           }
@@ -628,6 +633,7 @@ export default function Bridge() {
                     variant="unstyled"
                     placeholder="0.0"
                     size="lg"
+                    value={inputAmount}
                     onKeyPress={(e) => {
                       if (numberOnly(e.key, amount)) {
                         e.preventDefault();
