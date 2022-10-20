@@ -49,7 +49,9 @@ export interface Configs {
         ROUTER_CONTRACT: string;
         PANCAKE_FACTORY_CONTRACT: string;
         PANCAKE_ROUTER_CONTRACT: string;
+        ISSUE_CONTRACT: string;
         BRIDGE_TOKEN: string;
+        DST_CHAIN_ID: number;
       };
       TOKENS: { [n: string]: BridgeToken };
     };

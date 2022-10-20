@@ -81,6 +81,8 @@ const configs: Configs = {
         PANCAKE_ROUTER_CONTRACT: "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3",
         ROUTER_CONTRACT: "0xcB01670d5881aF6cD42aA7CAc02c996168631e1b",
         BRIDGE_TOKEN: "0x810c3aeec5Faeb9Ef9f05526Ec8e47fe3c93f1b2", //BUSD
+        ISSUE_CONTRACT: "",
+        DST_CHAIN_ID: 10102,
       },
       TOKENS: {
         HE: {
@@ -116,6 +118,8 @@ const configs: Configs = {
         PANCAKE_ROUTER_CONTRACT: "",
         ROUTER_CONTRACT: "",
         BRIDGE_TOKEN: "",
+        ISSUE_CONTRACT: "0xd7eB535a4C829c486fc2B9b9FD05c8958e47E50e",
+        DST_CHAIN_ID: 0,
       },
       TOKENS: {
         SKY: {

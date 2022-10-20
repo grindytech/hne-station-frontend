@@ -7,7 +7,6 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -15,7 +14,7 @@ import { ReactComponent as BNBCoin } from "assets/bnb_coin.svg";
 import { ReactComponent as BUSDCoin } from "assets/busd_coin.svg";
 import { ReactComponent as HECoin } from "assets/he_coin.svg";
 import { TOKEN_INFO } from "contracts/swap";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { FiChevronDown } from "react-icons/fi";
 
 export type Token = {
@@ -50,6 +49,11 @@ export default function ChooseTokenButton({
     () => listTokens.find((info) => info.key === token),
     [listTokens, token]
   );
+  useEffect(() => {
+    if (!tokenInfo) {
+      onChange(listTokens[0].key);
+    }
+  }, [listTokens, onChange, tokenInfo]);
   return (
     <Menu>
       <MenuButton
@@ -71,16 +75,14 @@ export default function ChooseTokenButton({
           justifyContent="space-between"
           alignItems="center"
           leftIcon={
-            tokenInfo?.icon && (
-              <Icon w={5} h={5}>
-                {tokenInfo?.icon}
-              </Icon>
-            )
+            <Icon w={5} h={5}>
+              {tokenInfo?.icon ?? listTokens[0].icon}
+            </Icon>
           }
           rightIcon={<FiChevronDown color="gray" />}
         >
           <Text width="full" textAlign="left">
-            {token}
+            {tokenInfo ? token : listTokens[0].key}
           </Text>
         </Button>
       </MenuButton>

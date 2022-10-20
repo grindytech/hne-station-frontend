@@ -56,7 +56,6 @@ export async function createProposal(
   description: string,
   account: string
 ) {
-  debugger;
   await contract.methods
     .createProposal(title, description)
     .send({ from: account });

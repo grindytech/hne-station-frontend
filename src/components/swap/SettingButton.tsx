@@ -18,12 +18,26 @@ import { numberOnly } from "utils/utils";
 const slippageOptions = ["0.1", "0.5", "1"];
 
 type Props = {
-  onChange: ({ slippage, deadline }: { slippage: number; deadline: number }) => void;
+  onChange: ({
+    slippage,
+    deadline,
+  }: {
+    slippage: number;
+    deadline: number;
+  }) => void;
+  slippageDefault?: number;
+  deadlineDefault?: number;
 };
 
-export default function SettingButton({ onChange }: Props) {
-  const [slippage, setSlippage] = useState("0.5");
-  const [deadline, setDeadline] = useState(20);
+export default function SettingButton({
+  onChange,
+  slippageDefault,
+  deadlineDefault,
+}: Props) {
+  const [slippage, setSlippage] = useState(
+    slippageDefault ? String(slippageDefault) : "0.5"
+  );
+  const [deadline, setDeadline] = useState(deadlineDefault || 20);
   const [errorMsg, setErrorMsg] = useState("");
   const [errorType, setErrorType] = useState<"warn" | "error">("error");
 
@@ -52,7 +66,12 @@ export default function SettingButton({ onChange }: Props) {
     <Stack>
       <Stack position="relative">
         <Menu>
-          <MenuButton variant="link" _focus={{ border: "none" }} color="gray.500" as={Link}>
+          <MenuButton
+            variant="link"
+            _focus={{ border: "none" }}
+            color="gray.500"
+            as={Link}
+          >
             <AiOutlineSetting />
           </MenuButton>
           <MenuList
@@ -63,7 +82,12 @@ export default function SettingButton({ onChange }: Props) {
           >
             <VStack spacing={[10, 5]} padding={5}>
               <VStack>
-                <Text textAlign="start" w="full" fontSize="sm" fontWeight="semibold">
+                <Text
+                  textAlign="start"
+                  w="full"
+                  fontSize="sm"
+                  fontWeight="semibold"
+                >
                   Slippage Tolerance
                 </Text>
                 <HStack>
@@ -102,7 +126,11 @@ export default function SettingButton({ onChange }: Props) {
                     w="full"
                     fontSize="sm"
                     color={
-                      errorType === "error" ? "red" : errorType === "warn" ? "orange.300" : "gray"
+                      errorType === "error"
+                        ? "red"
+                        : errorType === "warn"
+                        ? "orange.300"
+                        : "gray"
                     }
                   >
                     {errorMsg}
@@ -110,13 +138,21 @@ export default function SettingButton({ onChange }: Props) {
                 )}
               </VStack>
               <HStack w="full" justifyContent="space-between">
-                <Text textAlign="start" w="full" fontSize="sm" fontWeight="semibold">
+                <Text
+                  textAlign="start"
+                  w="full"
+                  fontSize="sm"
+                  fontWeight="semibold"
+                >
                   Tx deadline (mins)
                 </Text>
                 <Input
                   onChange={(e) => {
                     setDeadline(Number(e.target.value));
-                    onChange({ slippage: Number(slippage), deadline: Number(e.target.value) });
+                    onChange({
+                      slippage: Number(slippage),
+                      deadline: Number(e.target.value),
+                    });
                   }}
                   onKeyPress={(e) => {
                     if (numberOnly(e.key, slippage) || e.key === ".") {
