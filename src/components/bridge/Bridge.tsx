@@ -35,10 +35,10 @@ import {
 } from "contracts/bridge";
 import { Chain } from "contracts/contracts";
 import useCustomToast from "hooks/useCustomToast";
-import useSwitchNetwork from "hooks/useSwitchNetwork";
-import { useConnectWallet } from "hooks/useWallet";
+import useSwitchNetwork from "connectWallet/useSwitchNetwork";
+import { useConnectWallet } from "connectWallet/useWallet";
 import _ from "lodash";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { HiSwitchVertical } from "react-icons/hi";
 import { useQuery } from "react-query";
 import { getSgvIcon, ICONS } from "utils/icons";
@@ -80,8 +80,7 @@ export default function Bridge() {
   const [deadline, setDeadline] = useState(20);
   const [slippage, setSlippage] = useState(1);
   const [histories, setHistories] = useState<Transaction[]>([]);
-  const [inputAmount, setInputAmount] = useState(amount);
-  // const [gasCost, setGasCost] = useState(0);
+  const amountInput = useRef<HTMLInputElement>(null);
   const [refreshChainBalanceTime, setRefreshChainBalanceTime] = useState(
     Date.now()
   );
@@ -91,9 +90,6 @@ export default function Bridge() {
   const [receiver, setReceive] = useState(account);
 
   const { isWrongNetwork, changeNetwork } = useSwitchNetwork();
-  useEffect(() => {
-    setInputAmount(amount);
-  }, [amount]);
   const { data: balance, refetch: refetchBalance } = useQuery(
     ["balanceOf", originToken, account, originChain],
     async () => {
@@ -234,55 +230,6 @@ export default function Bridge() {
     receiveAmountCalculate();
   }, [receiveAmountCalculate]);
 
-  // const calculateGasCost = useCallback(async () => {
-  //   if (!account || !Number(amount)) return;
-  //   const token1 = configs.BRIDGE[originChain].TOKENS[originToken];
-  //   const token2 = configs.BRIDGE[destinationChain].TOKENS[destinationToken];
-  //   const originTokens = configs.BRIDGE[originChain].TOKENS;
-  //   const token2OriginChainMap = Object.keys(originTokens)
-  //     .map((k) => originTokens[k])
-  //     .find((token) => token.id === token2.id);
-  //   if (!token2OriginChainMap) return;
-  //   const minReceive = receiveAmount - (receiveAmount * slippage) / 100;
-  //   const path = await getPath(token1, token2OriginChainMap, originChain);
-  //   const { contractMethod, param } = transfer(
-  //     token1,
-  //     token2OriginChainMap,
-  //     path,
-  //     Number(amount),
-  //     minReceive,
-  //     account,
-  //     receiver || account,
-  //     deadline * 60,
-  //     fee,
-  //     originChain
-  //   );
-  //   try {
-  //     const gas = await contractMethod.estimateGas(param);
-  //     const gasSafeAmount = safeAmount({
-  //       str: String(gas),
-  //       decimal: 18,
-  //     });
-  //     setGasCost(gasSafeAmount);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, [
-  //   account,
-  //   originChain,
-  //   originToken,
-  //   destinationChain,
-  //   destinationToken,
-  //   receiveAmount,
-  //   slippage,
-  //   amount,
-  //   receiver,
-  //   deadline,
-  // ]);
-  // useEffect(() => {
-  //   calculateGasCost();
-  // }, [calculateGasCost]);
-
   useEffect(() => {
     validate();
   }, [validate]);
@@ -362,12 +309,12 @@ export default function Bridge() {
           if (confNumber === 0) {
             h.status = "success";
             toast.success("Transaction successfully!");
-            setAmount("");
             refetchBalance();
             refreshChainBalance();
           }
         })
         .on("error", (error: any) => {
+          console.error(error);
           if (error.code === 4001) {
             h.status = "rejected";
             toast.error("Transaction rejected!");
@@ -628,12 +575,12 @@ export default function Bridge() {
               >
                 <HStack width="full">
                   <Input
+                    ref={amountInput}
                     textOverflow="ellipsis"
                     _placeholder={{ color: "gray.500" }}
                     variant="unstyled"
                     placeholder="0.0"
                     size="lg"
-                    value={inputAmount}
                     onKeyPress={(e) => {
                       if (numberOnly(e.key, amount)) {
                         e.preventDefault();
@@ -645,7 +592,12 @@ export default function Bridge() {
                   ></Input>
                   <Button
                     onClick={() => {
-                      setAmount(String(numeralFormat1(Number(balance))));
+                      const totalAmount = String(
+                        numeralFormat1(Number(balance))
+                      );
+                      if (amountInput.current)
+                        amountInput.current.value = totalAmount;
+                      setAmount(totalAmount);
                     }}
                     size="sm"
                     variant="solid"

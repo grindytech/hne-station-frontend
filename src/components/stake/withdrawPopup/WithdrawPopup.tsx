@@ -22,7 +22,7 @@ import NumberInput from "components/numberInput/NumberInput";
 import configs from "configs";
 import { pendingWithdrawHE } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 import { ErrorContract } from "types";
 import { formatNumber } from "utils/utils";
 

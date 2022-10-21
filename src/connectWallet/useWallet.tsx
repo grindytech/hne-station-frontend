@@ -1,4 +1,7 @@
+import detectEthereumProvider from "@metamask/detect-provider";
+import WalletConnectProvider from "@walletconnect/web3-provider";
 import { chainName } from "connectWallet/connectors";
+import walletConnectProvider from "connectWallet/WalletConnectProvider";
 import { web3 } from "contracts/contracts";
 import React, {
   useCallback,
@@ -36,42 +39,19 @@ const ConnectWalletContext = React.createContext<{
   reset: () => {},
 });
 
-const getProvider = (wallet: Wallet) => {
+const getProvider = async (wallet: Wallet) => {
   let provider = null;
   if (wallet === Wallet.METAMASK) {
-    if ((window.ethereum as any)?.providers) {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const p of (window.ethereum as any)?.providers) {
-        if (p.isMetaMask) {
-          provider = p;
-          break;
-        }
-      }
-    } else if ((window.ethereum as any)?.isMetaMask) {
-      provider = window.ethereum;
-    }
+    provider = await detectEthereumProvider({ mustBeMetaMask: true });
   }
   if (wallet === Wallet.COINBASE) {
-    if ((window.ethereum as any)?.providers)
-      // eslint-disable-next-line no-restricted-syntax
-      for (const p of (window.ethereum as any)?.providers) {
-        if (p.isCoinbaseWallet) {
-          provider = p;
-          break;
-        }
-      }
-    else provider = (window as any).coinbaseWalletExtension;
+    provider = (window as any).coinbaseWalletExtension;
   }
   if (wallet === Wallet.CLOVER) {
-    if ((window.ethereum as any)?.providers)
-      // eslint-disable-next-line no-restricted-syntax
-      for (const p of (window.ethereum as any)?.providers) {
-        if (p.isClover) {
-          provider = p;
-          break;
-        }
-      }
-    else provider = (window as any).clover;
+    provider = (window as any).clover;
+  }
+  if (wallet === Wallet.WALLET_CONNECT) {
+    provider = walletConnectProvider();
   }
   return provider;
 };
@@ -113,22 +93,25 @@ function useWallet() {
 
   const connect = useCallback(
     async (walletType: string, requestConnect = true) => {
-      const provider = getProvider(walletType as Wallet);
+      const provider = await getProvider(walletType as Wallet);
       if (!provider) return;
       const web3 = new Web3(provider);
       setWeb3Injected(web3);
       let user = "";
-      try {
-        if (requestConnect) {
-          const [account] = await web3.eth.requestAccounts();
-          user = account;
+      let accounts: string[] = [];
+      if (requestConnect) {
+        if (walletType === Wallet.WALLET_CONNECT) {
+          try {
+            accounts = await (provider as WalletConnectProvider).enable();
+          } catch (error) {}
         } else {
-          throw new Error();
+          accounts = await web3.eth.requestAccounts();
         }
-      } catch {
-        const [account] = await web3.eth.getAccounts();
-        user = account;
+      } else {
+        accounts = await web3.eth.getAccounts();
       }
+      const [account] = accounts;
+      user = account;
       setConnected(true);
       setAccount(user);
       setWallet(walletType as Wallet);
@@ -139,14 +122,19 @@ function useWallet() {
     },
     []
   );
-  const reset = useCallback(() => {
+  const reset = useCallback(async () => {
     setWeb3Injected(undefined);
     setConnected(false);
     setAccount(undefined);
     setEthereum(undefined);
     localStorage.removeItem(LOCAL_STORE_ACCOUNT);
     localStorage.removeItem(LOCAL_STORE_WALLET);
-  }, []);
+    if (wallet === Wallet.WALLET_CONNECT) {
+      try {
+        await (ethereum as any as WalletConnectProvider).disconnect();
+      } catch (error) {}
+    }
+  }, [ethereum, wallet]);
 
   const autoConnect = useCallback(async () => {
     const lastWallet = localStorage.getItem(LOCAL_STORE_WALLET);

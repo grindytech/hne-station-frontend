@@ -31,7 +31,7 @@ import Withdrawal, {
 import WithdrawPopup from "components/stake/withdrawPopup/WithdrawPopup";
 import configs from "configs";
 import useCustomToast from "hooks/useCustomToast";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 import { poolInfoQueryKey } from "pages/Stake";
 import { heStatsService } from "services/heStats";
 

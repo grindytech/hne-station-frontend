@@ -7,7 +7,10 @@ interface ContractValueParams {
   decimal?: number;
 }
 
-const trauncateFractionAndFormat = (parts: Intl.NumberFormatPart[], digits: number) => {
+const trauncateFractionAndFormat = (
+  parts: Intl.NumberFormatPart[],
+  digits: number
+) => {
   return parts
     .map(({ type, value }) => {
       if (type !== "fraction" || !value || value.length < digits) {
@@ -15,7 +18,11 @@ const trauncateFractionAndFormat = (parts: Intl.NumberFormatPart[], digits: numb
       }
 
       let retVal = "";
-      for (let idx = 0, counter = 0; idx < value.length && counter < digits; idx++) {
+      for (
+        let idx = 0, counter = 0;
+        idx < value.length && counter < digits;
+        idx++
+      ) {
         if (value[idx] !== "0") {
           counter++;
         }
@@ -33,9 +40,13 @@ export const formatNumber = (num: number, digits?: number) => {
   });
   return trauncateFractionAndFormat(formatter.formatToParts(num), digits || 6);
 };
-export const convertToContractValue = ({ amount, decimal = 18 }: ContractValueParams) => {
+export const convertToContractValue = ({
+  amount,
+  decimal = 18,
+}: ContractValueParams) => {
   const strVal = "" + amount;
-  const afterDot = strVal.indexOf(".") > -1 ? strVal.length - strVal.indexOf(".") - 1 : 0;
+  const afterDot =
+    strVal.indexOf(".") > -1 ? strVal.length - strVal.indexOf(".") - 1 : 0;
   const toInteger = strVal.replace(".", "");
   const returnVal = parseInt(toInteger) * 10 ** (decimal - afterDot);
   return returnVal.toLocaleString("fullwide", { useGrouping: false });
@@ -58,7 +69,9 @@ export function countDecimalPlaces(value: number): number {
 }
 
 export function isNotNumber(value: any): boolean {
-  return typeof value !== "number" || Number.isNaN(value) || !Number.isFinite(value);
+  return (
+    typeof value !== "number" || Number.isNaN(value) || !Number.isFinite(value)
+  );
 }
 
 function toNumber(value: any) {
@@ -81,30 +94,52 @@ function getDecimalPlaces(value: number, step: number) {
   return Math.max(countDecimalPlaces(step), countDecimalPlaces(value));
 }
 
-export function cast(value: string | number, step: number, precision?: number): string | undefined {
+export function cast(
+  value: string | number,
+  step: number,
+  precision?: number
+): string | undefined {
   const parsedValue = parse(value);
   if (Number.isNaN(parsedValue)) return undefined;
   const decimalPlaces = getDecimalPlaces(parsedValue, step);
   return toPrecision(parsedValue, precision ?? decimalPlaces);
 }
 
-export const covertToContractValue = ({ amount, decimal = 18 }: ContractValueParams) => {
+export const covertToContractValue = ({
+  amount,
+  decimal = 18,
+}: ContractValueParams) => {
   const strVal = "" + amount;
-  const afterDot = strVal.indexOf(".") > -1 ? strVal.length - strVal.indexOf(".") - 1 : 0;
+  const afterDot =
+    strVal.indexOf(".") > -1 ? strVal.length - strVal.indexOf(".") - 1 : 0;
   const toInteger = strVal.replace(".", "");
   const returnVal = parseInt(toInteger) * 10 ** (decimal - afterDot);
   return returnVal.toLocaleString("fullwide", { useGrouping: false });
 };
 
-export const numeralFormat = (price: number, decimal = 2) => {
+export const numeralFormat = (
+  price: number,
+  decimal = 2,
+  roundingFunction = Math.floor
+) => {
   const decimalAsString = Array(decimal).fill("0").join("");
-  const returnStr = numeral(price).format(`0,0.[${decimalAsString}]`);
+  const returnStr = numeral(price).format(
+    `0,0.[${decimalAsString}]`,
+    roundingFunction
+  );
   if (returnStr === "NaN") return 0;
   return returnStr;
 };
-export const numeralFormat1 = (price: number, decimal = 2) => {
+export const numeralFormat1 = (
+  price: number,
+  decimal = 2,
+  roundingFunction = Math.floor
+) => {
   const decimalAsString = Array(decimal).fill("0").join("");
-  const returnStr = numeral(price).format(`0.[${decimalAsString}]`);
+  const returnStr = numeral(price).format(
+    `0.[${decimalAsString}]`,
+    roundingFunction
+  );
   if (returnStr === "NaN") return 0;
   return returnStr;
 };

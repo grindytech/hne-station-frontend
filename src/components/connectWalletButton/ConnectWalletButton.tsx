@@ -14,7 +14,7 @@ import {
 import { ReactComponent as Metamask } from "assets/metamask.svg";
 import { ReactComponent as Walletconnect } from "assets/walletconnect.svg";
 import RequireWalletPopup from "components/requireWalletPopup/RequireWalletPopup";
-import { useConnectWallet, Wallet } from "hooks/useWallet";
+import { useConnectWallet, Wallet } from "connectWallet/useWallet";
 import React from "react";
 
 const ConnectWalletButton: React.FC<ButtonProps> = (props) => {

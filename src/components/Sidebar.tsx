@@ -21,7 +21,7 @@ import {
 import HELogo from "assets/heroes_empires_fa.png";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
 import useCustomToast from "hooks/useCustomToast";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 import { useEffect } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { shorten } from "utils/utils";

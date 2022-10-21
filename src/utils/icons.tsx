@@ -3,6 +3,7 @@ import { ReactComponent as BUSDCoin } from "assets/busd_coin.svg";
 import { ReactComponent as HECoin } from "assets/he_coin.svg";
 import { ReactComponent as USDTCoin } from "assets/tether.svg";
 import { ReactComponent as AVAX } from "assets/avax.svg";
+import HE from "assets/he.png";
 
 import React from "react";
 

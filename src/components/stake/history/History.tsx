@@ -18,7 +18,7 @@ import {
 } from "components/stake/withdrawal/Withdrawal";
 import { getUserPendingClaim, getUserPendingWithdraw } from "contracts/stake";
 import { formatDistanceToNow } from "date-fns/esm";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 import { isEmpty } from "lodash";
 import { useQuery } from "react-query";
 import { formatDate, formatNumber } from "utils/utils";

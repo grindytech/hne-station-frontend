@@ -9,7 +9,7 @@ import configs from "configs";
 import { CLAIMED_STATUS, DATE_TIME_FORMAT } from "constant";
 import { getTimeLockWithdraw, withdrawHE, WithdrawInfo } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 import { ErrorContract } from "types";
 import { formatNumber } from "utils/utils";
 

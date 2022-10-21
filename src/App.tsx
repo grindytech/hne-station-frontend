@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { ConnectWalletProvider } from "hooks/useWallet";
+import { ConnectWalletProvider } from "connectWallet/useWallet";
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";

@@ -24,7 +24,7 @@ import NumberInput from "components/numberInput/NumberInput";
 import { ReactComponent as HEIcon } from "assets/he_coin.svg";
 import { getStakingRewardAmountQueryKey } from "components/stake/Stake";
 import configs from "configs";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 
 interface Props {
   isOpen: boolean;

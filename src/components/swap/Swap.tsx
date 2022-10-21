@@ -23,7 +23,7 @@ import {
   TOKEN_INFO,
 } from "contracts/swap";
 import useCustomToast from "hooks/useCustomToast";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 import _ from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import { FiArrowDownCircle, FiRefreshCw, FiRotateCw } from "react-icons/fi";

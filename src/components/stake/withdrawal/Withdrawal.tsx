@@ -6,7 +6,7 @@ import CardHeader from "components/card/CardHeader";
 import PendingClaim from "components/stake/pendingClaim/PendingClaim";
 import PendingWithdraw from "components/stake/pendingWithdraw/PendingWithdraw";
 import { getUserPendingClaim, getUserPendingWithdraw } from "contracts/stake";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 import { isEmpty } from "lodash";
 import { useQuery } from "react-query";
 

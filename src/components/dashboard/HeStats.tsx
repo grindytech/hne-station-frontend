@@ -4,7 +4,7 @@ import { MultiProgress } from "components/progressMultiBar/MultiProgress";
 import { ProgressBar } from "components/progressMultiBar/ProgressBar";
 import { getDailyRewardTime, getPoolInfo } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 import { BsCircleFill } from "react-icons/bs";
 import { useQuery } from "react-query";
 import { governanceService } from "services/governance";

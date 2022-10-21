@@ -17,7 +17,7 @@ import History from "components/stake/history/History";
 import PoolInfo from "components/stake/pool/PoolInfo";
 import Stake from "components/stake/Stake";
 import { getDailyRewardTime, getPoolInfo } from "contracts/stake";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 import { useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import { useQuery } from "react-query";

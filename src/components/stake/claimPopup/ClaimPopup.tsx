@@ -24,7 +24,7 @@ import { getStakingRewardAmountQueryKey } from "components/stake/Stake";
 import configs from "configs";
 import { pendingClaimHE } from "contracts/stake";
 import useCustomToast from "hooks/useCustomToast";
-import { useConnectWallet } from "hooks/useWallet";
+import { useConnectWallet } from "connectWallet/useWallet";
 import { ErrorContract } from "types";
 import { formatNumber } from "utils/utils";
 
