@@ -10,10 +10,10 @@ import { convertToContractValue } from "utils/utils";
 import { AbiItem } from "web3-utils";
 import erc20 from "../ERC20.json";
 import factoryAbi from "./factory.abi.json";
+import issueAbi from "./issue.abi.json";
 import pancakePairAbi from "./pancakePair.abi.json";
 import pancakeRouterAbi from "./pancakeRouter.abi.json";
 import routerAbi from "./router.abi.json";
-import issueAbi from "./issue.abi.json";
 
 export type BridgeToken = {
   name: string;
@@ -168,7 +168,7 @@ export const getDestinationAmount = async (
   return safeAmount({ str: amountOut[amountOut.length - 1], decimal: 18 });
 };
 
-export const routerSwapExactETHForTokens = async (
+export const routerSwapExactETHForTokens = (
   amountIn: number,
   amountOutMin: number,
   path: string[],
@@ -181,7 +181,7 @@ export const routerSwapExactETHForTokens = async (
   const amountInContract = convertToContractValue({ amount: amountIn });
   const amountOutMinContract = convertToContractValue({ amount: amountOutMin });
   const deadLineTimestamp = parseInt(String(Date.now() / 1e3)) + deadLine;
-  return await contract.methods.routerSwapExactETHForTokens(
+  return contract.methods.routerSwapExactETHForTokens(
     amountInContract,
     amountOutMinContract,
     path,
@@ -275,8 +275,7 @@ export const transfer = (
         chain
       );
       contractFee += amountIn;
-    }
-    if (token2.native) {
+    } else if (token2.native) {
       contractCall = routerSwapExactTokensForETH(
         amountIn,
         amountOutMin,
@@ -286,16 +285,17 @@ export const transfer = (
         deadLine,
         chain
       );
+    } else {
+      contractCall = routerSwapExactTokensForTokens(
+        amountIn,
+        amountOutMin,
+        fee,
+        path,
+        to,
+        deadLine,
+        chain
+      );
     }
-    contractCall = routerSwapExactTokensForTokens(
-      amountIn,
-      amountOutMin,
-      fee,
-      path,
-      to,
-      deadLine,
-      chain
-    );
   }
   const contractFeeValue = convertToContractValue({ amount: contractFee });
   return {

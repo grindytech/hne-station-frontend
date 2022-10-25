@@ -299,14 +299,15 @@ export default function Bridge() {
         );
       }
       const { contractMethod, param } = contractCall;
-
+      console.log(contractMethod.arguments);
+      console.log(param);
       contractMethod
         .send(param)
         .on("transactionHash", (hash: string) => {
           h.txHash = hash;
         })
-        .on("confirmation", (confNumber: number, receipt: string) => {
-          if (confNumber === 0) {
+        .on("confirmation", (confNumber: number, receipt: any) => {
+          if (confNumber === 0 && receipt.status) {
             h.status = "success";
             toast.success("Transaction successfully!");
             refetchBalance();
@@ -592,8 +593,12 @@ export default function Bridge() {
                   ></Input>
                   <Button
                     onClick={() => {
+                      const token1 =
+                        configs.BRIDGE[originChain].TOKENS[originToken];
                       const totalAmount = String(
-                        numeralFormat1(Number(balance))
+                        numeralFormat1(
+                          Number(balance) - (token1.native ? fee : 0)
+                        )
                       );
                       if (amountInput.current)
                         amountInput.current.value = totalAmount;
@@ -609,7 +614,7 @@ export default function Bridge() {
               </VStack>
             </VStack>
             <VStack width="full">
-              <Accordion allowToggle w="full">
+              <Accordion allowToggle w="full" defaultIndex={[0]}>
                 <AccordionItem
                   background="gray.50"
                   sx={{
@@ -651,17 +656,24 @@ export default function Bridge() {
                       <AccordionIcon />
                     </AccordionButton>
                   </h2>
-                  <AccordionPanel pb={4}>
+                  <AccordionPanel pb={4} >
                     <VStack>
                       <HStack justifyContent="space-between" width="full">
                         <Text color="gray" fontSize="xs" fontWeight="semibold">
                           Slippage
                         </Text>
-                        <HStack spacing={0}>
-                          <Text color="gray" fontSize="xs">
-                            {slippage}%
-                          </Text>
-                        </HStack>
+                        <Text color="gray" fontSize="xs">
+                          {slippage}%
+                        </Text>
+                      </HStack>
+                      <HStack justifyContent="space-between" width="full">
+                        <Text color="gray" fontSize="xs" fontWeight="semibold">
+                          Fee
+                        </Text>
+                        <Text color="gray" fontSize="xs">
+                          {fee}{" "}
+                          {configs.NETWORKS[originChain].nativeCurrency.symbol}
+                        </Text>
                       </HStack>
                     </VStack>
                   </AccordionPanel>

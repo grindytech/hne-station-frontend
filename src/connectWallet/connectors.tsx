@@ -4,7 +4,7 @@ export const chainName: { [n: string]: string } = {
   "97": "BSC testnet",
   "56": "BSC",
   "43113": "AVAX testnet",
-  "686": "Karura",
+  "43114": "Avalanche C-Chain",
 };
 export const walletConnectRpc = {
   "1": "https://mainnet.eth.aragon.network",
@@ -19,4 +19,5 @@ export const walletConnectRpc = {
   "1088": "https://andromeda.metis.io/?owner=1088",
   "43113": "https://api.avax-test.network/ext/bc/C/rpc",
   "686": "https://eth-rpc-karura.aca-api.network/eth/http",
+  "43114": "https://api.avax.network/ext/bc/c/rpc",
 };
