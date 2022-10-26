@@ -3,6 +3,7 @@ import { BURN_ADDRESS, MAX_INT } from "constant";
 import {
   Chain,
   safeAmount,
+  web3,
   web3Inject,
   WEB3_HTTP_PROVIDERS,
 } from "contracts/contracts";
@@ -14,6 +15,8 @@ import issueAbi from "./issue.abi.json";
 import pancakePairAbi from "./pancakePair.abi.json";
 import pancakeRouterAbi from "./pancakeRouter.abi.json";
 import routerAbi from "./router.abi.json";
+import layer0EndpointAbi from "./layer0Endpoint.abi.json";
+import Web3 from "web3";
 
 export type BridgeToken = {
   name: string;
@@ -21,6 +24,7 @@ export type BridgeToken = {
   id: string;
   contract: string;
   native?: boolean;
+  decimal: number;
 };
 const DEFAULT_CHAIN = configs.DEFAULT_CHAIN;
 export const pancakeRouterContract = (address: string, web3 = web3Inject) => {
@@ -38,6 +42,9 @@ export const pancakePairContract = (address: string, web3 = web3Inject) => {
 export const erc20Contract = (address: string, web3 = web3Inject) => {
   return new web3.eth.Contract(erc20 as AbiItem[], address);
 };
+export const layer0EndpointContract = (address: string, web3 = web3Inject) => {
+  return new web3.eth.Contract(layer0EndpointAbi as AbiItem[], address);
+};
 
 export const issueContract = (address: string, web3 = web3Inject) => {
   return new web3.eth.Contract(issueAbi as AbiItem[], address);
@@ -49,6 +56,7 @@ export const getErc20Balance = async (
   chain: string = DEFAULT_CHAIN,
   decimal = 18
 ) => {
+  debugger;
   const web3Http = WEB3_HTTP_PROVIDERS[chain];
   const contract = new web3Http.eth.Contract(
     erc20 as AbiItem[],
@@ -328,4 +336,89 @@ export const swapIssueContract = (
     contractMethod: contractMethod,
     param: { from, value: contractFeeValue },
   };
+};
+// fee
+export const estimateFeesBSCPayload = ({
+  sourceChain,
+  to,
+  tokenOut,
+  amountOut,
+  decimals,
+  timestamp,
+  chain = Chain.BSC,
+}: {
+  sourceChain: number;
+  to: string;
+  tokenOut: string;
+  amountOut: number;
+  decimals: number;
+  timestamp: number;
+  chain: string;
+}) => {
+  const amountOutContractValue = convertToContractValue({
+    amount: amountOut,
+    decimal: decimals,
+  });
+  const payload = WEB3_HTTP_PROVIDERS[chain].eth.abi.encodeParameters(
+    ["uint16", "address", "address", "uint256", "uint16", "uint256"],
+    [sourceChain, to, tokenOut, amountOutContractValue, decimals, timestamp]
+  );
+  return payload;
+};
+
+export const estimateFeesAVAXPayload = ({
+  amount,
+  tokenSource,
+  to,
+  decimals,
+  chain = Chain.BSC,
+}: {
+  amount: number;
+  tokenSource: string;
+  to: string;
+  decimals: number;
+  chain: string;
+  }) => {
+  const amountContractValue = convertToContractValue({
+    amount: amount,
+    decimal: decimals,
+  });
+  const payload = WEB3_HTTP_PROVIDERS[chain].eth.abi.encodeParameters(
+    ["uint256", "address", "address", "uint16"],
+    [amountContractValue, tokenSource, to, decimals]
+  );
+  return payload;
+};
+
+export const estimateFees = async ({
+  _dstChainId,
+  payload,
+  chain = Chain.BSC,
+}: {
+  _dstChainId: number;
+  payload: string;
+  chain: string;
+}) => {
+  const httpProvider = WEB3_HTTP_PROVIDERS[chain];
+  const layer0ContractAddress =
+    configs.BRIDGE[chain].CONTRACTS.LAYER_0_ENDPOINT;
+  const layer0Contract = layer0EndpointContract(
+    layer0ContractAddress,
+    httpProvider
+  );
+  const decimal = configs.NETWORKS[chain].nativeCurrency.decimals;
+  const contract =
+    chain === Chain.AVAX
+      ? configs.BRIDGE[Chain.AVAX].CONTRACTS.ISSUE_CONTRACT
+      : configs.BRIDGE[chain].CONTRACTS.ROUTER_CONTRACT;
+  debugger;
+  const { nativeFee, zroFee } = await layer0Contract.methods
+    .estimateFees(_dstChainId, contract, payload, false, "0x")
+    .call();
+  const fee = safeAmount({
+    str: String(nativeFee),
+    decimal,
+  });
+
+  return fee;
 };

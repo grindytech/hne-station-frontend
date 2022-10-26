@@ -22,10 +22,16 @@ import ChooseTokenButton, { Token } from "components/swap/ChooseTokenButton";
 import SettingButton from "components/swap/SettingButton";
 import TxHistories, { Transaction } from "components/swap/TxHistories";
 import configs from "configs";
+import useSwitchNetwork from "connectWallet/useSwitchNetwork";
+import { useConnectWallet } from "connectWallet/useWallet";
+import { BURN_ADDRESS } from "constant";
 import {
   BridgeToken,
   erc20Approve,
   erc20Approved,
+  estimateFees,
+  estimateFeesAVAXPayload,
+  estimateFeesBSCPayload,
   getDestinationAmount,
   getErc20Balance,
   getNativeBalance,
@@ -35,8 +41,6 @@ import {
 } from "contracts/bridge";
 import { Chain } from "contracts/contracts";
 import useCustomToast from "hooks/useCustomToast";
-import useSwitchNetwork from "connectWallet/useSwitchNetwork";
-import { useConnectWallet } from "connectWallet/useWallet";
 import _ from "lodash";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { HiSwitchVertical } from "react-icons/hi";
@@ -85,11 +89,57 @@ export default function Bridge() {
     Date.now()
   );
   const toast = useCustomToast();
-  const fee = 0.1;
+  // const fee = 0.1;
   const { account } = useConnectWallet();
   const [receiver, setReceive] = useState(account);
 
   const { isWrongNetwork, changeNetwork } = useSwitchNetwork();
+  const { data: estFee, isLoading: estimateFeeLoading } = useQuery(
+    ["layer0Fee", originChain, originToken, receiveAmount],
+    async () => {
+      let payload = "";
+      const originNetwork = configs.NETWORKS[originChain];
+      const desChain = configs.BRIDGE[destinationChain];
+      const srcChain = configs.BRIDGE[originChain];
+      const token1 = srcChain.TOKENS[originToken];
+      if (originChain === Chain.BSC) {
+        payload = estimateFeesBSCPayload({
+          amountOut: receiveAmount,
+          chain: originChain,
+          decimals: token1.decimal,
+          sourceChain: srcChain.CONTRACTS.DST_CHAIN_ID,
+          to: receiver || account || BURN_ADDRESS,
+          timestamp: parseInt(String(Date.now() / 1e3)),
+          tokenOut: token1.native
+            ? originNetwork.wrapToken.contract
+            : token1.contract,
+        });
+      } else {
+        const tokenSource = desChain.TOKENS[destinationToken];
+        payload = estimateFeesAVAXPayload({
+          amount: receiveAmount,
+          chain: originChain,
+          decimals: token1.decimal,
+          to: receiver || account || BURN_ADDRESS,
+          tokenSource: tokenSource.contract,
+        });
+      }
+      try {
+        const estimateFee = await estimateFees({
+          _dstChainId: desChain.CONTRACTS.DST_CHAIN_ID,
+          payload,
+          chain: originChain,
+        });
+        return estimateFee;
+      } catch (error) {
+        console.error(error);
+      }
+      return 0;
+    }
+  );
+  const getFee = () => {
+    return estFee ? estFee + estFee * 0.1 : 0;
+  };
   const { data: balance, refetch: refetchBalance } = useQuery(
     ["balanceOf", originToken, account, originChain],
     async () => {
@@ -282,7 +332,7 @@ export default function Bridge() {
           account,
           receiver || account,
           deadline * 60,
-          fee,
+          getFee(),
           originChain
         );
       } else {
@@ -292,15 +342,13 @@ export default function Bridge() {
           _dstChainId,
           token1.contract,
           Number(amount),
-          fee,
+          getFee(),
           receiver || account,
           account,
           originChain
         );
       }
       const { contractMethod, param } = contractCall;
-      console.log(contractMethod.arguments);
-      console.log(param);
       contractMethod
         .send(param)
         .on("transactionHash", (hash: string) => {
@@ -597,7 +645,7 @@ export default function Bridge() {
                         configs.BRIDGE[originChain].TOKENS[originToken];
                       const totalAmount = String(
                         numeralFormat1(
-                          Number(balance) - (token1.native ? fee : 0)
+                          Number(balance) - (token1.native ? getFee() : 0)
                         )
                       );
                       if (amountInput.current)
@@ -656,7 +704,7 @@ export default function Bridge() {
                       <AccordionIcon />
                     </AccordionButton>
                   </h2>
-                  <AccordionPanel pb={4} >
+                  <AccordionPanel pb={4}>
                     <VStack>
                       <HStack justifyContent="space-between" width="full">
                         <Text color="gray" fontSize="xs" fontWeight="semibold">
@@ -670,10 +718,15 @@ export default function Bridge() {
                         <Text color="gray" fontSize="xs" fontWeight="semibold">
                           Fee
                         </Text>
-                        <Text color="gray" fontSize="xs">
-                          {fee}{" "}
-                          {configs.NETWORKS[originChain].nativeCurrency.symbol}
-                        </Text>
+                        <Skeleton isLoaded={!estimateFeeLoading}>
+                          <Text color="gray" fontSize="xs">
+                            {numeralFormat(getFee(), 6) || "--"}{" "}
+                            {
+                              configs.NETWORKS[originChain].nativeCurrency
+                                .symbol
+                            }
+                          </Text>
+                        </Skeleton>
                       </HStack>
                     </VStack>
                   </AccordionPanel>

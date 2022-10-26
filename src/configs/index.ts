@@ -52,6 +52,7 @@ export interface Configs {
         ISSUE_CONTRACT: string;
         BRIDGE_TOKEN: string;
         DST_CHAIN_ID: number;
+        LAYER_0_ENDPOINT: string;
       };
       TOKENS: { [n: string]: BridgeToken };
     };

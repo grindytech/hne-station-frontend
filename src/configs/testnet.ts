@@ -79,10 +79,11 @@ const configs: Configs = {
       CONTRACTS: {
         PANCAKE_FACTORY_CONTRACT: "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc",
         PANCAKE_ROUTER_CONTRACT: "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3",
-        ROUTER_CONTRACT: "0xcB01670d5881aF6cD42aA7CAc02c996168631e1b",
+        ROUTER_CONTRACT: "0xE1926b01A04D8ee564df81EBf715bD21865cC6FE",
         BRIDGE_TOKEN: "0x810c3aeec5Faeb9Ef9f05526Ec8e47fe3c93f1b2", //BUSD
         ISSUE_CONTRACT: "",
         DST_CHAIN_ID: 10102,
+        LAYER_0_ENDPOINT: "0x6Fcb97553D41516Cb228ac03FdC8B9a0a9df04A1",
       },
       TOKENS: {
         HE: {
@@ -90,18 +91,21 @@ const configs: Configs = {
           name: "Heroes & empires",
           id: "HE",
           contract: "0xf4a904478dB17d9145877bCF95F47C92FeC5eA8d",
+          decimal: 18,
         },
         BUSD: {
           key: "BUSD",
           name: "BUSD",
           id: "BUSD",
           contract: "0x810c3aeec5Faeb9Ef9f05526Ec8e47fe3c93f1b2",
+          decimal: 18,
         },
         USDT: {
           key: "USDT",
           name: "USDT",
           id: "USDT",
           contract: "0x111133b311Fc230278eF44caf4EF90A6c76bc0a5",
+          decimal: 18,
         },
         BNB: {
           key: "BNB",
@@ -109,6 +113,7 @@ const configs: Configs = {
           id: "BNB",
           contract: "",
           native: true,
+          decimal: 18,
         },
       },
     },
@@ -118,8 +123,9 @@ const configs: Configs = {
         PANCAKE_ROUTER_CONTRACT: "",
         ROUTER_CONTRACT: "",
         BRIDGE_TOKEN: "",
-        ISSUE_CONTRACT: "0xd7eB535a4C829c486fc2B9b9FD05c8958e47E50e",
-        DST_CHAIN_ID: 0,
+        ISSUE_CONTRACT: "0xE5219cADDD604A49B63b3Acb2CE468F24956C3e5",
+        DST_CHAIN_ID: 10106,
+        LAYER_0_ENDPOINT: "0x93f54D755A063cE7bB9e6Ac47Eccc8e33411d706",
       },
       TOKENS: {
         SKY: {
@@ -127,18 +133,21 @@ const configs: Configs = {
           name: "SKY",
           id: "HE",
           contract: "0x4D8c1AEa665624ee71c8d25e85bf738e4135ebE0",
+          decimal: 18,
         },
         USDT: {
           key: "USDT",
           name: "USDT",
           id: "USDT",
-          contract: "",
+          contract: "0x71fDe8B01aEFd31C805D1530e05A2f4cA771bD1d",
+          decimal: 18,
         },
         WBNB: {
           key: "WBNB",
           name: "Wrap BNB",
           id: "BNB",
           contract: "0x5b74D1A144c2262c0f11cEe511faaF829232a58E",
+          decimal: 18,
         },
       },
     },
