@@ -117,12 +117,16 @@ export default function Bridge() {
         });
       } else {
         const tokenSource = desChain.TOKENS[destinationToken];
+        const destinationNetwork = configs.NETWORKS[destinationChain];
+
         payload = estimateFeesAVAXPayload({
           amount: receiveAmount,
           chain: originChain,
           decimals: token1.decimal,
           to: receiver || account || BURN_ADDRESS,
-          tokenSource: tokenSource.contract,
+          tokenSource: tokenSource.native
+            ? destinationNetwork.wrapToken.contract
+            : tokenSource.contract,
         });
       }
       try {

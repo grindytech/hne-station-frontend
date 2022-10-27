@@ -3,7 +3,6 @@ import { BURN_ADDRESS, MAX_INT } from "constant";
 import {
   Chain,
   safeAmount,
-  web3,
   web3Inject,
   WEB3_HTTP_PROVIDERS,
 } from "contracts/contracts";
@@ -12,11 +11,10 @@ import { AbiItem } from "web3-utils";
 import erc20 from "../ERC20.json";
 import factoryAbi from "./factory.abi.json";
 import issueAbi from "./issue.abi.json";
+import layer0EndpointAbi from "./layer0Endpoint.abi.json";
 import pancakePairAbi from "./pancakePair.abi.json";
 import pancakeRouterAbi from "./pancakeRouter.abi.json";
 import routerAbi from "./router.abi.json";
-import layer0EndpointAbi from "./layer0Endpoint.abi.json";
-import Web3 from "web3";
 
 export type BridgeToken = {
   name: string;
@@ -56,7 +54,6 @@ export const getErc20Balance = async (
   chain: string = DEFAULT_CHAIN,
   decimal = 18
 ) => {
-  debugger;
   const web3Http = WEB3_HTTP_PROVIDERS[chain];
   const contract = new web3Http.eth.Contract(
     erc20 as AbiItem[],
@@ -201,7 +198,6 @@ export const routerSwapExactETHForTokens = (
 export const routerSwapExactTokensForETH = (
   amountIn: number,
   amountOutMin: number,
-  fee: number,
   path: string[],
   to: string,
   deadLine: number,
@@ -224,7 +220,6 @@ export const routerSwapExactTokensForETH = (
 export const routerSwapExactTokensForTokens = (
   amountIn: number,
   amountOutMin: number,
-  fee: number,
   path: string[],
   to: string,
   deadLine: number,
@@ -256,6 +251,17 @@ export const swap = (
   return contract.methods.swap(amountContractValue, token, to);
 };
 
+export const deposit = (
+  amount: number,
+  to: string,
+  chain: string = Chain.BSC
+) => {
+  const bridgeRouterAddress = configs.BRIDGE[chain].CONTRACTS.ROUTER_CONTRACT;
+  const amountContractValue = convertToContractValue({ amount: amount });
+  const contract = bridgeRouterContract(bridgeRouterAddress);
+  return contract.methods.deposit(amountContractValue, to);
+};
+
 export const transfer = (
   token1: BridgeToken,
   token2: BridgeToken,
@@ -270,24 +276,29 @@ export const transfer = (
 ): { contractMethod: any; param: any } => {
   let contractCall = undefined;
   let contractFee = fee;
-  if (token1.id === token2.id) {
+  debugger;
+
+  if (token1.id === token2.id && !token1.native) {
     contractCall = swap(to, token1.contract, amountIn, chain);
   } else {
     if (token1.native) {
-      contractCall = routerSwapExactETHForTokens(
-        amountIn,
-        amountOutMin,
-        path,
-        to,
-        deadLine,
-        chain
-      );
+      if (token2.id === token1.id) {
+        contractCall = deposit(amountIn, to, chain);
+      } else {
+        contractCall = routerSwapExactETHForTokens(
+          amountIn,
+          amountOutMin,
+          path,
+          to,
+          deadLine,
+          chain
+        );
+      }
       contractFee += amountIn;
     } else if (token2.native) {
       contractCall = routerSwapExactTokensForETH(
         amountIn,
         amountOutMin,
-        fee,
         path,
         to,
         deadLine,
@@ -297,7 +308,6 @@ export const transfer = (
       contractCall = routerSwapExactTokensForTokens(
         amountIn,
         amountOutMin,
-        fee,
         path,
         to,
         deadLine,
@@ -398,7 +408,8 @@ export const estimateFees = async ({
   _dstChainId: number;
   payload: string;
   chain: string;
-}) => {
+  }) => {
+  debugger
   const httpProvider = WEB3_HTTP_PROVIDERS[chain];
   const layer0ContractAddress =
     configs.BRIDGE[chain].CONTRACTS.LAYER_0_ENDPOINT;
@@ -411,7 +422,6 @@ export const estimateFees = async ({
     chain === Chain.AVAX
       ? configs.BRIDGE[Chain.AVAX].CONTRACTS.ISSUE_CONTRACT
       : configs.BRIDGE[chain].CONTRACTS.ROUTER_CONTRACT;
-  debugger;
   const { nativeFee, zroFee } = await layer0Contract.methods
     .estimateFees(_dstChainId, contract, payload, false, "0x")
     .call();
