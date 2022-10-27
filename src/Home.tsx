@@ -6,7 +6,7 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import MobileNav from "components/station/MobileNav";
+import NavBar from "components/station/NavBar";
 import SidebarContent from "components/station/SidebarContent";
 import BridgePage from "pages/BridgePage";
 import Dashboard from "pages/Dashboard";
@@ -30,8 +30,9 @@ const LinkItems: Array<LinkItemProps> = [
 export default function Station() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+    <Box minH="100vh" bg={useColorModeValue("bg.light", "gray.800")}>
       <SidebarContent
+        background={useColorModeValue("gray.50", "gray.700")}
         LinkItems={LinkItems}
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
@@ -46,12 +47,16 @@ export default function Station() {
         size="full"
         colorScheme="primary"
       >
-        <DrawerContent textColor="white">
-          <SidebarContent LinkItems={LinkItems} onClose={onClose} />
+        <DrawerContent>
+          <SidebarContent
+            transition="3s ease"
+            LinkItems={LinkItems}
+            onClose={onClose}
+          />
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
-      <MobileNav onOpen={onOpen} />
+      <NavBar bg="transparent" borderBottomWidth={0} onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         <Container maxW="container.lg" mb={3}>
           <Routes>

@@ -8,6 +8,7 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 import { ReactComponent as BNBCoin } from "assets/bnb_coin.svg";
@@ -45,6 +46,7 @@ export default function ChooseTokenButton({
   label,
 }: Props) {
   const listTokens = tokens || listTokensDefault;
+  const textColor = useColorModeValue("gray.600", "gray.100");
   const tokenInfo = useMemo(
     () => listTokens.find((info) => info.key === token),
     [listTokens, token]
@@ -65,7 +67,7 @@ export default function ChooseTokenButton({
         {...buttonProps}
       >
         {label && (
-          <Text color="gray.600" fontWeight="normal" fontSize="xs" mb={1}>
+          <Text color={textColor} fontWeight="normal" fontSize="xs" mb={1}>
             {label}
           </Text>
         )}
@@ -79,7 +81,7 @@ export default function ChooseTokenButton({
               {tokenInfo?.icon ?? listTokens[0].icon}
             </Icon>
           }
-          rightIcon={<FiChevronDown color="gray" />}
+          rightIcon={<FiChevronDown color={textColor} />}
         >
           <Text width="full" textAlign="left">
             {tokenInfo ? token : listTokens[0].key}
@@ -105,7 +107,7 @@ export default function ChooseTokenButton({
                 </Icon>
                 <VStack alignItems={"start"}>
                   <Text>{tk}</Text>
-                  <Text color="gray.500" fontSize="xs">
+                  <Text color={textColor} fontSize="xs">
                     {name}
                   </Text>
                 </VStack>

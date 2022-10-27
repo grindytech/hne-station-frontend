@@ -44,18 +44,17 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
   return (
     <Box
       overflowY="auto"
-      transition="3s ease"
-      bg={useColorModeValue("primary.600", "gray.900")}
+      bg={useColorModeValue("gray.100", "gray.700")}
       borderRight="1px"
-      borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={{ base: "full", md: 60 }}
+      borderRightColor={useColorModeValue("gray.200", "gray.800")}
+      w={{ base: "full", md: 80 }}
       pos="fixed"
       h="full"
       {...rest}
     >
       <VStack w="full" h="full" justifyContent="space-between">
         <VStack w="full" alignItems="flex-start">
-          <HStack paddingX={5} w="full">
+          <HStack paddingX={5} w="full" mb={3}>
             <Box w="full">
               <Link to="/" onClick={onClose}>
                 <HStack spacing={0}>
@@ -63,7 +62,7 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
                   <VStack spacing={0}>
                     <Text
                       lineHeight={1}
-                      color={"white"}
+                      color={useColorModeValue("gray.900", "gray.100")}
                       fontSize="2xl"
                       fontFamily="monospace"
                       fontWeight="bold"
@@ -72,7 +71,7 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
                     </Text>
                     <Text
                       textAlign="start"
-                      color={"white"}
+                      color={useColorModeValue("gray.900", "gray.100")}
                       fontSize="sm"
                       fontFamily="monospace"
                       fontWeight="semibold"
@@ -106,8 +105,7 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
         <VStack spacing={2} paddingX={5} w="full" alignItems="flex-start">
           <ChakraLink
             _hover={{}}
-            // fontFamily="mono"
-            color="gray.200"
+            color={useColorModeValue("gray.800", "gray.200")}
             variant="unstyled"
             fontSize="sm"
             target="_blank"
@@ -116,12 +114,12 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
             <Icon as={FaBook} />
             &nbsp;Docs
           </ChakraLink>
-          <Divider color="gray.50" />
+          <Divider color={useColorModeValue("gray.800", "gray.200")} />
           <ButtonGroup
             w="full"
             justifyContent="space-between"
             pb={5}
-            color="gray.100"
+            color={useColorModeValue("gray.800", "gray.200")}
           >
             <ChakraLink href="https://blog.heroesempires.com/" target="_blank">
               <Icon as={FaNewspaper} />

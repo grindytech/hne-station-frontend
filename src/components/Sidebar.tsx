@@ -8,6 +8,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
+  Icon,
   Image,
   Menu,
   MenuButton,
@@ -16,6 +17,7 @@ import {
   Stack,
   Tag,
   Text,
+  useColorMode,
 } from "@chakra-ui/react";
 
 import HELogo from "assets/heroes_empires_fa.png";
@@ -25,6 +27,7 @@ import { useConnectWallet } from "connectWallet/useWallet";
 import { useEffect } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { shorten } from "utils/utils";
+import { FaMoon, FaSun } from "react-icons/fa";
 
 export type SidebarVariant = "drawer" | "sidebar";
 
@@ -41,9 +44,21 @@ interface SidebarContentProps {
 export const SidebarContent = ({ onClick }: SidebarContentProps) => {
   const { account, reset, networkName } = useConnectWallet();
   const toast = useCustomToast();
-
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
-    <Stack justifyContent="center" alignItems="center" fontWeight="semibold">
+    <Stack
+      direction="row"
+      justifyContent="center"
+      alignItems="center"
+      fontWeight="semibold"
+    >
+      <Button
+        _focus={{ border: "none" }}
+        variant="ghost"
+        onClick={toggleColorMode}
+      >
+        {colorMode === "light" ? <Icon as={FaMoon} /> : <Icon as={FaSun} />}
+      </Button>
       {account ? (
         <Menu>
           <ButtonGroup color="primary.500" isAttached>

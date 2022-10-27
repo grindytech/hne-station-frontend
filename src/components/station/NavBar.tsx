@@ -5,7 +5,7 @@ import { FiMenu } from "react-icons/fi";
 interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+const NavBar = ({ onOpen, ...rest }: MobileProps) => {
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -27,9 +27,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
           icon={<FiMenu />}
         />
 
-        <Tag  borderRadius="full" colorScheme="green">
+        {/* <Tag  borderRadius="full" colorScheme="green">
           DOS chain
-        </Tag>
+        </Tag> */}
       </HStack>
 
       <HStack spacing={{ base: "0", md: "6" }}>
@@ -44,4 +44,4 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   );
 };
 
-export default MobileNav;
+export default NavBar;

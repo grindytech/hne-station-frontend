@@ -1,4 +1,4 @@
-import { Flex, FlexProps, HStack, Icon, Link as ChakraLink, Text } from "@chakra-ui/react";
+import { Flex, FlexProps, HStack, Icon, Link as ChakraLink, Text, useColorModeValue } from "@chakra-ui/react";
 import { ReactText } from "react";
 import { IconType } from "react-icons";
 import { Link } from "react-router-dom";
@@ -19,7 +19,7 @@ const NavItem = ({ to, icon, children, isActive = false, ...rest }: NavItemProps
         _focus={{ boxShadow: "none" }}
       >
         <Flex
-          color={"gray.100"}
+          color={useColorModeValue("gray.900", "gray.100")}
           align="center"
           p="4"
           mx="4"
@@ -27,10 +27,10 @@ const NavItem = ({ to, icon, children, isActive = false, ...rest }: NavItemProps
           role="group"
           cursor="pointer"
           _hover={{
-            bg: "primary.500",
+            bg: "primary.400",
             color: "white",
           }}
-          __css={isActive ? { fontWeight: "bold" } : {}}
+          __css={isActive ? { fontWeight: "bold" } : { fontWeight: "semibold" }}
           {...rest}
         >
           <HStack spacing={0}>

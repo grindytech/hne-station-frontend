@@ -61,7 +61,8 @@ export const theme = extendTheme({
       "#root": {
         position: "relative",
         minHeight: "100vh",
-        // background: "#F1F1F1",
+        background:
+          "linear-gradient(0deg, rgba(34,195,185,0.6923144257703081) 0%, rgba(45,253,212,1) 100%)",
       },
       a: {
         color: "#7CC29A",
@@ -95,6 +96,10 @@ export const theme = extendTheme({
       "700": "#1A3827",
       "800": "#08120D",
       "900": "#000000",
+    },
+    bg: {
+      light:
+        " linear-gradient(0deg, rgba(245,245,245,1) 0%, rgba(245,245,245,0.4906337535014006) 100%)",
     },
   },
   components: {

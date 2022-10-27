@@ -12,6 +12,7 @@ import {
   Input,
   Skeleton,
   Text,
+  useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
@@ -187,7 +188,11 @@ export default function Bridge() {
   }, [account, destinationChain, originChain]);
   const validate = useCallback(async () => {
     let error = "";
-    if (!amount || Number(amount) > Number(balance) || Number(amount) < 0) {
+    if (
+      !Number(amount) ||
+      Number(amount) > Number(balance) ||
+      Number(amount) < 0
+    ) {
       error = "Insufficient balance";
     }
     if (originChain !== Chain.BSC) {
@@ -401,6 +406,9 @@ export default function Bridge() {
   useEffect(() => {
     refreshChainBalance();
   }, [refreshChainBalance]);
+  const textColor = useColorModeValue("gray.600", "gray.200");
+  const inputBg = useColorModeValue("gray.100", "gray.800");
+
   return (
     <VStack>
       <Card flex={{ lg: 1 }} maxW={600}>
@@ -438,7 +446,7 @@ export default function Bridge() {
                 <FormLabel
                   mb={1}
                   ml={1}
-                  color="gray.600"
+                  color={textColor}
                   fontWeight="normal"
                   fontSize="sm"
                 >
@@ -455,9 +463,8 @@ export default function Bridge() {
                       buttonProps={{
                         padding: 3,
                         width: "full",
-                        borderRight: "1px",
-                        borderRightColor: "gray.200",
-                        bgColor: "gray.100",
+                        borderRight: 0,
+                        bgColor: inputBg,
                         textAlign: "left",
                         borderRadius: 15,
                       }}
@@ -473,7 +480,7 @@ export default function Bridge() {
                       buttonProps={{
                         padding: 3,
                         width: "40%",
-                        bgColor: "gray.100",
+                        bgColor: inputBg,
                         textAlign: "left",
                         borderRadius: 15,
                       }}
@@ -503,7 +510,7 @@ export default function Bridge() {
                 <FormLabel
                   mb={1}
                   ml={1}
-                  color="gray.600"
+                  color={textColor}
                   fontWeight="normal"
                   fontSize="sm"
                 >
@@ -520,9 +527,8 @@ export default function Bridge() {
                       buttonProps={{
                         padding: 3,
                         width: "full",
-                        borderRight: "1px",
-                        borderRightColor: "gray.200",
-                        bgColor: "gray.100",
+                        borderRight: 0,
+                        bgColor: inputBg,
                         textAlign: "left",
                         borderRadius: 15,
                       }}
@@ -538,7 +544,7 @@ export default function Bridge() {
                       buttonProps={{
                         padding: 3,
                         width: "40%",
-                        bgColor: "gray.100",
+                        bgColor: inputBg,
                         textAlign: "left",
                         borderRadius: 15,
                       }}
@@ -556,7 +562,7 @@ export default function Bridge() {
             </VStack>
             <VStack alignItems="start" width="full" spacing={0}>
               <FormLabel
-                color="gray.600"
+                color={textColor}
                 fontWeight="normal"
                 textAlign="left"
                 fontSize="sm"
@@ -568,16 +574,16 @@ export default function Bridge() {
               <VStack
                 width="full"
                 padding={4}
-                _hover={{ borderColor: "gray.300" }}
-                bgColor="gray.100"
+                _hover={{ borderColor: textColor }}
+                bgColor={inputBg}
                 border="1px"
-                borderColor="gray.100"
+                borderColor={inputBg}
                 borderRadius={15}
               >
                 <HStack width="full">
                   <Input
                     textOverflow="ellipsis"
-                    _placeholder={{ color: "gray.500" }}
+                    _placeholder={{ color: textColor }}
                     variant="unstyled"
                     placeholder={account}
                     value={receiver}
@@ -592,7 +598,7 @@ export default function Bridge() {
             <VStack width="full" spacing={0}>
               <HStack spacing={0} width="full" justifyContent="space-between">
                 <FormLabel
-                  color="gray.600"
+                  color={textColor}
                   fontWeight="normal"
                   textAlign="left"
                   fontSize="sm"
@@ -602,7 +608,7 @@ export default function Bridge() {
                   Total amount
                 </FormLabel>
                 <FormLabel
-                  color="gray.600"
+                  color={textColor}
                   fontWeight="normal"
                   mb={1}
                   pr={2}
@@ -616,17 +622,17 @@ export default function Bridge() {
               <VStack
                 width="full"
                 padding={4}
-                _hover={{ borderColor: "gray.300" }}
-                bgColor="gray.100"
+                _hover={{ borderColor: textColor }}
+                bgColor={inputBg}
                 border="1px"
-                borderColor="gray.100"
+                borderColor={inputBg}
                 borderRadius={15}
               >
                 <HStack width="full">
                   <Input
                     ref={amountInput}
                     textOverflow="ellipsis"
-                    _placeholder={{ color: "gray.500" }}
+                    _placeholder={{ color: textColor }}
                     variant="unstyled"
                     placeholder="0.0"
                     size="lg"
@@ -655,6 +661,7 @@ export default function Bridge() {
                     size="sm"
                     variant="solid"
                     colorScheme="blackAlpha"
+                    color={"gray.50"}
                   >
                     Max
                   </Button>
@@ -664,7 +671,7 @@ export default function Bridge() {
             <VStack width="full">
               <Accordion allowToggle w="full" defaultIndex={[0]}>
                 <AccordionItem
-                  background="gray.50"
+                  background={inputBg}
                   sx={{
                     borderRadius: 15,
                     borderBottom: "none",
