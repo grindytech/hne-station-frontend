@@ -51,7 +51,8 @@ import { numberOnly, numeralFormat, numeralFormat1 } from "utils/utils";
 
 const NETWORKS: Token[] = [
   { key: "BSC", icon: getSgvIcon(ICONS.BNB), name: "BSC" },
-  { key: "AVAX", icon: getSgvIcon(ICONS.AVAX), name: "AVAX" },
+  // { key: "AVAX", icon: getSgvIcon(ICONS.AVAX), name: "AVAX" },
+  { key: "DOS", icon: getSgvIcon(ICONS.DOS), name: "DOS" },
 ];
 const TOKENS_SUPPORT: {
   [k: string]: (Token & { contract: string; id: string })[];
@@ -73,7 +74,7 @@ for (const network of NETWORKS) {
 export default function Bridge() {
   const numberPoint = 6;
   const [originChain, setOriginChain] = useState("BSC");
-  const [destinationChain, setDestinationChain] = useState("AVAX");
+  const [destinationChain, setDestinationChain] = useState("DOS");
   const [originToken, setOriginToken] = useState("HE");
   const [destinationToken, setDestinationToken] = useState("SKY");
   const [amount, setAmount] = useState("");
@@ -99,6 +100,7 @@ export default function Bridge() {
     ["layer0Fee", originChain, originToken, receiveAmount],
     async () => {
       let payload = "";
+      debugger
       const originNetwork = configs.NETWORKS[originChain];
       const desChain = configs.BRIDGE[destinationChain];
       const srcChain = configs.BRIDGE[originChain];
@@ -108,7 +110,7 @@ export default function Bridge() {
           amountOut: receiveAmount,
           chain: originChain,
           decimals: token1.decimal,
-          sourceChain: srcChain.CONTRACTS.DST_CHAIN_ID,
+          sourceChain: srcChain.DST_CHAIN_ID,
           to: receiver || account || BURN_ADDRESS,
           timestamp: parseInt(String(Date.now() / 1e3)),
           tokenOut: token1.native
@@ -131,7 +133,7 @@ export default function Bridge() {
       }
       try {
         const estimateFee = await estimateFees({
-          _dstChainId: desChain.CONTRACTS.DST_CHAIN_ID,
+          _dstChainId: desChain.DST_CHAIN_ID,
           payload,
           chain: originChain,
         });
@@ -346,7 +348,7 @@ export default function Bridge() {
         );
       } else {
         const _dstChainId =
-          configs.BRIDGE[destinationChain].CONTRACTS.DST_CHAIN_ID;
+          configs.BRIDGE[destinationChain].DST_CHAIN_ID;
         contractCall = swapIssueContract(
           _dstChainId,
           token1.contract,

@@ -31,7 +31,7 @@ const configs: Configs = {
     DOS: {
       chainIdNumber: 2508,
       chainId: Web3.utils.numberToHex(2508),
-      rpcUrls: ["https://fuji-rpc.doschain.com/"],
+      rpcUrls: ["https://test.doschain.com/jsonrpc"],
       chainName: "DOS",
       blockExplorerUrls: ["https://test-explorer.doschain.com/"],
       nativeCurrency: {
@@ -76,13 +76,14 @@ const configs: Configs = {
   },
   BRIDGE: {
     BSC: {
+      DST_CHAIN_ID: 10102,
+      IS_USE_LP: true,
       CONTRACTS: {
         PANCAKE_FACTORY_CONTRACT: "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc",
         PANCAKE_ROUTER_CONTRACT: "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3",
-        ROUTER_CONTRACT: "0x9906735F553F2D0D60B25D209792F329A12CaB43",
+        ROUTER_CONTRACT: "0xe1066EFB531B0fA21dc974adB54a76e7927f7E09",
         BRIDGE_TOKEN: "0x810c3aeec5Faeb9Ef9f05526Ec8e47fe3c93f1b2", //BUSD
         ISSUE_CONTRACT: "",
-        DST_CHAIN_ID: 10102,
         LAYER_0_ENDPOINT: "0x6Fcb97553D41516Cb228ac03FdC8B9a0a9df04A1",
       },
       TOKENS: {
@@ -118,13 +119,14 @@ const configs: Configs = {
       },
     },
     AVAX: {
+      DST_CHAIN_ID: 10106,
+      IS_USE_LP: false,
       CONTRACTS: {
         PANCAKE_FACTORY_CONTRACT: "",
         PANCAKE_ROUTER_CONTRACT: "",
         ROUTER_CONTRACT: "",
         BRIDGE_TOKEN: "",
         ISSUE_CONTRACT: "0x91696d544d404d8c6e5c3487739a303cc1cc31fc",
-        DST_CHAIN_ID: 10106,
         LAYER_0_ENDPOINT: "0x93f54D755A063cE7bB9e6Ac47Eccc8e33411d706",
       },
       TOKENS: {
@@ -148,6 +150,41 @@ const configs: Configs = {
           id: "BNB",
           contract: "0x5b74D1A144c2262c0f11cEe511faaF829232a58E",
           decimal: 18,
+        },
+      },
+    },
+    DOS: {
+      CONTRACTS: {
+        BRIDGE_TOKEN: "",
+        ISSUE_CONTRACT: "0xFe764009660eDf970e597d30eC1A94A669205cDe",
+        LAYER_0_ENDPOINT: "0xae92d5aD7583AD66E49A0c67BAd18F6ba52dDDc1",
+        PANCAKE_FACTORY_CONTRACT: "",
+        PANCAKE_ROUTER_CONTRACT: "",
+        ROUTER_CONTRACT: "",
+      },
+      DST_CHAIN_ID: 10149,
+      IS_USE_LP: false,
+      TOKENS: {
+        SKY: {
+          contract: "0xFa1B43742248440be1f5BA62Dde6656e645A45b6",
+          decimal: 18,
+          id: "HE",
+          key: "SKY",
+          name: "SKY",
+        },
+        USDT: {
+          contract: "0xfD9C9A40bd3426c5c95A3EDD7F65F994228619cF",
+          decimal: 18,
+          id: "USDT",
+          key: "USDT",
+          name: "USDT",
+        },
+        WBNB: {
+          contract: "0x40CB7C5C94b18062f8299B742b878a03CAF6E7D8",
+          decimal: 18,
+          id: "BNB",
+          key: "WBNB",
+          name: "WBNB",
         },
       },
     },

@@ -45,13 +45,14 @@ export interface Configs {
   };
   BRIDGE: {
     [n: string]: {
+      DST_CHAIN_ID: number;
+      IS_USE_LP: boolean;
       CONTRACTS: {
         ROUTER_CONTRACT: string;
         PANCAKE_FACTORY_CONTRACT: string;
         PANCAKE_ROUTER_CONTRACT: string;
         ISSUE_CONTRACT: string;
         BRIDGE_TOKEN: string;
-        DST_CHAIN_ID: number;
         LAYER_0_ENDPOINT: string;
       };
       TOKENS: { [n: string]: BridgeToken };

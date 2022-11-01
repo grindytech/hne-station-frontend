@@ -388,7 +388,7 @@ export const estimateFeesAVAXPayload = ({
   to: string;
   decimals: number;
   chain: string;
-  }) => {
+}) => {
   const amountContractValue = convertToContractValue({
     amount: amount,
     decimal: decimals,
@@ -408,8 +408,8 @@ export const estimateFees = async ({
   _dstChainId: number;
   payload: string;
   chain: string;
-  }) => {
-  debugger
+}) => {
+  debugger;
   const httpProvider = WEB3_HTTP_PROVIDERS[chain];
   const layer0ContractAddress =
     configs.BRIDGE[chain].CONTRACTS.LAYER_0_ENDPOINT;
@@ -418,10 +418,9 @@ export const estimateFees = async ({
     httpProvider
   );
   const decimal = configs.NETWORKS[chain].nativeCurrency.decimals;
-  const contract =
-    chain === Chain.AVAX
-      ? configs.BRIDGE[Chain.AVAX].CONTRACTS.ISSUE_CONTRACT
-      : configs.BRIDGE[chain].CONTRACTS.ROUTER_CONTRACT;
+  const contract = configs.BRIDGE[chain].IS_USE_LP
+    ? configs.BRIDGE[chain].CONTRACTS.ROUTER_CONTRACT
+    : configs.BRIDGE[chain].CONTRACTS.ISSUE_CONTRACT;
   const { nativeFee, zroFee } = await layer0Contract.methods
     .estimateFees(_dstChainId, contract, payload, false, "0x")
     .call();
