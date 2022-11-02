@@ -5,6 +5,7 @@ export const chainName: { [n: string]: string } = {
   "56": "BSC",
   "43113": "AVAX testnet",
   "43114": "Avalanche C-Chain",
+  "1311": "DOS testnet"
 };
 export const walletConnectRpc = {
   "1": "https://mainnet.eth.aragon.network",
@@ -20,4 +21,5 @@ export const walletConnectRpc = {
   "43113": "https://api.avax-test.network/ext/bc/C/rpc",
   "686": "https://eth-rpc-karura.aca-api.network/eth/http",
   "43114": "https://api.avax.network/ext/bc/c/rpc",
+  "1311": "https://test.doschain.com/jsonrpc",
 };

@@ -10,11 +10,8 @@ import NavBar from "components/station/NavBar";
 import SidebarContent from "components/station/SidebarContent";
 import BridgePage from "pages/BridgePage";
 import Dashboard from "pages/Dashboard";
-import Stake from "pages/Stake";
-import SwapPage from "pages/SwapPage";
 import { IconType } from "react-icons";
-import { AiOutlineSwap } from "react-icons/ai";
-import { FiTrendingUp } from "react-icons/fi";
+import { FiActivity, FiRepeat } from "react-icons/fi";
 import { Route, Routes } from "react-router-dom";
 interface LinkItemProps {
   name: string;
@@ -22,9 +19,10 @@ interface LinkItemProps {
   key: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { key: "/stake", name: "Stake", icon: FiTrendingUp },
+  // { key: "/stake", name: "Stake", icon: FiTrendingUp },
   // { key: "/swap", name: "Swap", icon: AiOutlineSwap },
-  { key: "/bridge", name: "Bridge", icon: AiOutlineSwap },
+  { key: "/", name: "Overview", icon: FiActivity },
+  { key: "/bridge", name: "Bridge", icon: FiRepeat },
 ];
 
 export default function Station() {
@@ -60,8 +58,8 @@ export default function Station() {
       <Box ml={{ base: 0, md: 60 }} p="4">
         <Container maxW="container.lg" mb={3}>
           <Routes>
-            <Route path="/stake" element={<Stake />} />
-            <Route path="/swap" element={<SwapPage />} />
+            {/* <Route path="/stake" element={<Stake />} /> */}
+            {/* <Route path="/swap" element={<SwapPage />} /> */}
             <Route path="/bridge" element={<BridgePage />} />
             <Route path="/" element={<Dashboard />} />
           </Routes>

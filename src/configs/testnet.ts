@@ -7,7 +7,7 @@ const configs: Configs = {
   HE_CLAIM_PRIVATE_CONTRACT_V2: "",
   HE_STAKE_CONTRACT: "0xdBB51642Bbd2f9C127B405c817Ea1A60c8379a70",
   COMMUNITY_AIRDROP_CONTRACT: "",
-  API_URI: "https://mpapi-testnet.heroesempires.com/station/",
+  API_URI: "https://mpapi-dos-test.heroesempires.com/bridge", // "https://mpapi-testnet.heroesempires.com/station/",
   TOKEN_SYMBOL: "OVER",
   DEFAULT_CHAIN: "BSC",
   NETWORKS: {
@@ -29,8 +29,8 @@ const configs: Configs = {
       },
     },
     DOS: {
-      chainIdNumber: 2508,
-      chainId: Web3.utils.numberToHex(2508),
+      chainIdNumber: 1311,
+      chainId: Web3.utils.numberToHex(1311),
       rpcUrls: ["https://test.doschain.com/jsonrpc"],
       chainName: "DOS",
       blockExplorerUrls: ["https://test-explorer.doschain.com/"],

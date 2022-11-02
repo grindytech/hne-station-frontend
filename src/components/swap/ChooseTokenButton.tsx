@@ -20,8 +20,8 @@ import { FiChevronDown } from "react-icons/fi";
 
 export type Token = {
   key: string;
-  icon: React.ReactElement;
-  name: string;
+  icon?: React.ReactElement;
+  name?: string;
 };
 
 const listTokensDefault: Token[] = [
@@ -77,14 +77,16 @@ export default function ChooseTokenButton({
           justifyContent="space-between"
           alignItems="center"
           leftIcon={
-            <Icon w={5} h={5}>
-              {tokenInfo?.icon ?? listTokens[0].icon}
-            </Icon>
+            tokenInfo?.icon ? (
+              <Icon w={5} h={5}>
+                {tokenInfo?.icon}
+              </Icon>
+            ) : undefined
           }
           rightIcon={<FiChevronDown color={textColor} />}
         >
           <Text width="full" textAlign="left">
-            {tokenInfo ? token : listTokens[0].key}
+            {token}
           </Text>
         </Button>
       </MenuButton>
@@ -102,14 +104,18 @@ export default function ChooseTokenButton({
               }}
             >
               <HStack spacing={5}>
-                <Icon w={8} height={8}>
-                  {icon}
-                </Icon>
+                {icon && (
+                  <Icon w={8} height={8}>
+                    {icon}
+                  </Icon>
+                )}
                 <VStack alignItems={"start"}>
                   <Text>{tk}</Text>
-                  <Text color={textColor} fontSize="xs">
-                    {name}
-                  </Text>
+                  {name && (
+                    <Text color={textColor} fontSize="xs">
+                      {name}
+                    </Text>
+                  )}
                 </VStack>
               </HStack>
             </Button>
