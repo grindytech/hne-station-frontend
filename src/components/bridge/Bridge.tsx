@@ -10,10 +10,12 @@ import {
   Heading,
   HStack,
   Input,
+  Link,
   Skeleton,
   Text,
   useColorModeValue,
-  VStack,
+  useDisclosure,
+  VStack
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import CardBody from "components/card/CardBody";
@@ -21,7 +23,6 @@ import CardHeader from "components/card/CardHeader";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
 import ChooseTokenButton, { Token } from "components/swap/ChooseTokenButton";
 import SettingButton from "components/swap/SettingButton";
-import TxHistories, { Transaction } from "components/swap/TxHistories";
 import configs from "configs";
 import useSwitchNetwork from "connectWallet/useSwitchNetwork";
 import { useConnectWallet } from "connectWallet/useWallet";
@@ -38,16 +39,22 @@ import {
   getNativeBalance,
   getPath,
   swapIssueContract,
-  transfer,
+  transfer
 } from "contracts/bridge";
 import { Chain } from "contracts/contracts";
+import {
+  Transaction, useSessionTxHistories
+} from "hooks/bridge/useSessionTxHistories";
 import useCustomToast from "hooks/useCustomToast";
 import _ from "lodash";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AiOutlineHistory } from "react-icons/ai";
 import { HiSwitchVertical } from "react-icons/hi";
 import { useQuery } from "react-query";
 import { getSgvIcon, ICONS } from "utils/icons";
 import { numberOnly, numeralFormat, numeralFormat1 } from "utils/utils";
+import { TxInfo } from "./dashboard/PendingTxButton";
+import UserHistory from "./dashboard/UserHistory";
 
 const NETWORKS: Token[] = [
   { key: "BSC", icon: getSgvIcon(ICONS.BNB), name: "BSC" },
@@ -85,13 +92,12 @@ export default function Bridge() {
   const [receiveLoading, setReceiveLoading] = useState(false);
   const [deadline, setDeadline] = useState(20);
   const [slippage, setSlippage] = useState(1);
-  const [histories, setHistories] = useState<Transaction[]>([]);
   const amountInput = useRef<HTMLInputElement>(null);
   const [refreshChainBalanceTime, setRefreshChainBalanceTime] = useState(
     Date.now()
   );
+  const sessionTxHistories = useSessionTxHistories();
   const toast = useCustomToast();
-  // const fee = 0.1;
   const { account } = useConnectWallet();
   const [receiver, setReceive] = useState(account);
 
@@ -100,7 +106,6 @@ export default function Bridge() {
     ["layer0Fee", originChain, originToken, receiveAmount],
     async () => {
       let payload = "";
-      debugger
       const originNetwork = configs.NETWORKS[originChain];
       const desChain = configs.BRIDGE[destinationChain];
       const srcChain = configs.BRIDGE[originChain];
@@ -147,7 +152,11 @@ export default function Bridge() {
   const getFee = () => {
     return estFee ? estFee + estFee * 0.1 : 0;
   };
-  const { data: balance, refetch: refetchBalance } = useQuery(
+  const {
+    data: balance,
+    refetch: refetchBalance,
+    isLoading: balanceLoading,
+  } = useQuery(
     ["balanceOf", originToken, account, originChain],
     async () => {
       const token = configs.BRIDGE[originChain].TOKENS[originToken];
@@ -159,7 +168,8 @@ export default function Bridge() {
         balance = await getErc20Balance(account, token.contract, originChain);
       }
       return balance;
-    }
+    },
+    { enabled: !!account }
   );
 
   const destinationTokenOptions = useMemo(() => {
@@ -304,10 +314,10 @@ export default function Bridge() {
       setApproving(true);
       await erc20Approve(erc20Contract, contract, account);
       await refetchApprove();
-      toast.success("Transaction successfully!");
+      toast.success("Approve successfully!");
     } catch (error) {
       console.error(error);
-      toast.error("Transaction failed!");
+      toast.error("Approve failed!");
     } finally {
       setApproving(false);
     }
@@ -323,13 +333,17 @@ export default function Bridge() {
       if (!token2OriginChainMap) return;
       const h: Transaction = {
         amount: Number(amount),
-        status: "pending",
+        status: "confirming",
         token1: token1.key,
         token2: token2.key,
         txHash: "",
         type: "bridge",
+        chainFrom: originChain,
+        chainTo: destinationChain,
+        time: Date.now(),
+        nonce: String(Date.now()),
       };
-      setHistories([...histories, h]);
+      sessionTxHistories.add(h);
       let contractCall: any = {};
       if (originChain === Chain.BSC) {
         const minReceive = receiveAmount - (receiveAmount * slippage) / 100;
@@ -347,8 +361,7 @@ export default function Bridge() {
           originChain
         );
       } else {
-        const _dstChainId =
-          configs.BRIDGE[destinationChain].DST_CHAIN_ID;
+        const _dstChainId = configs.BRIDGE[destinationChain].DST_CHAIN_ID;
         contractCall = swapIssueContract(
           _dstChainId,
           token1.contract,
@@ -360,27 +373,39 @@ export default function Bridge() {
         );
       }
       const { contractMethod, param } = contractCall;
+      const { update } = sessionTxHistories;
       contractMethod
         .send(param)
         .on("transactionHash", (hash: string) => {
           h.txHash = hash;
+          h.status = "pending";
+          update(h.nonce, h);
         })
         .on("confirmation", (confNumber: number, receipt: any) => {
           if (confNumber === 0 && receipt.status) {
-            h.status = "success";
-            toast.success("Transaction successfully!");
             refetchBalance();
             refreshChainBalance();
           }
         })
         .on("error", (error: any) => {
           console.error(error);
+          h.msg = error.message;
           if (error.code === 4001) {
             h.status = "rejected";
-            toast.error("Transaction rejected!");
+            update(h.nonce, h);
+            toast.error(
+              <TxInfo
+                title="Transaction rejected!"
+                tx={h}
+                msg={error.message}
+              />
+            );
           } else {
             h.status = "fail";
-            toast.error("Transaction fail!");
+            update(h.nonce, h);
+            toast.error(
+              <TxInfo title="Transaction fail!" tx={h} msg={error.message} />
+            );
           }
         })
         .finally(() => {
@@ -414,9 +439,11 @@ export default function Bridge() {
   }, [refreshChainBalance]);
   const textColor = useColorModeValue("gray.600", "gray.200");
   const inputBg = useColorModeValue("gray.100", "gray.800");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <VStack>
+      <UserHistory isOpen={isOpen} onClose={onClose} />
       <Card flex={{ lg: 1 }} maxW={600}>
         <CardHeader mb={[10, 5]}>
           <HStack padding={2} w="full" justifyContent="space-between">
@@ -429,12 +456,14 @@ export default function Bridge() {
               Bridge
             </Heading>
             <HStack w="full" justifyContent="end">
-              <TxHistories
-                onClear={() => {
-                  setHistories([]);
-                }}
-                histories={histories}
-              />
+              <Link
+                onClick={onOpen}
+                color={"gray.500"}
+                variant="link"
+                _focus={{ border: "none" }}
+              >
+                <AiOutlineHistory display="inline-block" />
+              </Link>
               <SettingButton
                 slippageDefault={1}
                 onChange={({ deadline, slippage }) => {
@@ -466,6 +495,7 @@ export default function Bridge() {
                     variant="outline"
                   >
                     <ChooseTokenButton
+                      isLoading={balanceLoading}
                       buttonProps={{
                         padding: 3,
                         width: "full",
@@ -530,6 +560,7 @@ export default function Bridge() {
                     variant="outline"
                   >
                     <ChooseTokenButton
+                      isLoading={balanceLoading}
                       buttonProps={{
                         padding: 3,
                         width: "full",

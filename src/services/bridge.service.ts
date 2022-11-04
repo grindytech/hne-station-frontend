@@ -1,9 +1,9 @@
 import { client } from "./client";
-import { BaseResultPagination } from "./types/BaseResultPagination";
 import { ChartData } from "./types/ChartData";
 import { GetChartData } from "./types/GetChartData";
 import { GetTransfer } from "./types/GetTransfer";
 import { Pagination } from "./types/Pagination";
+import { TokenVolume } from "./types/TokenVolumeDto";
 import { TransferDto } from "./types/TransferDto";
 
 const getChartData = async (
@@ -16,4 +16,7 @@ const getTransfer = async (
 ): Promise<Pagination<TransferDto>> =>
   await client.get("/explore/transfer", { params });
 
-export default { getChartData, getTransfer };
+const getToken24HVolume = async (): Promise<Pagination<TokenVolume>> =>
+  await client.get("/explore/tokens/volume24h");
+
+export default { getChartData, getTransfer, getToken24HVolume };

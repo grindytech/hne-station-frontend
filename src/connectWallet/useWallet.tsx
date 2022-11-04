@@ -1,6 +1,6 @@
 import detectEthereumProvider from "@metamask/detect-provider";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { chainName } from "connectWallet/connectors";
+import { chainName, chainStringId } from "connectWallet/connectors";
 import walletConnectProvider from "connectWallet/WalletConnectProvider";
 import { web3 } from "contracts/contracts";
 import React, {
@@ -32,6 +32,7 @@ const ConnectWalletContext = React.createContext<{
   networkName?: string;
   chainId?: number;
   ethereum?: AbstractProvider;
+  networkTextId?: string;
 }>({
   account: "",
   connect: async () => {},
@@ -89,6 +90,9 @@ function useWallet() {
   const [ethereum, setEthereum] = useState<AbstractProvider>();
   const networkName = useMemo(() => {
     return chainName[String(chainId)] || "Unknown network";
+  }, [chainId]);
+  const networkTextId = useMemo(() => {
+    return chainStringId[String(chainId)] || undefined;
   }, [chainId]);
 
   const connect = useCallback(
@@ -167,6 +171,7 @@ function useWallet() {
     networkName,
     chainId,
     ethereum,
+    networkTextId,
   };
 }
 

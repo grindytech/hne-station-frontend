@@ -276,7 +276,6 @@ export const transfer = (
 ): { contractMethod: any; param: any } => {
   let contractCall = undefined;
   let contractFee = fee;
-  debugger;
 
   if (token1.id === token2.id && !token1.native) {
     contractCall = swap(to, token1.contract, amountIn, chain);
@@ -409,7 +408,6 @@ export const estimateFees = async ({
   payload: string;
   chain: string;
 }) => {
-  debugger;
   const httpProvider = WEB3_HTTP_PROVIDERS[chain];
   const layer0ContractAddress =
     configs.BRIDGE[chain].CONTRACTS.LAYER_0_ENDPOINT;

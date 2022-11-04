@@ -1,11 +1,27 @@
-import { Badge, Box, Flex, FlexProps, HStack, IconButton, Menu, Tag, Text, useColorModeValue } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  FlexProps,
+  HStack,
+  IconButton,
+  Menu,
+  Spinner,
+  Tag,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import PendingTxButton from "components/bridge/dashboard/PendingTxButton";
 import { SidebarContent as NavbarContent } from "components/Sidebar";
+import { useSessionTxHistories } from "hooks/bridge/useSessionTxHistories";
 import { FiMenu } from "react-icons/fi";
 
 interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
 const NavBar = ({ onOpen, ...rest }: MobileProps) => {
+  const { pendingTransactions } = useSessionTxHistories();
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -26,14 +42,11 @@ const NavBar = ({ onOpen, ...rest }: MobileProps) => {
           aria-label="open menu"
           icon={<FiMenu />}
         />
-
-        {/* <Tag  borderRadius="full" colorScheme="green">
-          DOS chain
-        </Tag> */}
       </HStack>
 
       <HStack spacing={{ base: "0", md: "6" }}>
         {/* <IconButton size="lg" variant="ghost" aria-label="open menu" icon={<FiBell />} /> */}
+        {pendingTransactions.length > 0 && <PendingTxButton />}
         <Flex alignItems={"center"}>
           <Menu>
             <NavbarContent onClick={() => {}} />

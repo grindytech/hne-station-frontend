@@ -59,7 +59,7 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
               <Link to="/" onClick={onClose}>
                 <HStack spacing={0}>
                   <Image sx={{ height: "63px" }} src={OverskyLogo} />
-                  <VStack spacing={0}>
+                  <HStack alignItems="end" spacing={1}>
                     <Text
                       lineHeight={1}
                       color={useColorModeValue("gray.900", "gray.100")}
@@ -77,9 +77,9 @@ const SidebarContent = ({ onClose, LinkItems, ...rest }: SidebarProps) => {
                       fontWeight="semibold"
                       lineHeight={1}
                     >
-                      Governance
+                      Bridge
                     </Text>
-                  </VStack>
+                  </HStack>
                 </HStack>
               </Link>
             </Box>

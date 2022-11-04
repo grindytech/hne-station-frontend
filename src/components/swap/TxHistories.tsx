@@ -25,6 +25,7 @@ export type Transaction = {
   token1: string;
   token2: string;
   amount: number;
+  chain: string;
 };
 
 export default function TxHistories({
@@ -80,9 +81,7 @@ export default function TxHistories({
                         target={h.txHash ? "_blank" : ""}
                         href={
                           h.txHash
-                            ? `${
-                                configs.DEFAULT_NETWORK().blockExplorerUrls[0]
-                              }/tx/${h.txHash}`
+                            ? `${configs.NETWORKS[h.chain].blockExplorerUrls[0]}/tx/${h.txHash}`
                             : "#"
                         }
                         display={"flex"}

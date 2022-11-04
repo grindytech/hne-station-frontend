@@ -2,14 +2,7 @@ import { Configs } from "configs";
 import Web3 from "web3";
 
 const configs: Configs = {
-  HE_CLAIM_PRIVATE_CONTRACT: "",
-  HE_CONTRACT: "0xf4a904478dB17d9145877bCF95F47C92FeC5eA8d",
-  HE_CLAIM_PRIVATE_CONTRACT_V2: "",
-  HE_STAKE_CONTRACT: "0xdBB51642Bbd2f9C127B405c817Ea1A60c8379a70",
-  COMMUNITY_AIRDROP_CONTRACT: "",
   API_URI: "https://mpapi-dos-test.heroesempires.com/bridge", // "https://mpapi-testnet.heroesempires.com/station/",
-  TOKEN_SYMBOL: "OVER",
-  DEFAULT_CHAIN: "BSC",
   NETWORKS: {
     BSC: {
       chainIdNumber: 97,
@@ -45,35 +38,8 @@ const configs: Configs = {
         symbol: "",
       },
     },
-    AVAX: {
-      chainIdNumber: 43113,
-      chainId: Web3.utils.numberToHex(43113),
-      rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"],
-      chainName: "Avalanche Testnet",
-      blockExplorerUrls: ["https://testnet.snowtrace.io"],
-      nativeCurrency: {
-        name: "AVAX",
-        symbol: "AVAX",
-        decimals: 18,
-      },
-      wrapToken: {
-        contract: "",
-        name: "",
-        symbol: "",
-      },
-    },
   },
-  GOV: {
-    BEGIN_V2_ID: 0,
-    GOVERNANCE_CONTRACT: "",
-    GOVERNANCE_CONTRACT_V2: "",
-  },
-  BUSD_CONTRACT: "",
-  WBNB_CONTRACT: "",
-  SWAP: {
-    FACTORY_V2_CONTRACT: "",
-    ROUTER_V2_CONTRACT: "",
-  },
+  DEFAULT_CHAIN: "BSC",
   BRIDGE: {
     BSC: {
       DST_CHAIN_ID: 10102,
@@ -85,6 +51,7 @@ const configs: Configs = {
         BRIDGE_TOKEN: "0x810c3aeec5Faeb9Ef9f05526Ec8e47fe3c93f1b2", //BUSD
         ISSUE_CONTRACT: "",
         LAYER_0_ENDPOINT: "0x6Fcb97553D41516Cb228ac03FdC8B9a0a9df04A1",
+        POOL: "0x169e8C01081Fc33c0c3Ec467df509D18C4d55999",
       },
       TOKENS: {
         HE: {
@@ -118,41 +85,6 @@ const configs: Configs = {
         },
       },
     },
-    AVAX: {
-      DST_CHAIN_ID: 10106,
-      IS_USE_LP: false,
-      CONTRACTS: {
-        PANCAKE_FACTORY_CONTRACT: "",
-        PANCAKE_ROUTER_CONTRACT: "",
-        ROUTER_CONTRACT: "",
-        BRIDGE_TOKEN: "",
-        ISSUE_CONTRACT: "0x91696d544d404d8c6e5c3487739a303cc1cc31fc",
-        LAYER_0_ENDPOINT: "0x93f54D755A063cE7bB9e6Ac47Eccc8e33411d706",
-      },
-      TOKENS: {
-        SKY: {
-          key: "SKY",
-          name: "SKY",
-          id: "HE",
-          contract: "0x4D8c1AEa665624ee71c8d25e85bf738e4135ebE0",
-          decimal: 18,
-        },
-        USDT: {
-          key: "USDT",
-          name: "USDT",
-          id: "USDT",
-          contract: "0x71fDe8B01aEFd31C805D1530e05A2f4cA771bD1d",
-          decimal: 18,
-        },
-        WBNB: {
-          key: "WBNB",
-          name: "Wrap BNB",
-          id: "BNB",
-          contract: "0x5b74D1A144c2262c0f11cEe511faaF829232a58E",
-          decimal: 18,
-        },
-      },
-    },
     DOS: {
       CONTRACTS: {
         BRIDGE_TOKEN: "",
@@ -161,6 +93,7 @@ const configs: Configs = {
         PANCAKE_FACTORY_CONTRACT: "",
         PANCAKE_ROUTER_CONTRACT: "",
         ROUTER_CONTRACT: "",
+        POOL: "0x763a49a9933D82ec046a72F9287470Fa9F8C5D15",
       },
       DST_CHAIN_ID: 10149,
       IS_USE_LP: false,
@@ -191,3 +124,22 @@ const configs: Configs = {
   },
 };
 export default configs;
+
+//  AVAX: {
+//       chainIdNumber: 43113,
+//       chainId: Web3.utils.numberToHex(43113),
+//       rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"],
+//       chainName: "Avalanche Testnet",
+//       blockExplorerUrls: ["https://testnet.snowtrace.io"],
+//       nativeCurrency: {
+//         name: "AVAX",
+//         symbol: "AVAX",
+//         decimals: 18,
+//       },
+//       wrapToken: {
+//         contract: "",
+//         name: "",
+//         symbol: "",
+//       },
+//     },
+

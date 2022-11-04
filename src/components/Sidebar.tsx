@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  ButtonGroup,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -18,16 +17,17 @@ import {
   Tag,
   Text,
   useColorMode,
+  VStack,
 } from "@chakra-ui/react";
 
 import HELogo from "assets/heroes_empires_fa.png";
 import ConnectWalletButton from "components/connectWalletButton/ConnectWalletButton";
-import useCustomToast from "hooks/useCustomToast";
 import { useConnectWallet } from "connectWallet/useWallet";
-import { useEffect } from "react";
+import useCustomToast from "hooks/useCustomToast";
+import { FaMoon, FaQuestion, FaSun } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
+import { getSgvIcon } from "utils/icons";
 import { shorten } from "utils/utils";
-import { FaMoon, FaSun } from "react-icons/fa";
 
 export type SidebarVariant = "drawer" | "sidebar";
 
@@ -42,7 +42,7 @@ interface SidebarContentProps {
 }
 
 export const SidebarContent = ({ onClick }: SidebarContentProps) => {
-  const { account, reset, networkName } = useConnectWallet();
+  const { account, reset, networkTextId } = useConnectWallet();
   const toast = useCustomToast();
   const { colorMode, toggleColorMode } = useColorMode();
   return (
@@ -52,32 +52,35 @@ export const SidebarContent = ({ onClick }: SidebarContentProps) => {
       alignItems="center"
       fontWeight="semibold"
     >
-      <Button
-        _focus={{ border: "none" }}
-        variant="ghost"
-        onClick={toggleColorMode}
-      >
-        {colorMode === "light" ? <Icon as={FaMoon} /> : <Icon as={FaSun} />}
-      </Button>
       {account ? (
         <Menu>
-          <ButtonGroup color="primary.500" isAttached>
-            <Button size="sm">{networkName}</Button>
-            <MenuButton as={Button} rightIcon={<FiChevronDown />} size="sm">
-              {shorten(account, 7, 5)}
-            </MenuButton>
-          </ButtonGroup>
+          <MenuButton
+            variant="outline"
+            colorScheme="primary"
+            as={Button}
+            leftIcon={
+              networkTextId ? (
+                <Icon>{getSgvIcon(networkTextId)}</Icon>
+              ) : (
+                <FaQuestion />
+              )
+            }
+            rightIcon={<FiChevronDown />}
+            size="sm"
+          >
+            {shorten(account, 7, 5)}
+          </MenuButton>
           <MenuList p={1} color="primary.500">
             <MenuItem
-              flexDirection="column"
-              alignItems="flex-start"
               onClick={() => {
                 navigator.clipboard.writeText(account);
                 toast.success("Copied!");
               }}
             >
-              <Text as="div">Your wallet:</Text>
-              <Tag size="sm">{account}</Tag>
+              <VStack w="full" align="start" spacing={0}>
+                <Text as="div">Your wallet:</Text>
+                <Tag size="sm">{shorten(account, 8, 5)}</Tag>
+              </VStack>
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -92,6 +95,14 @@ export const SidebarContent = ({ onClick }: SidebarContentProps) => {
       ) : (
         <ConnectWalletButton />
       )}
+      <Button
+        _focus={{ border: "none" }}
+        variant="ghost"
+        onClick={toggleColorMode}
+        size="sm"
+      >
+        {colorMode === "light" ? <Icon as={FaMoon} /> : <Icon as={FaSun} />}
+      </Button>
     </Stack>
   );
 };

@@ -7,6 +7,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Skeleton,
   Text,
   useColorModeValue,
   VStack,
@@ -14,7 +15,6 @@ import {
 import { ReactComponent as BNBCoin } from "assets/bnb_coin.svg";
 import { ReactComponent as BUSDCoin } from "assets/busd_coin.svg";
 import { ReactComponent as HECoin } from "assets/he_coin.svg";
-import { TOKEN_INFO } from "contracts/swap";
 import React, { useEffect, useMemo } from "react";
 import { FiChevronDown } from "react-icons/fi";
 
@@ -25,9 +25,9 @@ export type Token = {
 };
 
 const listTokensDefault: Token[] = [
-  { key: "HE", icon: <HECoin />, name: TOKEN_INFO["HE"].name },
-  { key: "BUSD", icon: <BUSDCoin />, name: TOKEN_INFO["BUSD"].name },
-  { key: "BNB", icon: <BNBCoin />, name: TOKEN_INFO["BNB"].name },
+  { key: "HE", icon: <HECoin />, name: "Heroes & Empires" },
+  { key: "BUSD", icon: <BUSDCoin />, name: "Binance USD" },
+  { key: "BNB", icon: <BNBCoin />, name: "Binance Coin" },
 ];
 
 type Props = {
@@ -36,6 +36,7 @@ type Props = {
   buttonProps?: ButtonProps;
   tokens?: Token[];
   label?: string;
+  isLoading?: boolean;
 };
 
 export default function ChooseTokenButton({
@@ -44,6 +45,7 @@ export default function ChooseTokenButton({
   buttonProps,
   tokens,
   label,
+  isLoading,
 }: Props) {
   const listTokens = tokens || listTokensDefault;
   const textColor = useColorModeValue("gray.600", "gray.100");
@@ -59,6 +61,7 @@ export default function ChooseTokenButton({
   return (
     <Menu>
       <MenuButton
+        disabled={isLoading}
         padding={5}
         width="full"
         variant="outline"
@@ -71,56 +74,59 @@ export default function ChooseTokenButton({
             {label}
           </Text>
         )}
-        <Button
-          width="full"
-          variant="ghost"
-          justifyContent="space-between"
-          alignItems="center"
-          leftIcon={
-            tokenInfo?.icon ? (
-              <Icon w={5} h={5}>
-                {tokenInfo?.icon}
-              </Icon>
-            ) : undefined
-          }
-          rightIcon={<FiChevronDown color={textColor} />}
-        >
-          <Text width="full" textAlign="left">
-            {token}
-          </Text>
-        </Button>
+        <Skeleton isLoaded={!isLoading}>
+          <Button
+            width="full"
+            variant="ghost"
+            justifyContent="space-between"
+            alignItems="center"
+            leftIcon={
+              tokenInfo?.icon ? (
+                <Icon w={5} h={5}>
+                  {tokenInfo?.icon}
+                </Icon>
+              ) : undefined
+            }
+            rightIcon={<FiChevronDown color={textColor} />}
+          >
+            <Text width="full" textAlign="left">
+              {token}
+            </Text>
+          </Button>
+        </Skeleton>
       </MenuButton>
       <MenuList>
-        {listTokens.map(({ key: tk, icon, name }) => (
-          <MenuItem key={tk}>
-            <Button
-              _focus={{ border: "none" }}
-              disabled={tk === token}
-              variant="base"
-              onClick={() => {
-                if (tk !== token) {
-                  onChange(tk);
-                }
-              }}
-            >
-              <HStack spacing={5}>
-                {icon && (
-                  <Icon w={8} height={8}>
-                    {icon}
-                  </Icon>
-                )}
-                <VStack alignItems={"start"}>
-                  <Text>{tk}</Text>
-                  {name && (
-                    <Text color={textColor} fontSize="xs">
-                      {name}
-                    </Text>
+        {!isLoading &&
+          listTokens.map(({ key: tk, icon, name }) => (
+            <MenuItem key={tk}>
+              <Button
+                _focus={{ border: "none" }}
+                disabled={tk === token}
+                variant="base"
+                onClick={() => {
+                  if (tk !== token) {
+                    onChange(tk);
+                  }
+                }}
+              >
+                <HStack spacing={5}>
+                  {icon && (
+                    <Icon w={8} height={8}>
+                      {icon}
+                    </Icon>
                   )}
-                </VStack>
-              </HStack>
-            </Button>
-          </MenuItem>
-        ))}
+                  <VStack alignItems={"start"}>
+                    <Text>{tk}</Text>
+                    {name && (
+                      <Text color={textColor} fontSize="xs">
+                        {name}
+                      </Text>
+                    )}
+                  </VStack>
+                </HStack>
+              </Button>
+            </MenuItem>
+          ))}
       </MenuList>
     </Menu>
   );

@@ -1,10 +1,8 @@
 import {
-  Badge,
   Button,
   HStack,
   Icon,
   Link,
-  Select,
   Stack,
   Table,
   TableContainer,
@@ -20,18 +18,21 @@ import {
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import Paginator from "components/paging/Paginator";
+import EmptyState from "components/state/EmptyState";
+import Loading from "components/state/Loading";
 import ChooseTokenButton from "components/swap/ChooseTokenButton";
 import configs from "configs";
 import { formatDistance } from "date-fns";
 import numeral from "numeral";
-import { useState } from "react";
-import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { FiArrowRight } from "react-icons/fi";
 import { useQuery } from "react-query";
 import bridgeService from "services/bridge.service";
+import { CHAIN_COLOR_SCHEMA } from "utils/colors";
 import { getSgvIcon } from "utils/icons";
 import { formatDate, shorten } from "utils/utils";
 const TOKENS = ["USDT", "BUSD", "WBNB", "HE", "SKY"];
-const CHAINS = ["BSC", "DOS", "AVAX"];
+const CHAINS = ["BSC", "DOS"];
 export default function BridgeTransfer() {
   const [sourceToken, setSourceToken] = useState<string>();
   const [sourceChain, setSourceChain] = useState<string>();
@@ -40,7 +41,11 @@ export default function BridgeTransfer() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const size = 10;
-  const { data: dataTransfer } = useQuery(
+  const textColor = useColorModeValue("gray.600", "gray.300");
+  useEffect(() => {
+    setPage(1);
+  }, [sourceToken, sourceChain, desToken, desChain]);
+  const { data: dataTransfer, isLoading } = useQuery(
     ["BridgeTransfer", sourceToken, sourceChain, desToken, desChain, page],
     async () => {
       const rsp = await bridgeService.getTransfer({
@@ -171,111 +176,109 @@ export default function BridgeTransfer() {
         </Stack>
 
         <VStack w="full">
-          <TableContainer w="full">
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th color="primary.500">Action</Th>
-                  <Th color="primary.500">From</Th>
-                  <Th color="primary.500">To</Th>
-                  <Th color="primary.500">Amount</Th>
-                  <Th color="primary.500">Value</Th>
-                  <Th color="primary.500">Receiver</Th>
-                  <Th color="primary.500">Time</Th>
-                </Tr>
-              </Thead>
-              <Tbody
-                color={useColorModeValue("gray.600", "gray.300")}
-                fontSize="sm"
-              >
-                {dataTransfer?.map((item) => (
-                  <Tr w="full">
-                    <Td>
-                      <HStack alignItems="center">
-                        <HStack spacing={1}>
-                          {/* <Icon w={4} h={4}>
-                            {getSgvIcon(item.tokenFromSymbol.toUpperCase())}
-                          </Icon> */}
+          {isLoading ? (
+            <Loading />
+          ) : Number(dataTransfer?.length) > 0 ? (
+            <TableContainer w="full">
+              <Table variant="simple" w="full">
+                <Thead>
+                  <Tr>
+                    <Th color="primary.500">Action</Th>
+                    <Th color="primary.500">From</Th>
+                    <Th color="primary.500">To</Th>
+                    <Th color="primary.500">Amount</Th>
+                    <Th color="primary.500">Value</Th>
+                    <Th color="primary.500">Receiver</Th>
+                    <Th color="primary.500">Time</Th>
+                  </Tr>
+                </Thead>
+                <Tbody color={textColor} fontSize="sm">
+                  {dataTransfer?.map((item) => (
+                    <Tr w="full">
+                      <Td>
+                        <HStack alignItems="center" spacing={1}>
                           <Text>{item.tokenFromSymbol.toUpperCase()}</Text>
-                        </HStack>
-                        <Icon as={FiArrowRight} />
-                        <HStack spacing={1}>
-                          {/* <Icon w={4} h={4}>
-                            {getSgvIcon(item.tokenToSymbol.toUpperCase())}
-                          </Icon> */}
+                          <Icon as={FiArrowRight} />
                           <Text>{item.tokenToSymbol.toUpperCase()}</Text>
                         </HStack>
-                      </HStack>
-                    </Td>
-                    <Td>
-                      <Button
-                        size="xs"
-                        onClick={() => {
-                          window.open(
-                            `${
-                              configs.NETWORKS[item.chainFrom.toUpperCase()]
-                                ?.blockExplorerUrls[0]
-                            }/tx/${item.txFrom}`,
-                            "_blank"
-                          );
-                        }}
-                      >
-                        <HStack alignItems="center" spacing={1}>
-                          <Icon w={4} h={4}>
-                            {getSgvIcon(item.chainFrom.toUpperCase())}
-                          </Icon>
-                          <Text>{item.chainFrom.toUpperCase()}</Text>
-                        </HStack>
-                      </Button>
-                    </Td>
-                    <Td>
-                      <Button
-                        size="xs"
-                        onClick={() => {
-                          window.open(
-                            `${
-                              configs.NETWORKS[item.chainTo.toUpperCase()]
-                                ?.blockExplorerUrls[0]
-                            }/tx/${item.txTo}`,
-                            "_blank"
-                          );
-                        }}
-                      >
-                        <HStack alignItems="center" spacing={1}>
-                          <Icon w={4} h={4}>
-                            {getSgvIcon(item.chainTo.toUpperCase())}
-                          </Icon>
-                          <Text>{item.chainTo.toUpperCase()}</Text>
-                        </HStack>
-                      </Button>
-                    </Td>
-                    <Td>{numeral(item.amount).format("0,0.[0000]a")}</Td>
-                    <Td>${numeral(item.value).format("0,0.[00]a")}</Td>
-                    <Td>
-                      <Link
-                        target="_blank"
-                        href={`${
-                          configs.NETWORKS[item.chainTo.toUpperCase()]
-                            ?.blockExplorerUrls[0]
-                        }/address/${item.to}`}
-                      >
-                        {shorten(item.to)}
-                        <Icon as={FiArrowUpRight} />
-                      </Link>
-                    </Td>
-                    <Td>
-                      <Tooltip label={formatDate(new Date(item.timeStamp))}>
-                        {formatDistance(new Date(item.timeStamp), Date.now(), {
-                          includeSeconds: false,
-                          addSuffix: true,
-                        })}
-                      </Tooltip>
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                      </Td>
+                      <Td>
+                        <Button
+                          // color={CHAIN_COLOR_SCHEMA[item.chainFrom]}
+                          size="xs"
+                          onClick={() => {
+                            window.open(
+                              `${
+                                configs.NETWORKS[item.chainFrom.toUpperCase()]
+                                  ?.blockExplorerUrls[0]
+                              }/tx/${item.txFrom}`,
+                              "_blank"
+                            );
+                          }}
+                        >
+                          <HStack alignItems="center" spacing={1}>
+                            <Icon w={4} h={4}>
+                              {getSgvIcon(item.chainFrom.toUpperCase())}
+                            </Icon>
+                            <Text>{item.chainFrom.toUpperCase()}</Text>
+                          </HStack>
+                        </Button>
+                      </Td>
+                      <Td>
+                        <Button
+                          // color={CHAIN_COLOR_SCHEMA[item.chainTo]}
+                          size="xs"
+                          onClick={() => {
+                            window.open(
+                              `${
+                                configs.NETWORKS[item.chainTo.toUpperCase()]
+                                  ?.blockExplorerUrls[0]
+                              }/tx/${item.txTo}`,
+                              "_blank"
+                            );
+                          }}
+                        >
+                          <HStack alignItems="center" spacing={1}>
+                            <Icon w={4} h={4}>
+                              {getSgvIcon(item.chainTo.toUpperCase())}
+                            </Icon>
+                            <Text>{item.chainTo.toUpperCase()}</Text>
+                          </HStack>
+                        </Button>
+                      </Td>
+                      <Td>{numeral(item.amount).format("0,0.[0000]a")}</Td>
+                      <Td>${numeral(item.value).format("0,0.[00]a")}</Td>
+                      <Td>
+                        <Link
+                          target="_blank"
+                          href={`${
+                            configs.NETWORKS[item.chainTo.toUpperCase()]
+                              ?.blockExplorerUrls[0]
+                          }/address/${item.to}`}
+                        >
+                          {shorten(item.to)}
+                        </Link>
+                      </Td>
+                      <Td>
+                        <Tooltip label={formatDate(new Date(item.timeStamp))}>
+                          {formatDistance(
+                            new Date(item.timeStamp),
+                            Date.now(),
+                            {
+                              includeSeconds: false,
+                              addSuffix: true,
+                            }
+                          )}
+                        </Tooltip>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <EmptyState msg="No result found" />
+          )}
           <HStack pt={2} pr={2} w="full" justifyContent="flex-end">
             <Paginator
               onChange={(p) => setPage(p)}

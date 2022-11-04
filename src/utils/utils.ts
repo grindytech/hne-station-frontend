@@ -1,6 +1,5 @@
 import { format } from "date-fns";
 import numeral from "numeral";
-import colors from "./colors";
 
 interface ContractValueParams {
   amount: number;
@@ -187,4 +186,3 @@ export function formatDate(date?: number | Date) {
   return date ? format(date, "MM/dd/yyyy, HH:mm:ss") : "";
 }
 
-export const colorsUtil = colors;

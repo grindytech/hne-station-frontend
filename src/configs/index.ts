@@ -21,28 +21,9 @@ export type Network = {
 };
 
 export interface Configs {
-  HE_CLAIM_PRIVATE_CONTRACT: string;
-  HE_CLAIM_PRIVATE_CONTRACT_V2: string;
-  HE_CONTRACT: string;
-  HE_STAKE_CONTRACT: string;
-  COMMUNITY_AIRDROP_CONTRACT: string;
-  BUSD_CONTRACT: string;
-  WBNB_CONTRACT: string;
-
   NETWORKS: { [n: string]: Network };
-  DEFAULT_CHAIN: string;
   API_URI: string;
-  TOKEN_SYMBOL: string;
-
-  SWAP: {
-    FACTORY_V2_CONTRACT: string;
-    ROUTER_V2_CONTRACT: string;
-  };
-  GOV: {
-    GOVERNANCE_CONTRACT: string;
-    GOVERNANCE_CONTRACT_V2: string;
-    BEGIN_V2_ID: number;
-  };
+  DEFAULT_CHAIN: string;
   BRIDGE: {
     [n: string]: {
       DST_CHAIN_ID: number;
@@ -54,6 +35,7 @@ export interface Configs {
         ISSUE_CONTRACT: string;
         BRIDGE_TOKEN: string;
         LAYER_0_ENDPOINT: string;
+        POOL: string;
       };
       TOKENS: { [n: string]: BridgeToken };
     };
@@ -67,7 +49,6 @@ const envConfigs =
 
 const configs = {
   ...envConfigs,
-  DASHBOARD_API_URL: "https://service.he.onl",
   DEFAULT_NETWORK: () => envConfigs.NETWORKS[envConfigs.DEFAULT_CHAIN],
 };
 

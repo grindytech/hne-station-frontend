@@ -5,4 +5,7 @@ export class GetTransfer extends BaseQueryParams {
   sourceNetwork?: string;
   destinationToken?: string;
   destinationNetwork?: string;
+  txHash?: string;
+  getFull?: boolean;
+  from?: string;
 }

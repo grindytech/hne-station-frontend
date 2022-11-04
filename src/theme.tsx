@@ -40,12 +40,12 @@ const CardHeader: ComponentStyleConfig = {
 };
 const Button: ComponentStyleConfig = {
   baseStyle: {
-    borderRadius: 25,
+    borderRadius: 10,
   },
 };
 const Input: ComponentStyleConfig = {
   baseStyle: {
-    borderRadius: 25,
+    borderRadius: 10,
   },
 };
 const ModalCloseButton: ComponentStyleConfig = {

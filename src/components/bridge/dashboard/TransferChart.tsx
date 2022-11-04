@@ -9,32 +9,22 @@ import {
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import { format } from "date-fns";
-import numeral from "numeral";
 import { useState } from "react";
 import { useQuery } from "react-query";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import bridgeService from "services/bridge.service";
 import CustomAreaChart from "./CustomAreaChart";
 type Props = {
   w: string | number;
   h: number;
 };
-export default function BridgeVolumeChart({ w, h }: Props) {
+export default function BridgeTransferChart({ w, h }: Props) {
   const [dataType, setDataType] = useState("D");
   const [activeToolTipIndex, setActiveToolTipIndex] = useState(0);
   const { data: chartData, isLoading: isChartLoading } = useQuery(
-    ["BridgeVolumeChart", dataType],
+    ["BridgeTransferChart", dataType],
     async () => {
       const data = await bridgeService.getChartData({
-        name: "volume",
+        name: "transfer",
         key: dataType as "D" | "W" | "M",
       });
       return data.items;
@@ -46,28 +36,27 @@ export default function BridgeVolumeChart({ w, h }: Props) {
         <HStack w="full" justifyContent="space-between" alignItems="start">
           <VStack w="full" align="start" spacing={0}>
             <Text fontSize="sm" color="primary.500">
-              Volume{" "}
-              {dataType === "D" ? "24H" : dataType === "W" ? "7D" : "Monthly"}
+              Transactions
             </Text>
-            <VStack align="start" spacing={0}>
-              <Text fontSize="xl" fontWeight="semibold">
-                {chartData
-                  ? "$" +
-                    numeral(chartData[activeToolTipIndex].value).format(
-                      "0,0.[00]a"
-                    )
-                  : "--"}
-              </Text>
-              <Text fontSize="xs" color="gray.400">
-                {chartData
-                  ? format(
-                      new Date(chartData[activeToolTipIndex].time),
-                      "MMM dd yyyy ppp"
-                    )
-                  : "--"}
-              </Text>
+            <VStack align="start" spacing={1}>
+              <Skeleton isLoaded={!isChartLoading}>
+                <Text minW={100} fontSize="xl" fontWeight="semibold">
+                  {chartData ? chartData[activeToolTipIndex].value : "--"}
+                </Text>
+              </Skeleton>
+              <Skeleton isLoaded={!isChartLoading}>
+                <Text minW={200} fontSize="xs" color="gray.400">
+                  {chartData
+                    ? format(
+                        new Date(chartData[activeToolTipIndex].time),
+                        "MMM dd yyyy ppp"
+                      )
+                    : "--"}
+                </Text>
+              </Skeleton>
             </VStack>
           </VStack>
+
           <ButtonGroup isAttached size="xs" color="primary.500">
             <Button
               isActive={dataType === "D"}
@@ -95,20 +84,18 @@ export default function BridgeVolumeChart({ w, h }: Props) {
             </Button>
           </ButtonGroup>
         </HStack>
+
         <Box w="full" minHeight={h} width={w}>
-          <Skeleton isLoaded={!isChartLoading}>
-            {chartData && (
-              <CustomAreaChart
-                chartData={chartData}
-                setActiveToolTipIndex={(index) => {
-                  setActiveToolTipIndex(index);
-                }}
-                xDataKey="time"
-                yDataKey="value"
-                h={Number(h)}
-              />
-            )}
-          </Skeleton>
+          <CustomAreaChart
+            isLoading={isChartLoading}
+            chartData={chartData}
+            setActiveToolTipIndex={(index) => {
+              setActiveToolTipIndex(index);
+            }}
+            xDataKey="time"
+            yDataKey="value"
+            h={Number(h)}
+          />
         </Box>
       </VStack>
     </Card>

@@ -1,5 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { ConnectWalletProvider } from "connectWallet/useWallet";
+import { SessionTxProvider } from "hooks/bridge/useSessionTxHistories";
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";
@@ -26,9 +27,11 @@ export const App = () => {
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
         <ConnectWalletProvider>
-          <BrowserRouter>
-            <Station />
-          </BrowserRouter>
+          <SessionTxProvider>
+            <BrowserRouter>
+              <Station />
+            </BrowserRouter>
+          </SessionTxProvider>
         </ConnectWalletProvider>
       </ChakraProvider>
     </QueryClientProvider>

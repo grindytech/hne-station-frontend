@@ -27,13 +27,11 @@ export default function Paginator({
           }
         }}
         size="sm"
-        colorScheme="primary"
       >
         <Icon as={FiChevronLeft}></Icon>
       </Button>
-      <Input
-        // disabled={inputPage === totalPage}
-        borderRadius={25}
+      {/* <Input
+        borderRadius={10}
         size="sm"
         width={"14"}
         onKeyDown={(e) => {
@@ -48,8 +46,10 @@ export default function Paginator({
         onChange={(e) => {
           setInputPage(e.target.value);
         }}
-      ></Input>
-      <Text size="sm">of {totalPage}</Text>
+      ></Input> */}
+      <Text size="sm">
+        {currentPage} of {totalPage}
+      </Text>
       <Button
         onClick={() => {
           if (page < totalPage) {
@@ -63,7 +63,6 @@ export default function Paginator({
           }
         }}
         size="sm"
-        colorScheme="primary"
         disabled={page >= totalPage}
       >
         <Icon as={FiChevronRight}></Icon>
